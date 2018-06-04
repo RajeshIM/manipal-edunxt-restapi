@@ -2,13 +2,11 @@ module.exports = (sequelize, DataTypes) => {
   var learningActivities = sequelize.define('learning_activities', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
-        	primaryKey: true,
-          field: 'LnDUserId'
+        	primaryKey: true
         },
         courseId: {
           type: DataTypes.INTEGER,
-          primaryKey: true,
-          field: 'CourseId'
+          primaryKey: true
         },
         totalActiveUsers: {
           type: DataTypes.INTEGER
