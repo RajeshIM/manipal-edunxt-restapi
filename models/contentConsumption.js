@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var contentConsumption = sequelize.define('content_consumption', {
+  var contentConsumption = sequelize.define('muln_content_consumption', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -37,9 +37,6 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.DATE,
           primaryKey: true
         },
-        jobId: {
-          type: DataTypes.STRING(30)
-        },
         createdBy: {
           type: DataTypes.STRING(30)
         },
@@ -54,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       {
-        tableName: 'content_consumption'
+        tableName: 'muln_content_consumption'
       });
   return contentConsumption;
 };

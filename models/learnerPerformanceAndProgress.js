@@ -31,11 +31,8 @@ module.exports = (sequelize, DataTypes) => {
         progress: {
           type: DataTypes.INTEGER
         },
-        Date: {
+        date: {
           type: DataTypes.DATE
-        },
-        jobId: {
-          type: DataTypes.INTEGER
         },
         createdBy: {
           type: DataTypes.STRING(30)

@@ -3,7 +3,7 @@
     "username": " edunxtdbadmin",
     "password": "EduNxt#321",
     "database": "mulnplatform_Analytics",
-    "host": "127.0.0.1",
+    "host": "172.24.1.53",
     "dialect": "mysql"
   },
   "test": {

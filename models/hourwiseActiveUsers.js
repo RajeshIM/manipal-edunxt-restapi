@@ -1,15 +1,14 @@
 var moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
-  var hourwiseActiveUsers = sequelize.define('hourwise_active_users', {
+  var hourwiseActiveUsers = sequelize.define('muln_hour_wise_active_users', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
         },
         courseId: {
           type: DataTypes.INTEGER,
-          primaryKey: true,
-          field: 'CourseId'
+          primaryKey: true
         },
         zoneId: {
           type: DataTypes.INTEGER,
@@ -51,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       {
-        tableName: 'hourwise_active_users'
+        tableName: 'muln_hour_wise_active_users'
       });
 
   return hourwiseActiveUsers;

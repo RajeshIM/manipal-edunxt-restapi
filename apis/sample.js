@@ -1,7 +1,6 @@
 var response = require('../helpers/response'),
 	apis = require('../helpers/apis'),
-	moment = require('moment'),
-	Op = require('Sequelize').Op;
+	moment = require('moment');
 
 exports.sample = function (req, res) {
 	// var filters = apis.getFilters(req).filters,

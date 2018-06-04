@@ -3,12 +3,13 @@ var response = require('../helpers/response'),
 	utils = require('../helpers/utils');
 
 exports.learnerPaceAndPerformance = function (req, res) {
-	var date = utils.getDates(req),
-		fields = (req.query.type === 'pace') ? ['learnerPaceType'] : ['learnerPerformanceType'],
+	var type = req.query.type ? req.query.type.toUpperCase() : '',
+		fields = (type === 'PACE') ? ['learnerPaceType'] : ['learnerPerformanceType'],
+		date = utils.getDates(req),
 		aggFields = ['learnerId:COUNT'],
 		aggData = apis.getAttributes(aggFields),
 		attributes = _.union(fields, aggData),
-		group = (req.query.type === 'pace') ? ['learnerPaceType'] : ['learnerPerformanceType'],
+		group = (type === 'PACE') ? ['learnerPaceType'] : ['learnerPerformanceType'],
 		query = apis.getQuery(req, attributes, false, group),
 		table = '';
 

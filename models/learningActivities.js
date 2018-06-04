@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var learningActivities = sequelize.define('learning_activities', {
+  var learningActivities = sequelize.define('muln_learning_activities', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -59,9 +59,6 @@ module.exports = (sequelize, DataTypes) => {
         date: {
           type: DataTypes.DATE
         },
-        jobId: {
-          type: DataTypes.STRING(30)
-        },
         createdBy: {
           type: DataTypes.STRING(30)
         },
@@ -76,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       {
-        tableName: 'learning_activities'
+        tableName: 'muln_learning_activities'
       });
   // Orders.associate = function(models) {
 

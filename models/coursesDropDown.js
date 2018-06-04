@@ -15,13 +15,32 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        courseInstanceId: {
+        batchName: {
+          type: DataTypes.STRING(30)
+        },
+        teamId: {
           type: DataTypes.INTEGER,
           primaryKey: true
+        },
+        teamName: {
+          type: DataTypes.STRING(30)
+        },
+        zoneId: {
+          type: DataTypes.INTEGER,
+          primaryKey: true
+        },
+        zoneName: {
+          type: DataTypes.STRING(30)
         },
         domainId: {
           type: DataTypes.STRING(100),
           primaryKey: true
+        },
+        courseStartDate: {
+          type: DataTypes.DATE
+        },
+        courseEndDate: {
+          type: DataTypes.DATE
         },
         createdBy: {
           type: DataTypes.STRING(30)

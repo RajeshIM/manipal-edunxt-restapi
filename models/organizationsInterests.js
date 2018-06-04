@@ -48,9 +48,6 @@ module.exports = (sequelize, DataTypes) => {
         date: {
           type: DataTypes.DATE
         },
-        jobId: {
-          type: DataTypes.INTEGER
-        },
         createdBy: {
           type: DataTypes.STRING(30)
         },

@@ -3,10 +3,11 @@ var response = require('../helpers/response'),
 	utils = require('../helpers/utils');
 
 exports.learnerPaceAndPerformanceDetails = function (req, res) {
-	var date = utils.getDates(req),
+	var type = req.query.type ? req.query.type.toUpperCase() : '',
+		date = utils.getDates(req),
 		page = req.query.page ? parseInt(req.query.page) : 1,
 		limit = req.query.limit ? parseInt(req.query.limit) : 10,
-		type = (req.query.type === 'pace') ? 'learnerPaceType' : 'learnerPerformanceType',
+		type = (type === 'PACE') ? 'learnerPaceType' : 'learnerPerformanceType',
 		displayFor = req.body.displayFor ? req.body.displayFor: null,
 		attributes = ['learnerPaceType','learnerPerformanceType','LnDUserId', 'courseId', 'batchId', 'teamId', 'teamLeaderId', 'learnerId', 'learnerName', 'serialNumber', 'courseName', 'teamName', 'batchName', 'teamLeaderName', 'scoreInCourse', 'scoreAvg', 'highestScore', 'actionMessage'],
 		query = apis.getQuery(req, attributes),

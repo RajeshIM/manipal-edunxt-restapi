@@ -1,13 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
-  var learnerPerformanceAndProgressDetails = sequelize.define('muln_Learner_Performance_And_Progress_Details', {
+  var learnerPerformanceAndProgressDetails = sequelize.define('muln_learner_performance_and_progress_details', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
         },
         courseId: {
           type: DataTypes.INTEGER,
-          primaryKey: true,
-          field: 'CourseId'
+          primaryKey: true
         },
         courseName: {
           type: DataTypes.STRING(30)
@@ -44,9 +43,6 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.DATE,
           primaryKey: true
         },
-        jobId: {
-          type: DataTypes.INTEGER
-        },
         createdBy: {
           type: DataTypes.STRING(30)
         },
@@ -61,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       {
-        tableName: 'muln_Learner_Performance_And_Progress_Details'
+        tableName: 'muln_learner_performance_and_progress_details'
       });
 
   return learnerPerformanceAndProgressDetails;

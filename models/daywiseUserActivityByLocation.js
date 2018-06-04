@@ -1,14 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
-  var daywiseUserActivityByLocation = sequelize.define('muln_Day_Wise_User_Activity_By_Location', {
+  var daywiseUserActivityByLocation = sequelize.define('muln_day_wise_user_activity_by_location', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
         },
         courseId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true
-        },
-        zoneId: {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
@@ -29,14 +25,11 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER
         },
         enrolledUsersSinceLastMonth: {
-          type: DataTypes.INTEGER,
-          primaryKey: true
+          type: DataTypes.INTEGER
         },
         Date: {
-          type: DataTypes.DATE
-        },
-        jobId: {
-          type: DataTypes.INTEGER
+          type: DataTypes.DATE,
+          primaryKey: true
         },
         createdBy: {
           type: DataTypes.STRING(30)
@@ -52,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       {
-        tableName: 'muln_Day_Wise_User_Activity_By_Location'
+        tableName: 'muln_day_wise_user_activity_by_location'
       });
   return daywiseUserActivityByLocation;
 };

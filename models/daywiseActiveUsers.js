@@ -1,7 +1,7 @@
 var moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
-  var daywiseActiveUsers = sequelize.define('daywise_active_users', {
+  var daywiseActiveUsers = sequelize.define('muln_day_wise_active_users', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -33,9 +33,6 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.DATE,
           primaryKey: true
         },
-        jobId: {
-          type: DataTypes.STRING(30)
-        },
         createdBy: {
           type: DataTypes.STRING(30)
         },
@@ -50,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       {
-        tableName: 'daywise_active_users'
+        tableName: 'muln_day_wise_active_users'
       });
   // Orders.associate = function(models) {
 

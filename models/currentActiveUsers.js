@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var currentActiveUsers = sequelize.define('current_active_users', {
+  var currentActiveUsers = sequelize.define('muln_current_active_users', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       {
-        tableName: 'current_active_users'
+        tableName: 'muln_current_active_users'
       });
   
   return currentActiveUsers;

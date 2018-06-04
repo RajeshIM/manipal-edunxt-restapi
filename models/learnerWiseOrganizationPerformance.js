@@ -2,13 +2,11 @@ module.exports = (sequelize, DataTypes) => {
   var learnerWiseOrganizationPerformance = sequelize.define('muln_lerner_organization_performance', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
-        	primaryKey: true,
-          field: 'LnDUserId'
+        	primaryKey: true
         },
         courseId: {
           type: DataTypes.INTEGER,
-          primaryKey: true,
-          field: 'CourseId'
+          primaryKey: true
         },
         zoneId: {
           type: DataTypes.INTEGER,

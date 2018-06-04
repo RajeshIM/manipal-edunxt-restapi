@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var learnerTrackDetails = sequelize.define('muln_Learner_Track_Details', {
+  var learnerTrackDetails = sequelize.define('muln_learner_track_details', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -54,14 +54,11 @@ module.exports = (sequelize, DataTypes) => {
         learnerPaceType: {
           type: DataTypes.STRING(30)
         },
-        learnerPercentageType:{
+        learnerPerformanceType:{
           type: DataTypes.STRING(30)
         },
         actionMessage: {
           type: DataTypes.STRING(20)
-        },
-        jobId: {
-          type: DataTypes.STRING(30)
         },
         createdBy: {
           type: DataTypes.STRING(30)
@@ -77,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       {
-        tableName: 'muln_Learner_Track_Details'
+        tableName: 'muln_learner_track_details'
       });
   return learnerTrackDetails;
 };
