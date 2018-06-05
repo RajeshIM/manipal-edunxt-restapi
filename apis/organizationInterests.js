@@ -6,7 +6,7 @@ exports.organizationInterests = function (req, res) {
 	var interestsAttributes = ['courseId', 'courseName', 'hits', 'hitsSinceLastMonth'],
 		interestsquery = apis.getQuery(req, interestsAttributes);
 		interestsquery.order = [['hits', 'DESC']];
-		interestsquery.limit = 5;
+		interestsquery.limit = 3;
 
 	var topicsAttributes = ['courseId', 'courseName'],
 		topicsquery = apis.getQuery(req, topicsAttributes);
@@ -15,7 +15,7 @@ exports.organizationInterests = function (req, res) {
 		topicsquery.limit = 10;
 
 	var responseData = {};
-
+	console.log()
 	async.parallel({
 		topInterestsData: function (next) {
 			models.organizationsInterests.findAll(interestsquery).then(function (data) {
@@ -25,7 +25,7 @@ exports.organizationInterests = function (req, res) {
 			});
 		},
 		popularTopicsData: function (next) {
-			models.organizationsInterests.findAll(query).then(function (data) {
+			models.organizationsInterests.findAll(topicsquery).then(function (data) {
 			    next(null,data);
 			}).catch(function (err) {
 			    next(err);

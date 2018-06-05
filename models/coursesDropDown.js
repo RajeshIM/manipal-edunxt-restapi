@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var coursesDropDown = sequelize.define('muln_im_lnduser_course', {
+  var coursesDropDown = sequelize.define('muln_im_user_course_batch_team_info', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       {
-        tableName: 'muln_im_lnduser_course'
+        tableName: 'muln_im_user_course_batch_team_info'
       });
   return coursesDropDown;
 };

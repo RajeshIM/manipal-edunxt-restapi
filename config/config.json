@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": " edunxtdbadmin",
-    "password": "EduNxt#321",
-    "database": "mulnplatform_Analytics",
-    "host": "172.24.1.53",
+    "username": "root",
+    "password": "admin",
+    "database": "test",
+    "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {

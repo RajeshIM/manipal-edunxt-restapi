@@ -19,6 +19,7 @@ router.post('/api/v1/content-consumption', apis.contentConsumption);
 router.post('/api/v1/organization-interests', apis.organizationInterests);
 router.post('/api/v1/organization-interests-details', apis.organizationInterestsDetails);
 router.get('/api/v1/courses-dropdown', apis.coursesDropDown);
+router.get('/api/v1/dropDown', apis.dropDowns);
 router.get('/api/v1/sample', apis.sample);
 
 module.exports = router;

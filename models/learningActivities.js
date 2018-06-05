@@ -20,10 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         enrolledUsersSinceLastMonth: {
           type: DataTypes.INTEGER
         },
-        usersCompletedTranning: {
+        usersCompletedTraining: {
           type: DataTypes.INTEGER
         },
-        usersCompletedTranningSinceLastMonth: {
+        usersCompletedTrainingSinceLastMonth: {
           type: DataTypes.INTEGER
         },
         usersBehindSchedule: {
@@ -39,10 +39,10 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER
         },
         trainerRating: {
-          type: DataTypes.INTEGER
+          type: DataTypes.DOUBLE
         },
         trainerRatingBy: {
-          type: DataTypes.INTEGER
+          type: DataTypes.DOUBLE
         },
         learnerSatisfaction: {
           type: DataTypes.DOUBLE

@@ -17,7 +17,8 @@ exports.goals = function (req, res) {
 		table = 'userwiseTimeSpent';
 	}
 
-    query.where.date = date.end;
+    //query.where.date = date.end;
+
     var responseData = {},
     	timeSpent = {
     		timeSpent: 0,

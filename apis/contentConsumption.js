@@ -9,7 +9,7 @@ exports.contentConsumption = function (req, res) {
 		aggData = apis.getAttributes(aggFields),
 		attributes = _.union(fields, aggData),
 		group = fields,
-		query = apis.getQuery(req, attributes, group);
+		query = apis.getQuery(req, attributes, true, group);
 		
 	models.contentConsumption.findAll(query).then(function (data) {
 		//data = data ? data : {};

@@ -9,7 +9,7 @@ exports.trainerLeaderBoard = function (req, res) {
 		aggData = apis.getAttributes(aggFields),
 		attributes = _.union(fields, aggData),
 		group = ['trainerId'],
-		query = apis.getQuery(req, attributes, group);
+		query = apis.getQuery(req, attributes, true, group);
 
 	models.trainerWiseOrganizationPerformance.findAll(query).then(function (data) {
 	    //var pagination = apis.getPaginationObject(data.count, page, limit);

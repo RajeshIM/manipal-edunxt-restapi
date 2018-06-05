@@ -17,7 +17,7 @@ exports.learnerPaceAndPerformance = function (req, res) {
     	table = 'learnerTrackDetails';
     } else {
     	table = 'daywiseLearnerTrackDetails';
-    	query.where.day = date.end;
+    	//query.where.day = date.end;
     }
     var paceData = {
     	"aheadOfSchedule": 0,

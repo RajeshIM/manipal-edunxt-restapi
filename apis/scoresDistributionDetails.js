@@ -23,12 +23,11 @@ exports.scoresDistributionDetails = function (req, res) {
 				scoreAvg,muln_Get_Batch_Name(batchId) AS batchName,noOfAttempts,
 				IFNULL(muln_Get_Learner_Score_Distribution_Progress
 				(LnDUserId, courseId, batchId, learnerId, '${date.start}','${date.end}'),0) 
-				AS Progress FROM test.muln_Learner_Score_Distribution 
-				WHERE`;
+				AS Progress FROM muln_Learner_Score_Distribution GROUP BY ScoreRanges`;
 
 	dateFilter = ` AND DATE BETWEEN '${date.start}' AND '${date.end}' GROUP BY learnerId, courseId, batchId`;
 	
-    query = query + lndUserFilter + courseFilter + batchFilter + dateFilter;
+    //query = query + lndUserFilter + courseFilter + batchFilter + dateFilter;
    
 	models.sequelize.query(query, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
 	    response.sendSuccessResponse(res, data);

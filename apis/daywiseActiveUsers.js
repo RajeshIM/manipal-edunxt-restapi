@@ -32,16 +32,16 @@ exports.daywiseActiveUsers = function (req, res) {
 		hourAttributes = _.union(hourAttributes, aggData);
 		group = ['hour'];
 		hourQuery = apis.getQuery(req, hourAttributes, true, group);
-		hourQuery.where.hour = hourQuery.where.date;
-		delete hourQuery.where.date;
+		//hourQuery.where.hour = hourQuery.where.date;
+		//delete hourQuery.where.date;
 	} else {
 		isDay = true;
 		dayAttributes = ['LnDUserId', ['day', 'date']];
 		dayAttributes = _.union(dayAttributes, aggData);
 		group = ['day'];
 		dayQuery = apis.getQuery(req, dayAttributes, true, group);
-		dayQuery.where.day = dayQuery.where.date;
-		delete dayQuery.where.date;
+		//dayQuery.where.day = dayQuery.where.date;
+		//delete dayQuery.where.date;
 	}
 
 	if (date.current) {

@@ -25,9 +25,9 @@ exports.scoresDistribution = function (req, res) {
 	if (courseId) courseFilter = ` AND courseId = ${courseId}`;
 	
 	if (type === 'QUIZ') {
-		examTypeFilter = ` AND examTypeId = 1`;
+		examTypeFilter = ` where examTypeId = 1 `;
 	} else if (type === 'ASSIGNMENT') {
-		examTypeFilter = ` AND examTypeId= 5`;
+		examTypeFilter = ` where examTypeId= 5`;
 	} 
 
 	query = `SELECT CASE WHEN ScoreAvg BETWEEN 0 AND 19 THEN '0-20'
@@ -36,13 +36,15 @@ exports.scoresDistribution = function (req, res) {
 						 WHEN ScoreAvg BETWEEN 60 AND 79 THEN '61-80'
 						 WHEN ScoreAvg BETWEEN 80 AND 100 THEN '81-100'
 				END AS scoreRanges, COUNT(ScoreAvg) AS numberOfUsers
-				FROM muln_Learner_Score_Distribution
-				WHERE`;
+				FROM muln_Learner_Score_Distribution`;
+	var group = ` GROUP BY ScoreRanges`;
 
 	dateFilter = ` AND DATE BETWEEN '${date.start}' AND '${date.end}' GROUP BY ScoreRanges`;
 
-    query = query + lndUserFilter + courseFilter + batchFilter + examTypeFilter + dateFilter;
-  
+
+
+    //query = query + lndUserFilter + courseFilter + batchFilter + examTypeFilter + dateFilter;
+  	query = query + examTypeFilter + group;
 	models.sequelize.query(query, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
 	    response.sendSuccessResponse(res, data);
 	}).catch(function (err) {

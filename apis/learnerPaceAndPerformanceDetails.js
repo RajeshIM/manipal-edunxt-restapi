@@ -20,7 +20,7 @@ exports.learnerPaceAndPerformanceDetails = function (req, res) {
     	table = 'learnerTrackDetails';
     } else {
     	table = 'daywiseLearnerTrackDetails';
-    	query.where.day = date.end;
+    	//query.where.day = date.end;
     }
  
 	models[table].findAll(query).then(function (data) {

@@ -15,6 +15,7 @@ var apis = ['learningActivities',
 			'organizationInterests',
 			'organizationInterestsDetails',
 			'coursesDropDown',
+			'dropDowns',
 			'sample'
 			];
 

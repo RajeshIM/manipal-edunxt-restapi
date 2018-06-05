@@ -9,7 +9,7 @@ exports.teamLeaderBoard = function (req, res) {
 		aggData = apis.getAttributes(aggFields),
 		attributes = _.union(fields, aggData),
 		group = ['teamId'],
-		query = apis.getQuery(req, attributes, group);
+		query = apis.getQuery(req, attributes, true, group);
 
 	models.teamWiseOrganizationPerformance.findAll(query).then(function (data) {
 		// data = data ? data : {};

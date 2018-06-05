@@ -1,4 +1,5 @@
-var utils = require('./utils');
+var utils = require('./utils'),
+	Sequelize = require('sequelize');
 	
 /** Function to get request filters
  *
@@ -24,8 +25,9 @@ exports.getQuery = function (req, attributes, date, group) {
 		where = {},
 		order = [],
 		obj = {},
+		Op = Sequelize.Op,
 		filters = {};
-
+	
 	if(LnDUserId) where.LnDUserId = LnDUserId;
 	if(courseId) where.courseId = courseId;
 	if(!_.isEmpty(batchId)) where.batchId = batchId;
@@ -35,11 +37,11 @@ exports.getQuery = function (req, attributes, date, group) {
 	if (date) {
 		var dateInfo = utils.getDates(req, true),
 			date = {
-				[models.Op.gte]: dateInfo.start,
-				[models.Op.lt]: dateInfo.end
+				[Op.gte]: dateInfo.start,
+				[Op.lt]: dateInfo.end
 			};
 		
-		where.date = date;
+		//where.date = date;
 	}
 
 	if(sortBy && sortOrder) {
@@ -59,12 +61,12 @@ exports.getQuery = function (req, attributes, date, group) {
 		where[searchBy] = searchObj;
 	}
 
-	query.where = where;
+	if(!_.isEmpty(where)) query.where = where;
 	
-	if(attributes) query.attributes = attributes;
+	if(attributes && !_.isEmpty(attributes)) query.attributes = attributes;
 	if(!_.isEmpty(order)) query.order = order;
-	if(group) query.group = group;
-	
+	if(group && !_.isEmpty(group)) query.group = group;
+
 	return query;
 }
 

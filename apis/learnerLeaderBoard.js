@@ -7,9 +7,9 @@ exports.learnerLeaderBoard = function (req, res) {
 		fields = ['learnerId','learnerName', 'learnerSerialNumber', 'actionMessage'],
 		aggFields = ['pointsEarned:SUM', 'pointsEarnedSienceLastMonth:SUM', 'testPerformance:AVG', 'avgTestPerformance:AVG', 'examScore:AVG'],
 		aggData = apis.getAttributes(aggFields),
-		attributes = _.union(attributes, aggData),
+		attributes = _.union(fields, aggData),
 		group = ['learnerId'],
-		query = apis.getQuery(req, attributes, group);
+		query = apis.getQuery(req, attributes, true, group);
 	
 	models.learnerWiseOrganizationPerformance.findAll(query).then(function (data) {
 		// data = data ? data : {};
