@@ -10,23 +10,28 @@ exports.userActivityByLocation = function (req, res) {
 	    group = fields,
 	    aggData = apis.getAttributes(aggFields),
 	    attributes = _.union(fields, aggData),
-	    dayQuery = apis.getQuery(req, attributes, true, group),
-		currentQuery = {},
+	    options = {
+	    	req: req,
+	    	attributes: attributes,
+	    	group: group
+	    },
+	    query = apis.getQuery(options),
 		isCurrent = false,
-		isDay = true,
+		isDay = false,
 		responseData = [];
 
 
 	if (date.current) {
 		isCurrent = true;
-		currentQuery = apis.getQuery(req, attributes, false, group)
+	} else {
+		isDay = true;
+		//query.date = date.end;
 	}
-	if (date.current && date.days == 0) isDay = false;
 	
 	async.parallel({
 		daywiseActivity: function (next) {
 			if (isDay) {
-				models.daywiseUserActivityByLocation.findAll(dayQuery).then(function (data) {	
+				models.daywiseUserActivityByLocation.findAll(query).then(function (data) {	
 				    next(null, data);
 				}).catch(function (err) {
 				   next(err);
@@ -37,7 +42,7 @@ exports.userActivityByLocation = function (req, res) {
 		},
 		currentActivity: function (next) {
 			if (isCurrent) {
-				models.userActivityByLocation.findAll(currentQuery).then(function (data) {
+				models.userActivityByLocation.findAll(query).then(function (data) {
 				    next(null, data);
 				}).catch(function (err) {
 				   next(err);

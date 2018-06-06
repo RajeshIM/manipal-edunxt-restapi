@@ -4,18 +4,26 @@ var response = require('../helpers/response'),
 
 exports.organizationInterests = function (req, res) {
 	var interestsAttributes = ['courseId', 'courseName', 'hits', 'hitsSinceLastMonth'],
-		interestsquery = apis.getQuery(req, interestsAttributes);
+		interestsOptions = {
+			req: req,
+			attributes: interestsAttributes
+		},
+		interestsquery = apis.getQuery(interestsOptions);
 		interestsquery.order = [['hits', 'DESC']];
 		interestsquery.limit = 3;
 
 	var topicsAttributes = ['courseId', 'courseName'],
-		topicsquery = apis.getQuery(req, topicsAttributes);
+		topicsOptions = {
+			req: req,
+			attributes: topicsAttributes
+		},
+		topicsquery = apis.getQuery(topicsOptions);
 		topicsquery.distinct = true;
-		topicsquery.order = [['numberLikes', 'DESC']];
+		topicsquery.order = [['numberOfLikes', 'DESC']];
 		topicsquery.limit = 10;
 
 	var responseData = {};
-	console.log()
+	
 	async.parallel({
 		topInterestsData: function (next) {
 			models.organizationsInterests.findAll(interestsquery).then(function (data) {

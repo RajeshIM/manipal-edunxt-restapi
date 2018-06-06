@@ -15,7 +15,7 @@ exports.dropDowns = function (req, res) {
 		isBatch = false,
 		isTeam = false,
 		isZone = false,
-		responseData = {};
+		responseData = [];
 
 	if (LnDUserId) {
 		where.LnDUserId = LnDUserId;
@@ -24,33 +24,43 @@ exports.dropDowns = function (req, res) {
 		teamQuery.where = where;
 		zoneQuery.where = where;
 	}
+	var courseAttributes = ['courseId', 'courseName'],
+		batchAttributes = ['batchId', 'batchName'],
+		teamAttributes = ['teamId', 'teamName'],
+		zoneAttributes = ['zoneId', 'zoneName'];
+
+		courseQuery.attributes = courseAttributes;
+		courseQuery.distinct = true;
+		batchQuery.attributes = batchAttributes;
+		batchQuery.distinct = true;
+		teamQuery.attributes = teamAttributes;
+		teamQuery.distinct = true;
+		zoneQuery.attributes = zoneAttributes;
+		zoneQuery.distinct = true;
 
 	if (types.length > 0) {
 		_.each(types, function(type) {
 			switch(type.toUpperCase()) {
-				case 'COURSE': attributes = ['courseId', 'courseName'];
-							   courseQuery.attributes = attributes;
-							   courseQuery.distinct = true;
-							   isCourse = true;
+				case 'COURSE': isCourse = true;
 							   break;
-				case 'BATCH': attributes = ['batchId', 'batchName'];
-							  batchQuery.attributes = attributes;
-							  batchQuery.distinct = true;
-							  isBatch = true;
-							  break;
-				case 'TEAM': attributes = ['teamId', 'teamName'];
-				             teamQuery.attributes = attributes;
-				             teamQuery.distinct = true;
-				             isTeam = true;
-							 break;
-			    case 'ZONE': attributes = ['zoneId', 'zoneName'];
-			    			 zoneQuery.attributes = attributes;
-			    			 zoneQuery.distinct = true;
-			    			 isZone = true;
-							 break;
+				case 'BATCH' : isBatch = true;
+							   break;
+				case 'TEAM'  : isTeam = true;
+							   break;
+			    case 'ZONE'  : isZone = true;
+							   break;
+				default		 : isCourse = true;
+						 	   isBatch = true;
+						       isTeam = true;
+						       isZone = true;
 			}
 		})
-	};
+	} else {
+		isCourse = true;
+		isBatch = true;
+	    isTeam = true;
+		isZone = true;
+	}
 	
 	async.parallel({
 		coursesData: function (next) {
@@ -106,11 +116,40 @@ exports.dropDowns = function (req, res) {
 		    	batchesData = results.batchesData,
 		    	teamsData = results.teamsData,
 		    	zonesData = results.zonesData;
+		    var courses = {
+		    	type: 'course',
+		    	data: []
+		    },
+		    teams = {
+		    	type: 'team',
+		    	data: []
+		    },
+		    zones = {
+		    	type: 'zone',
+		    	data: []
+		    },
+		    batches = {
+		    	type: 'batch',
+		    	data: []
+		    };
 
-		    if (courseData.length > 0) responseData.courses = courseData;
-		    if (batchesData.length > 0) responseData.batches = batchesData;
-		    if (teamsData.length > 0) responseData.teams = teamsData;
-		    if (zonesData.length > 0) responseData.zones = zonesData;
+
+		    if (courseData.length > 0) {
+		    	courses.data = courseData;
+		    	responseData.push(courses);
+		    }
+		    if (batchesData.length > 0) {
+		    	batches.data = batchesData;
+		    	responseData.push(batches);
+		    }
+		    if (teamsData.length > 0) {
+		    	teams.data = teamsData;
+		    	responseData.push(teams);
+		    }
+		    if (zonesData.length > 0) {
+		    	zones.data = zonesData;
+		    	responseData.push(zones);
+		    }
 
 		    response.sendSuccessResponse(res, responseData);
 		}

@@ -1,4 +1,5 @@
 var utils = require('./utils'),
+	moment = require('moment'),
 	Sequelize = require('sequelize');
 	
 /** Function to get request filters
@@ -8,8 +9,11 @@ var utils = require('./utils'),
  * @return {Object} Returns all the filters
  */
 
-exports.getQuery = function (req, attributes, date, group) {
-	var LnDUserId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
+exports.getQuery = function (options) {
+	var req = options.req,
+		attributes = options.attributes,
+		group = options.group,
+		LnDUserId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
 		courseId =  req.headers['courseid'] ? parseInt([req.headers['courseid']]) : null,
 		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
 		zoneId = req.body.zoneId ? _.flatten([req.body.zoneId]) : [],
@@ -34,15 +38,16 @@ exports.getQuery = function (req, attributes, date, group) {
 	if(!_.isEmpty(zoneId)) where.zoneId = zoneId;
 	if(!_.isEmpty(teamId)) where.teamId = teamId;
 	
-	if (date) {
-		var dateInfo = utils.getDates(req, true),
-			date = {
-				[Op.gte]: dateInfo.start,
-				[Op.lt]: dateInfo.end
-			};
-		
-		//where.date = date;
-	}
+	var dateInfo = utils.getDates(req, true);
+	
+	if (options.startDate && options.endDate) {
+		where.date = {
+			[Op.gte]: dateInfo.start,
+			[Op.lt]: dateInfo.end
+		};
+	} else if (options.endDate) {
+		where.date = moment(dateInfo.end, __('YMD')).subtract(1, 'days').format(__('YMD'));
+	} 
 
 	if(sortBy && sortOrder) {
 		var arr = [];
@@ -57,11 +62,11 @@ exports.getQuery = function (req, attributes, date, group) {
 	}
 
 	if (searchBy && searchTerm) {
-		var searchObj = { [models.Op.like]: '%' + searchTerm + '%' };
+		var searchObj = { [Op.like]: '%' + searchTerm + '%' };
 		where[searchBy] = searchObj;
 	}
 
-	if(!_.isEmpty(where)) query.where = where;
+	query.where = where;
 	
 	if(attributes && !_.isEmpty(attributes)) query.attributes = attributes;
 	if(!_.isEmpty(order)) query.order = order;

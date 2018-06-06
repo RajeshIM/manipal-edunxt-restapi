@@ -13,7 +13,6 @@ exports.daywiseActiveUsers = function (req, res) {
 		dayAttributes = [],
 		hourAttributes = [],
 		currentAttributes = [],
-		group = [],
 		where = {},
 		dayQuery = {},
 		hourQuery = {},
@@ -31,17 +30,31 @@ exports.daywiseActiveUsers = function (req, res) {
 		hourAttributes = ['LnDUserId',['hour', 'date']];
 		hourAttributes = _.union(hourAttributes, aggData);
 		group = ['hour'];
-		hourQuery = apis.getQuery(req, hourAttributes, true, group);
-		//hourQuery.where.hour = hourQuery.where.date;
-		//delete hourQuery.where.date;
+		var hourOptions = {
+			req: req,
+			attributes: hourAttributes,
+			//startDate: true,
+			//endDate: true,
+			group: group
+		};
+		hourQuery = apis.getQuery(hourOptions);
+		// hourQuery.where.hour = hourQuery.where.date;
+		// delete hourQuery.where.date;
 	} else {
 		isDay = true;
 		dayAttributes = ['LnDUserId', ['day', 'date']];
 		dayAttributes = _.union(dayAttributes, aggData);
 		group = ['day'];
-		dayQuery = apis.getQuery(req, dayAttributes, true, group);
-		//dayQuery.where.day = dayQuery.where.date;
-		//delete dayQuery.where.date;
+		var dayOptions = {
+			req: req,
+			attributes: dayAttributes,
+			// startDate: true,
+			// endDate: true,
+			group: group
+		};
+		dayQuery = apis.getQuery(dayOptions);
+		// dayQuery.where.day = dayQuery.where.date;
+		// delete dayQuery.where.date;
 	}
 
 	if (date.current) {
@@ -49,7 +62,12 @@ exports.daywiseActiveUsers = function (req, res) {
 		currentAttributes = ['LnDUserId'];
 		currentAttributes = _.union(currentAttributes, aggData);
 		group = ['LnDUserId'];
-		currentQuery = apis.getQuery(req, currentAttributes, false, group);
+		var currentOptions = {
+			req: req,
+			attributes: currentAttributes,
+			group: group
+		};
+		currentQuery = apis.getQuery(currentOptions);
 	}
 
 	async.parallel({

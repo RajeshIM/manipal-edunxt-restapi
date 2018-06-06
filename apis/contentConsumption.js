@@ -9,8 +9,15 @@ exports.contentConsumption = function (req, res) {
 		aggData = apis.getAttributes(aggFields),
 		attributes = _.union(fields, aggData),
 		group = fields,
-		query = apis.getQuery(req, attributes, true, group);
-		
+		options = {
+			req: req,
+			attributes: attributes,
+			// startDate: true,
+			// endDate: true,
+			group: group
+		},
+		query = apis.getQuery(options);
+	
 	models.contentConsumption.findAll(query).then(function (data) {
 		//data = data ? data : {};
 		//var pagination = apis.getPaginationObject(data.count, page, limit);

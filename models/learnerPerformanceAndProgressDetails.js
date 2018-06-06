@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
         testScoreAvg: {
           type: DataTypes.INTEGER
         },
-        higestScore: {
+        highestScore: {
           type: DataTypes.INTEGER
         },
         date: {

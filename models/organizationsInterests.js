@@ -27,13 +27,13 @@ module.exports = (sequelize, DataTypes) => {
         hitsSinceLastMonth: {
           type: DataTypes.INTEGER
         },
-        noFollowers: {
+        noOfFollowers: {
           type: DataTypes.INTEGER
         },
         followersSinceLastMonth: {
           type: DataTypes.INTEGER
         },
-        numberLikes : {
+        numberOfLikes : {
           type: DataTypes.STRING(50)
         },
         avgRating: {

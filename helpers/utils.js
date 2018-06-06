@@ -13,12 +13,7 @@ exports.getDates = function (req, addOneDay) {
       current: false,
       currentDate: moment().format(__('YMD')),
       currentHour: moment().format('YYYY-MM-DD HH:mm:ss')
-      //datTimestamps: [],
-      //dayDates: [],
-      //hourTimestamps: [],
-      //hours: []
-    },
-    hrs = 23;
+    };
 
   if (startDate && endDate) {
     date.start = addLeadingZero(startDate);
@@ -31,38 +26,6 @@ exports.getDates = function (req, addOneDay) {
   }
   if (addOneDay) date.end = moment(date.end, __('YMD')).add(1, 'days').format(__('YMD'));
   date.days = moment(date.end, __('YMD')).diff(moment(date.start, __('YMD')), 'days');
-  //if (!addOneDay) date.days += 1;
-
-  // for (var i = 0; i <= date.days; i++) {
-  //   var time = moment.utc(date.start, __('L'), true).add(i, 'days').format(__('x'));
-  //   var dateSrt = moment.utc(date.start, __('L'), true).add(i, 'days').format(__('YMD'));
-  //   var dat = moment.utc(date.start, __('L'), true).add(i, 'days').format(__('L'));
-  //   var currentDate = moment.utc().format(__('L'));
-  //   if (dat === currentDate) {
-  //     hrs = moment.utc().hours();
-  //   } 
-
-  //   date.datTimestamps.push(parseInt(time));
-  //   date.dayDates.push(dateSrt);
-  // }
-
-  // if (date.days == 0) {
-  //   var time = moment.utc(date.end, __('L'), true).add(i, 'days').format(__('x'));
-  //   var dateSrt = moment.utc(date.end, __('L'), true).add(i, 'days').format(__('YMD'));
-  //   var dat = moment.utc(date.end, __('L'), true).add(i, 'days').format(__('L'));
-
-  //   if (date.current) {
-  //      hrs = moment.utc().hours();
-  //    } else {
-  //     hrs =24;
-  //    }
-  //   for (var j = 0; j < hrs; j++) {
-  //     var hour = moment.utc(time, __('x'), true).add(j, 'hour').format(__('x'));
-  //     var hourDate = moment.utc(date.end, __('L'), true).add(i, 'hour').format(__('YMD'));
-  //     date.hourTimestamps.push(parseInt(hour));
-  //     date.hours.push(parseInt(hour));
-  //   }
-  // }
 
   return date;
 };

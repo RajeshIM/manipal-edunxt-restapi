@@ -4,8 +4,13 @@ var response = require('../helpers/response'),
 exports.organizationInterestsDetails = function (req, res) {
 	var page = req.query.page ? parseInt(req.query.page) : 1,
 		limit = req.query.limit ? parseInt(req.query.limit) : 10
-		attributes = ['courseName', 'hits', 'hitsSinceLastMonth', 'noFollowers', 'followersSinceLastMonth', 'videoTags', 'articalTags', 'avgRating'],
-		query = apis.getQuery(req, attributes);
+		attributes = ['courseName', 'hits', 'hitsSinceLastMonth', 'noOfFollowers', 
+					 'followersSinceLastMonth', 'videoTags', 'articalTags', 'avgRating'],
+		options = {
+			req: req,
+			attributes: attributes
+		},
+		query = apis.getQuery(options);
 
 	models.organizationsInterests.findAll(query).then(function (data) {
 		// data = data ? data : {};

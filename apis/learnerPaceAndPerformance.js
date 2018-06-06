@@ -1,23 +1,39 @@
 var response = require('../helpers/response'),
 	apis = require('../helpers/apis'),
-	utils = require('../helpers/utils');
+	utils = require('../helpers/utils'),
+	async = require('async');
 
 exports.learnerPaceAndPerformance = function (req, res) {
 	var type = req.query.type ? req.query.type.toUpperCase() : '',
-		fields = (type === 'PACE') ? ['learnerPaceType'] : ['learnerPerformanceType'],
-		date = utils.getDates(req),
+		paceFields = ['learnerPaceType'],
+		performanceFields = ['learnerPerformanceType'],
 		aggFields = ['learnerId:COUNT'],
+		date = utils.getDates(req),
 		aggData = apis.getAttributes(aggFields),
-		attributes = _.union(fields, aggData),
-		group = (type === 'PACE') ? ['learnerPaceType'] : ['learnerPerformanceType'],
-		query = apis.getQuery(req, attributes, false, group),
+		paceAttributes = _.union(paceFields, aggData),
+		performanceAttributes = _.union(performanceFields, aggData),
+		paceGroup = ['learnerPaceType'],
+		performanceGroup = ['learnerPerformanceType'],
+		paceOptions = {
+			req: req,
+			attributes: paceAttributes,
+			group: paceGroup
+		},
+		paceQuery = apis.getQuery(paceOptions),
+		performanceOptions = {
+			req: req,
+			attributes: performanceAttributes,
+			group: performanceGroup
+		},
+		performanceQuery = apis.getQuery(performanceOptions),
 		table = '';
 
     if (date.current) {
     	table = 'learnerTrackDetails';
     } else {
     	table = 'daywiseLearnerTrackDetails';
-    	//query.where.day = date.end;
+    	//paceQuery.where.day = date.end;
+    	//performanceQuery.where.day = date.end;
     }
     var paceData = {
     	"aheadOfSchedule": 0,
@@ -32,45 +48,58 @@ exports.learnerPaceAndPerformance = function (req, res) {
     },
     responseData = {};
   
-	models[table].findAll(query).then(function (data) {
-		if (req.query.type === 'pace') {
-			if (!_.isEmpty(data)) {
-				_.each(data, function(obj) {
-					obj = obj ? obj.toJSON() : {};
-					switch(obj.learnerPaceType) {
-						case 'AheadOfSchedule':  paceData.aheadOfSchedule = obj.learnerId;
-										   		 break;
-						case 'BehindSchedule':   paceData.behindSchedule = obj.learnerId;
-										         break;
-						case 'OnTrack': 		 paceData.onTrack  = obj.learnerId;
-										         break;
-					    case 'HaveNotStarted': 	 paceData.haveNotStarted  = obj.learnerId;
-										         break;
-					}
-				})
-			}
-			responseData = paceData;
-		} else if (req.query.type === 'performance') {
-			if (!_.isEmpty(data)) {
-				_.each(data, function(obj) {
-					obj = obj ? obj.toJSON() : {};
-					switch(obj.learnerPerformanceType) {
-						case 'Excelling':  performanceData.excelling = obj.learnerId;
+  	async.parallel({
+		paceData: function (next) {
+			models[table].findAll(paceQuery).then(function (data) {
+				if (!_.isEmpty(data)) {
+					_.each(data, function(obj) {
+						obj = obj ? obj.toJSON() : {};
+						switch(obj.learnerPaceType) {
+							case 'AheadOfSchedule':  paceData.aheadOfSchedule = obj.learnerId;
+												   	 break;
+							case 'BehindSchedule':   paceData.behindSchedule = obj.learnerId;
+												     break;
+							case 'OnTrack': 		 paceData.onTrack  = obj.learnerId;
+												     break;
+							case 'HaveNotStarted': 	 paceData.haveNotStarted  = obj.learnerId;
+												     break;
+					    }
+					})
+				}
+				next(null, paceData);
+			}).catch(function (err) {
+			    next(err);
+			});
+		},
+		performanceData: function (next) {
+			models[table].findAll(performanceQuery).then(function (data) {
+				if (!_.isEmpty(data)) {
+					_.each(data, function(obj) {
+						obj = obj ? obj.toJSON() : {};
+						switch(obj.learnerPerformanceType) {
+							case 'Excelling': performanceData.excelling = obj.learnerId;
+											  break;
+							case 'Passing': performanceData.passing = obj.learnerId;
+										break;
+							case 'Struggling': performanceData.struggling = obj.learnerId;
 										   break;
-						case 'Passing':    performanceData.passing = obj.learnerId;
-										   break;
-						case 'Struggling': performanceData.struggling = obj.learnerId;
-										   break;
-					}
-				})
-			}
-			responseData = performanceData;
+						}
+					})
+				}
+				next(null, performanceData);
+			}).catch(function (err) {
+			    next(err);
+			});
 		}
-
-	    response.sendSuccessResponse(res, responseData);
-	}).catch(function (err) {
-		console.log(err)
-	    response.customErrorMessage(res, err.message);
+	}, function (err, results) {
+		if (err) {
+			response.customErrorMessage(res, err.message);
+		} else {
+		    responseData.paceData = results.paceData;
+		    responseData.performanceData = results.performanceData;
+		    response.sendSuccessResponse(res, responseData);
+		}
 	});
+	
 }
 

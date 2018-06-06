@@ -3,8 +3,14 @@ var response = require('../helpers/response'),
 
 exports.learnerPerformanceAndProgressDetails = function (req, res) {
 	var attributes = ['courseName', 'courseStartDate', 'courseEndDate', 'studentCount',
-					  'programStatus', 'completionAvg', 'testScoreAvg', 'higestScore']
-		query = apis.getQuery(req, attributes),
+					  'programStatus', 'completionAvg', 'testScoreAvg', 'highestScore'],
+		options = {
+			req: req,
+			attributes: attributes,
+			startDate: true,
+			endDate: true
+		},
+		query = apis.getQuery(options),
 		displayFor = req.body.displayFor ? req.body.displayFor: null,
 		page = req.query.page ? parseInt(req.query.page) : 1,
 		limit = req.query.limit ? parseInt(req.query.limit) : 10;

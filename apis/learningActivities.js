@@ -9,7 +9,13 @@ exports.learningActivities = function (req, res) {
 					'trainerRating:AVG','trainerRatingBy:AVG','contentRating:AVG','contentRatingBy:AVG'],
 		aggData = apis.getAttributes(aggFields),
 		attributes = _.union(fields, aggData), 
-		query = apis.getQuery(req, attributes, true),
+		options = {
+			req: req,
+			// startDate: false,
+			// endDate: true,
+			attributes: attributes
+		},
+		query = apis.getQuery(options),
 		responseData = {};
 
 	models.learningActivities.findAll(query).then(function (data) {

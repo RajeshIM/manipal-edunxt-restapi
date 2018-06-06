@@ -3,8 +3,12 @@ var response = require('../helpers/response'),
 
 exports.coursesDropDown = function (req, res) {	
 	var attributes = ['courseId', 'courseName'],
-		query = apis.getQuery(req, attributes);
-
+		options = {
+			req: req,
+			attributes: attributes
+		},
+		query = apis.getQuery(options);
+		
 	models.coursesDropDown.findAll(query).then(function (data) {
 	    response.sendSuccessResponse(res, data);
 	}).catch(function (err) {

@@ -3,12 +3,16 @@ var response = require('../helpers/response'),
 	utils = require('../helpers/utils');
 
 exports.goals = function (req, res) {
-	var	date = utils.getDates(req),
-		courseId = req.headers['courseid'] ? parseInt(req.headers['courseid']) : null,
+	var courseId = req.headers['courseid'] ? parseInt(req.headers['courseid']) : null,
 		attributes = ['durationSpent', 'courseDuration', 'timeSpentPercentage', 
 					 'expectedTimeSpentPercentage','usersTrained','usersCompletedTraining', 
-					 'usersCompleatedTrainingPercentage','usersCompleatedTrainingExpectedPercentage'],
-		query = apis.getQuery(req, attributes),
+					 'usersCompletedTrainingPercentage','usersCompletedTrainingExpectedPercentage'],
+		options = {
+			req: req,
+			//endDate: true,
+			attributes: attributes
+		},
+		query = apis.getQuery(options),
 		table = '';
 		
 	if (courseId) {
@@ -16,8 +20,6 @@ exports.goals = function (req, res) {
 	} else {
 		table = 'userwiseTimeSpent';
 	}
-
-    //query.where.date = date.end;
 
     var responseData = {},
     	timeSpent = {
@@ -29,8 +31,8 @@ exports.goals = function (req, res) {
     	usersTrained = {
     		usersTrained: 0,
     		usersCompletedTraining: 0,
-    		usersCompleatedTrainingPercentage: 0,
-    		usersCompleatedTrainingExpectedPercentage: 0
+    		usersCompletedTrainingPercentage: 0,
+    		usersCompletedTrainingExpectedPercentage: 0
     	};
     
 	models[table].findOne(query).then(function (data) {
@@ -42,8 +44,8 @@ exports.goals = function (req, res) {
 			timeSpent.expectedTimeSpentPercentage = data.expectedTimeSpentPercentage ? parseFloat(data.expectedTimeSpentPercentage) : 0;
 			usersTrained.usersTrained = data.usersTrained ? parseInt(data.usersTrained) : 0;
 			usersTrained.usersCompletedTraining = data.usersCompletedTraining ? parseInt(data.usersCompletedTraining) : 0;
-			usersTrained.usersCompleatedTrainingPercentage = data.usersCompleatedTrainingPercentage ? parseFloat(data.usersCompleatedTrainingPercentage) : 0;
-			usersTrained.usersCompleatedTrainingExpectedPercentage = data.usersCompleatedTrainingExpectedPercentage ? parseFloat(data.usersCompleatedTrainingExpectedPercentage) : 0;
+			usersTrained.usersCompletedTrainingPercentage = data.usersCompletedTrainingPercentage ? parseFloat(data.usersCompletedTrainingPercentage) : 0;
+			usersTrained.usersCompletedTrainingExpectedPercentage = data.usersCompletedTrainingExpectedPercentage ? parseFloat(data.usersCompletedTrainingExpectedPercentage) : 0;
 		}
 		responseData.timeSpent = timeSpent;
 		responseData.usersTrained = usersTrained;

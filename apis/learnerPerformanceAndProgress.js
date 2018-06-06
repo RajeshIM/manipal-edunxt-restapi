@@ -3,7 +3,13 @@ var response = require('../helpers/response'),
 
 exports.learnerPerformanceAndProgress = function (req, res) {
 	var attributes = ['courseName', 'batchName', 'performance', 'progress'],
-		query = apis.getQuery(req, attributes);
+		options = {
+			req: req,
+			attributes: attributes,
+			startDate: true,
+			endDate: true
+		},
+		query = apis.getQuery(options);
 
 	models.learnerPerformanceAndProgress.findAll(query).then(function (data) {
 		data = _.groupBy(data, function (obj) {

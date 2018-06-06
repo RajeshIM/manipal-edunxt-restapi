@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var learnerWiseOrganizationPerformance = sequelize.define('muln_lerner_organization_performance', {
+  var learnerWiseOrganizationPerformance = sequelize.define('muln_learner_organization_performance', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         pointsEarned: {
           type: DataTypes.INTEGER
         },
-        pointsEarnedSienceLastMonth: {
+        pointsEarnedSinceLastMonth: {
           type: DataTypes.INTEGER
         },
         testPerformance: {
@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       {
-        tableName: 'muln_lerner_organization_performance'
+        tableName: 'muln_learner_organization_performance'
       });
   return learnerWiseOrganizationPerformance;
 };

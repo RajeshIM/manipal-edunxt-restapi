@@ -25,10 +25,10 @@ module.exports = (sequelize, DataTypes) => {
         usersCompletedTraining: {
           type: DataTypes.INTEGER
         },
-        usersCompleatedTrainingPercentage: {
+        usersCompletedTrainingPercentage: {
           type: DataTypes.DOUBLE
         },
-        usersCompleatedTrainingExpectedPercentage: {
+        usersCompletedTrainingExpectedPercentage: {
           type: DataTypes.DOUBLE
         },
         date: {

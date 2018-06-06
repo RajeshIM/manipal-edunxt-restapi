@@ -9,8 +9,15 @@ exports.learnerPaceAndPerformanceDetails = function (req, res) {
 		limit = req.query.limit ? parseInt(req.query.limit) : 10,
 		type = (type === 'PACE') ? 'learnerPaceType' : 'learnerPerformanceType',
 		displayFor = req.body.displayFor ? req.body.displayFor: null,
-		attributes = ['learnerPaceType','learnerPerformanceType','LnDUserId', 'courseId', 'batchId', 'teamId', 'teamLeaderId', 'learnerId', 'learnerName', 'serialNumber', 'courseName', 'teamName', 'batchName', 'teamLeaderName', 'scoreInCourse', 'scoreAvg', 'highestScore', 'actionMessage'],
-		query = apis.getQuery(req, attributes),
+		attributes = ['learnerPaceType','learnerPerformanceType','LnDUserId', 'courseId', 'batchId', 
+					  'teamId', 'teamLeaderId', 'learnerId', 'learnerName', 'serialNumber', 'courseName', 
+					  'teamName', 'batchName', 'teamLeaderName', 'scoreInCourse', 'scoreAvg', 
+					  'highestScore', 'actionMessage'],
+		options = {
+			req: req,
+			attributes: attributes
+		},
+		query = apis.getQuery(options),
 		table = '';
 
 	if (displayFor) {
