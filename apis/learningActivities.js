@@ -11,8 +11,6 @@ exports.learningActivities = function (req, res) {
 		attributes = _.union(fields, aggData), 
 		options = {
 			req: req,
-			// startDate: false,
-			// endDate: true,
 			attributes: attributes
 		},
 		query = apis.getQuery(options),

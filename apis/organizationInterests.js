@@ -6,6 +6,7 @@ exports.organizationInterests = function (req, res) {
 	var interestsAttributes = ['courseId', 'courseName', 'hits', 'hitsSinceLastMonth'],
 		interestsOptions = {
 			req: req,
+			//endDate: true,
 			attributes: interestsAttributes
 		},
 		interestsquery = apis.getQuery(interestsOptions);
@@ -15,6 +16,7 @@ exports.organizationInterests = function (req, res) {
 	var topicsAttributes = ['courseId', 'courseName'],
 		topicsOptions = {
 			req: req,
+			//endDate: true,
 			attributes: topicsAttributes
 		},
 		topicsquery = apis.getQuery(topicsOptions);

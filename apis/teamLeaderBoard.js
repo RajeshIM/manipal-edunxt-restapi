@@ -12,7 +12,7 @@ exports.teamLeaderBoard = function (req, res) {
 		options = {
 			req: req,
 			attributes: attributes,
-			// startDate: true,
+			// startDate: false,
 			// endDate: true,
 			group: group
 		},

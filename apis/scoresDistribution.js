@@ -50,11 +50,11 @@ exports.scoresDistribution = function (req, res) {
    	   		(dateFilter.length > 0 ? dateFilter : filters);
    filters = (filters.length > 0) ? (' where ' + filters) : '';
 
-   query = `SELECT CASE WHEN ScoreAvg BETWEEN 0 AND 19 THEN '0-20'
-						 WHEN ScoreAvg BETWEEN 20 AND 39 THEN '21-40'
-						 WHEN ScoreAvg BETWEEN 40 AND 59 THEN '41-60'
-						 WHEN ScoreAvg BETWEEN 60 AND 79 THEN '61-80'
-						 WHEN ScoreAvg BETWEEN 80 AND 100 THEN '81-100'
+   query = `SELECT CASE WHEN ScoreAvg BETWEEN 0 AND 20 THEN '0-20'
+						 WHEN ScoreAvg BETWEEN 21 AND 40 THEN '21-40'
+						 WHEN ScoreAvg BETWEEN 41 AND 60 THEN '41-60'
+						 WHEN ScoreAvg BETWEEN 61 AND 80 THEN '61-80'
+						 WHEN ScoreAvg BETWEEN 81 AND 100 THEN '81-100'
 				END AS scoreRanges, COUNT(ScoreAvg) AS numberOfUsers
 				FROM muln_Learner_Score_Distribution`;
 

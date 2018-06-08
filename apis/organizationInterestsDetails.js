@@ -8,6 +8,7 @@ exports.organizationInterestsDetails = function (req, res) {
 					 'followersSinceLastMonth', 'videoTags', 'articalTags', 'avgRating'],
 		options = {
 			req: req,
+			//endDate: true,
 			attributes: attributes
 		},
 		query = apis.getQuery(options);
