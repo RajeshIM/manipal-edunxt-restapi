@@ -19,8 +19,8 @@ exports.trainerLeaderBoard = function (req, res) {
 		query = apis.getQuery(options);
 
 	models.trainerWiseOrganizationPerformance.findAll(query).then(function (data) {
-	    //var pagination = apis.getPaginationObject(data.count, page, limit);
-	    response.sendSuccessResponse(res, data);
+	    var result = apis.getPaginationObject(data, page, limit);
+	    response.sendSuccessResponse(res, result.data, null, result.pagination);
 	}).catch(function (err) {
 		console.log(err)
 	    response.customErrorMessage(res, err.message);

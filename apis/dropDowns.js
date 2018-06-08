@@ -24,10 +24,11 @@ exports.dropDowns = function (req, res) {
 		teamQuery.where = where;
 		zoneQuery.where = where;
 	}
-	var courseAttributes = ['courseId', 'courseName'],
-		batchAttributes = ['batchId', 'batchName'],
-		teamAttributes = ['teamId', 'teamName'],
-		zoneAttributes = ['zoneId', 'zoneName'];
+		var courseAttributes = [['courseId', 'id'], ['courseName', 'name']],
+		batchAttributes = [['batchId', 'id'], ['batchName', 'name']],
+		teamAttributes = [['teamId', 'id'], ['teamName', 'name']],
+		zoneAttributes = [['zoneId', 'id'], ['zoneName', 'name']];
+
 
 		courseQuery.attributes = courseAttributes;
 		courseQuery.distinct = true;

@@ -5,6 +5,8 @@ var response = require('../helpers/response'),
 exports.scoresDistributionDetails = function (req, res) {
 	var LnDUserId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
 		courseId = req.headers['courseid'] ? parseInt(req.headers['courseid']) : null,
+		page = req.query.page ? req.query.page : 1,
+		limit = req.query.limit ? req.query.limit : 10,
 		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
 		date = utils.getDates(req),
 		courseFilter = '',
@@ -51,7 +53,8 @@ exports.scoresDistributionDetails = function (req, res) {
     query = query + filters + group;
  
 	models.sequelize.query(query, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-	    response.sendSuccessResponse(res, data);
+	    var result = apis.getPaginationObject(data, page, limit);
+	    response.sendSuccessResponse(res, result.data, null, result.pagination);
 	}).catch(function (err) {
 	    response.customErrorMessage(res, err.message);
 	});

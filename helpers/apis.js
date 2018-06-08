@@ -56,10 +56,10 @@ exports.getQuery = function (options) {
 		order.push(arr);
 	}
 	
-	if (page && limit) {
-		query.offset = (offset <= 1) ? 0 : ((offset-1) * limit);
-		query.limit = limit;
-	}
+	// if (page && limit) {
+	// 	query.offset = (offset <= 1) ? 0 : ((offset-1) * limit);
+	// 	query.limit = limit;
+	// }
 
 	if (searchBy && searchTerm) {
 		var searchObj = { [Op.like]: '%' + searchTerm + '%' };
@@ -76,12 +76,22 @@ exports.getQuery = function (options) {
 }
 
 exports.getPaginationObject = function (total, page, limit) {
-	return {
-		total: total,
+	page = page || 1;
+	limit = limit || 10;
+	var res = {},
+	offset = (page - 1) * limit,
+	data = _.rest(total, offset).slice(0, limit),
+	count = total.length,
+	pagination = {
+		total: count,
 		page: page,
 		limit: limit,
-		total_pages: Math.ceil(total / limit)
-	}
+		total_pages: Math.ceil(count / limit)
+	};
+	res.data = data;
+	res.pagination = pagination;
+
+	return res;
 }
 
 exports.getAttributes = function(attributes) {

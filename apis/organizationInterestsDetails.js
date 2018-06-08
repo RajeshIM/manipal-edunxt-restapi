@@ -13,9 +13,8 @@ exports.organizationInterestsDetails = function (req, res) {
 		query = apis.getQuery(options);
 
 	models.organizationsInterests.findAll(query).then(function (data) {
-		// data = data ? data : {};
-		// var pagination = apis.getPaginationObject(data.count, page, limit);
-	    response.sendSuccessResponse(res, data);
+		var result = apis.getPaginationObject(data, page, limit);
+	    response.sendSuccessResponse(res, result.data, null, result.pagination);
 	}).catch(function (err) {
 	    response.customErrorMessage(res, err.message);
 	});
