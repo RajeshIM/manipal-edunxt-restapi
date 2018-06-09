@@ -1,4 +1,5 @@
 var apis = ['learningActivities',
+			'topActiveUsers',
 			'goals',
 			'daywiseActiveUsers',
 			'userActivityByLocation',

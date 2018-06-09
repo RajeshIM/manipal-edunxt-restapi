@@ -3,25 +3,36 @@ var response = require('../helpers/response'),
 	async = require('async');
 
 exports.organizationInterests = function (req, res) {
-	var interestsAttributes = ['courseId', 'courseName', 'hits', 'hitsSinceLastMonth'],
+	var interestsFields = ['courseId', 'courseName', 'hits', 'hitsSinceLastMonth'],
+		intAggFields = ['hits:SUM', 'hitsSinceLastMonth:SUM'],
+		intAggData = apis.getAttributes(intAggFields),
+		interestsAttributes = _.union(interestsFields, intAggData),
+		intGroup = ['courseId'],
 		interestsOptions = {
 			req: req,
+			group: intGroup,
 			//endDate: true,
 			attributes: interestsAttributes
 		},
+		sequelize = models.sequelize;
 		interestsquery = apis.getQuery(interestsOptions);
-		interestsquery.order = [['hits', 'DESC']];
+		interestsquery.order = [[sequelize.fn('SUM', sequelize.col('hits')), 'DESC']];
 		interestsquery.limit = 3;
 
-	var topicsAttributes = ['courseId', 'courseName'],
+	var topicsFields = ['courseId', 'courseName'],
+		topicsAggFields = ['numberOfLikes:SUM'],
+		topicsAggData = apis.getAttributes(topicsAggFields),
+		topicsAttributes = _.union(topicsFields, topicsAggData),
+		topicsGroup = ['courseId'],
 		topicsOptions = {
 			req: req,
+			group: topicsGroup,
 			//endDate: true,
 			attributes: topicsAttributes
 		},
 		topicsquery = apis.getQuery(topicsOptions);
 		topicsquery.distinct = true;
-		topicsquery.order = [['numberOfLikes', 'DESC']];
+		topicsquery.order = [[sequelize.fn('SUM', sequelize.col('numberOfLikes')), 'DESC']];
 		topicsquery.limit = 10;
 
 	var responseData = {};

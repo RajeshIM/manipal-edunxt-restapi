@@ -4,10 +4,16 @@ var response = require('../helpers/response'),
 exports.organizationInterestsDetails = function (req, res) {
 	var page = req.query.page ? parseInt(req.query.page) : 1,
 		limit = req.query.limit ? parseInt(req.query.limit) : 10
-		attributes = ['courseName', 'hits', 'hitsSinceLastMonth', 'noOfFollowers', 
-					 'followersSinceLastMonth', 'videoTags', 'articalTags', 'avgRating'],
+		fields = ['courseId', 'courseName'],
+		aggFields = ['hits:SUM', 'hitsSinceLastMonth:SUM', 'noOfFollowers:SUM', 
+					 'followersSinceLastMonth:SUM', 'videoTags:SUM', 'articalTags:SUM', 
+					 'avgRating:AVG'],
+		aggData = apis.getAttributes(aggFields),
+		attributes = _.union(fields, aggData),
+		group = ['courseId'],
 		options = {
 			req: req,
+			group: group,
 			//endDate: true,
 			attributes: attributes
 		},

@@ -3,6 +3,7 @@ var express = require('express'),
 	apis = require('./../apis');
 
 router.get('/api/v1/learning-activities', apis.learningActivities);
+router.get('/api/v1/top-acive-users', apis.topActiveUsers);
 router.get('/api/v1/goals', apis.goals);
 router.post('/api/v1/active-users-graph', apis.daywiseActiveUsers);
 router.post('/api/v1/activity-by-location', apis.userActivityByLocation);

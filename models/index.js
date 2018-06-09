@@ -4,6 +4,7 @@ var Sequelize = require('sequelize'),
     db        = {};
 
 var schemas = ['learningActivities',
+              'topActiveUsers',
               'userwiseTimeSpent',
               'coursewiseTimeSpent',
               'daywiseActiveUsers',
