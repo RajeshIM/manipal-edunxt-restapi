@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         completion: {
           type: DataTypes.INTEGER
         },
-        completedPrograms: {
+        completedProgram: {
           type: DataTypes.INTEGER
         },
         teamsize: {

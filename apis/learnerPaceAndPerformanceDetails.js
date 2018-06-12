@@ -7,7 +7,7 @@ exports.learnerPaceAndPerformanceDetails = function (req, res) {
 		date = utils.getDates(req),
 		page = req.query.page ? parseInt(req.query.page) : 1,
 		limit = req.query.limit ? parseInt(req.query.limit) : 10,
-		type = (type === 'PACE') ? 'learnerPaceType' : 'learnerPerformanceType',
+		learnerType = (type === 'PACE') ? 'learnerPaceType' : 'learnerPerformanceType',
 		displayFor = req.body.displayFor ? req.body.displayFor: null,
 		attributes = ['learnerPaceType','learnerPerformanceType','LnDUserId', 'courseId', 'batchId', 
 					  'teamId', 'teamLeaderId', 'learnerId', 'learnerName', 'serialNumber', 'courseName', 
@@ -20,8 +20,12 @@ exports.learnerPaceAndPerformanceDetails = function (req, res) {
 		query = apis.getQuery(options),
 		table = '';
 
+	if (!_.contains(['PACE', 'PERFORMANCE'], type)) {
+		displayFor = 'noData';
+	}
+	
 	if (displayFor) {
-		query.where[type] = { [models.Op.like]: '%' + displayFor + '%' };
+		query.where[learnerType] = { [models.Op.like]: '%' + displayFor + '%' };
 	}
     if (date.current) {
     	table = 'learnerTrackDetails';
