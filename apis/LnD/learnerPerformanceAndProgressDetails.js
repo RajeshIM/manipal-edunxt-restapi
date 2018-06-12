@@ -1,5 +1,5 @@
-var response = require('../helpers/response'),
-	apis = require('../helpers/apis');
+var response = require('./../../helpers/response'),
+	apis = require('./../../helpers/apis');
 
 exports.learnerPerformanceAndProgressDetails = function (req, res) {
 	var attributes = ['courseName', 'courseStartDate', 'courseEndDate', 'studentCount',

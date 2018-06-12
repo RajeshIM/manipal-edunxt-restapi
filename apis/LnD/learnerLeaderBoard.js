@@ -1,5 +1,5 @@
-var response = require('../helpers/response'),
-	apis = require('../helpers/apis');
+var response = require('./../../helpers/response'),
+	apis = require('./../../helpers/apis');
 
 exports.learnerLeaderBoard = function (req, res) {
 	var page = req.query.page ? parseInt(req.query.page) : 1,

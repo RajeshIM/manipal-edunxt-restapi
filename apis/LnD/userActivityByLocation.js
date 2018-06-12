@@ -1,6 +1,6 @@
-var response = require('../helpers/response'),
-	apis = require('../helpers/apis'),
-	utils = require('../helpers/utils'),
+var response = require('./../../helpers/response'),
+	apis = require('./../../helpers/apis'),
+	utils = require('./../../helpers/utils'),
 	async = require('async');
 
 exports.userActivityByLocation = function (req, res) {

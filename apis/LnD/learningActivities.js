@@ -1,5 +1,5 @@
-var response = require('../helpers/response'),
-	apis = require('../helpers/apis');
+var response = require('./../../helpers/response'),
+	apis = require('./../../helpers/apis');
 
 exports.learningActivities = function (req, res) {
 	var fields = ['LnDUserId'],

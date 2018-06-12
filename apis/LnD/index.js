@@ -16,8 +16,7 @@ var apis = ['learningActivities',
 			'organizationInterests',
 			'organizationInterestsDetails',
 			'coursesDropDown',
-			'dropDowns',
-			'sample'
+			'dropDowns'
 			];
 
 apis.forEach(function (api) {

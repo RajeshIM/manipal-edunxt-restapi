@@ -1,6 +1,6 @@
-var response = require('../helpers/response'),
-	apis = require('../helpers/apis'),
-	utils = require('../helpers/utils');
+var response = require('./../../helpers/response'),
+	apis = require('./../../helpers/apis'),
+	utils = require('./../../helpers/utils');
 
 exports.goals = function (req, res) {
 	var courseId = req.headers['courseid'] ? parseInt(req.headers['courseid']) : null,

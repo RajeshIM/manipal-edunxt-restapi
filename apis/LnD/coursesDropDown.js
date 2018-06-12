@@ -1,5 +1,5 @@
-var response = require('../helpers/response'),
-	apis = require('../helpers/apis');
+var response = require('./../../helpers/response'),
+	apis = require('./../../helpers/apis');
 
 exports.coursesDropDown = function (req, res) {	
 	var attributes = ['courseId', 'courseName'],

@@ -1,5 +1,5 @@
-var response = require('../helpers/response'),
-	apis = require('../helpers/apis'),
+var response = require('./../../helpers/response'),
+	apis = require('./../../helpers/apis'),
 	async = require('async');
 
 exports.dropDowns = function (req, res) {

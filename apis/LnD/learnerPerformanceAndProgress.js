@@ -1,13 +1,12 @@
-var response = require('../helpers/response'),
-	apis = require('../helpers/apis');
+var response = require('./../../helpers/response'),
+	apis = require('./../../helpers/apis');
 
 exports.learnerPerformanceAndProgress = function (req, res) {
 	var attributes = ['courseName', 'batchName', 'performance', 'progress'],
 		options = {
 			req: req,
-			attributes: attributes,
-			startDate: false,
-			endDate: true
+			//endDate: true
+			attributes: attributes
 		},
 		query = apis.getQuery(options);
 

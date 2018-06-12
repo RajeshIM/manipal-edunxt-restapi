@@ -1,6 +1,6 @@
-var response = require('../helpers/response'),
-	apis = require('../helpers/apis'),
-	utils = require('../helpers/utils');
+var response = require('./../../helpers/response'),
+	apis = require('./../../helpers/apis'),
+	utils = require('./../../helpers/utils');
 
 exports.learnerPaceAndPerformanceDetails = function (req, res) {
 	var type = req.query.type ? req.query.type.toUpperCase() : '',

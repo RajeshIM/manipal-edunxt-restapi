@@ -21,8 +21,7 @@ var schemas = ['learningActivities',
               'teamWiseOrganizationPerformance',
               'contentConsumption',
               'organizationsInterests',
-              'coursesDropDown',
-              'sample'
+              'coursesDropDown'
               ];
 
 var options = {
