@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var learnerTrackDetails = sequelize.define('muln_learner_track_details', {
+  var coursesDropDown = sequelize.define('muln_im_lnduser_course', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -18,16 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         batchName: {
           type: DataTypes.STRING(30)
         },
-        learnerId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true
-        },
-        learnerName: {
-          type: DataTypes.STRING(30)
-        },
-        serialNumber: {
-          type: DataTypes.STRING(20)
-        },
         teamId: {
           type: DataTypes.INTEGER,
           primaryKey: true
@@ -35,30 +25,22 @@ module.exports = (sequelize, DataTypes) => {
         teamName: {
           type: DataTypes.STRING(30)
         },
-        teamLeaderId: {
+        zoneId: {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        teamLeaderName: {
+        zoneName: {
           type: DataTypes.STRING(30)
         },
-        scoreInCourse: {
-          type: DataTypes.INTEGER
+        domainId: {
+          type: DataTypes.STRING(100),
+          primaryKey: true
         },
-        scoreAvg: {
-          type: DataTypes.INTEGER
+        courseStartDate: {
+          type: DataTypes.DATE
         },
-        highestScore: {
-          type: DataTypes.INTEGER
-        },  
-        learnerPaceType: {
-          type: DataTypes.STRING(30)
-        },
-        learnerPerformanceType:{
-          type: DataTypes.STRING(30)
-        },
-        actionMessage: {
-          type: DataTypes.STRING(20)
+        courseEndDate: {
+          type: DataTypes.DATE
         },
         createdBy: {
           type: DataTypes.STRING(30)
@@ -72,9 +54,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_learner_track_details'
       });
-  return learnerTrackDetails;
+  return coursesDropDown;
 };

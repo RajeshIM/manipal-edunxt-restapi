@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var learnerPerformanceAndProgressDetails = sequelize.define('muln_learner_performance_and_progress_details', {
+  var daywiseLearnerTrackDetails = sequelize.define('muln_day_wise_learner_track_details', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -18,30 +18,54 @@ module.exports = (sequelize, DataTypes) => {
         batchName: {
           type: DataTypes.STRING(30)
         },
-        courseStartDate: {
-          type: DataTypes.DATE
+        learnerId: {
+          type: DataTypes.INTEGER,
+          primaryKey: true
         },
-        courseEndDate: {
-          type: DataTypes.DATE
-        },
-        studentCount: {
-          type: DataTypes.INTEGER
-        },
-        programStatus: {
+        learnerName: {
           type: DataTypes.STRING(30)
         },
-        completionAvg: {
-          type: DataTypes.DOUBLE
+        serialNumber: {
+          type: DataTypes.STRING(20)
         },
-        testScoreAvg: {
+        teamId: {
+          type: DataTypes.INTEGER,
+          primaryKey: true
+        },
+        teamName: {
+          type: DataTypes.STRING(30)
+        },
+        teamLeaderId: {
+          type: DataTypes.INTEGER,
+          primaryKey: true
+        },
+        teamLeaderName: {
+          type: DataTypes.STRING(30)
+        },
+        scoreInCourse: {
+          type: DataTypes.INTEGER
+        },
+        scoreAvg: {
           type: DataTypes.INTEGER
         },
         highestScore: {
           type: DataTypes.INTEGER
+        },  
+        learnerPaceType: {
+          type: DataTypes.STRING(30)
         },
-        date: {
+        learnerPerformanceType: {
+          type: DataTypes.STRING(30)
+        },
+        actionMessage: {
+          type: DataTypes.STRING(20)
+        },
+        day: {
           type: DataTypes.DATE,
           primaryKey: true
+        },
+        jobId: {
+          type: DataTypes.STRING(30)
         },
         createdBy: {
           type: DataTypes.STRING(30)
@@ -55,10 +79,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_learner_performance_and_progress_details'
       });
-
-  return learnerPerformanceAndProgressDetails;
+  return daywiseLearnerTrackDetails;
 };

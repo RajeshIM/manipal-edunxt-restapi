@@ -1,5 +1,7 @@
+var moment = require('moment');
+
 module.exports = (sequelize, DataTypes) => {
-  var teamWiseOrganizationPerformance = sequelize.define('muln_team_wise_organization_performance', {
+  var daywiseActiveUsers = sequelize.define('muln_day_wise_active_users', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -12,27 +14,24 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        teamId: {
-          type: DataTypes.INTEGER,
+        totalActiveUsers: {
+          type: DataTypes.INTEGER
+        },
+        activeLearners: {
+          type: DataTypes.INTEGER
+        },
+        activeFacultiesAndAdmins: {
+          type: DataTypes.INTEGER
+        },
+        onlineDelivery: {
+          type: DataTypes.INTEGER
+        },
+        offlineDelivery: {
+          type: DataTypes.INTEGER
+        },
+        day: {
+          type: DataTypes.DATE,
           primaryKey: true
-        },
-        teamName: {
-          type: DataTypes.STRING(30)
-        },
-        completion: {
-          type: DataTypes.INTEGER
-        },
-        completedProgram: {
-          type: DataTypes.INTEGER
-        },
-        teamsize: {
-          type: DataTypes.INTEGER
-        },
-        actionMessage: {
-          type: DataTypes.STRING(20)
-        },
-        date: {
-          type: DataTypes.DATE
         },
         createdBy: {
           type: DataTypes.STRING(30)
@@ -46,9 +45,11 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_team_wise_organization_performance'
       });
-  return teamWiseOrganizationPerformance;
+  // Orders.associate = function(models) {
+
+  //   Orders.Persons = Orders.belongsTo(models.Persons, {as:'PersonsData', foreignKey: 'PersonID'});
+  //   Orders.Users = Orders.belongsTo(models.User, {as:'userData', foreignKey: 'UserID'});
+  // };
+  return daywiseActiveUsers;
 };

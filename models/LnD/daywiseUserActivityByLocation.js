@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var currentActiveUsers = sequelize.define('muln_current_active_users', {
+  var daywiseUserActivityByLocation = sequelize.define('muln_day_wise_user_activity_by_location', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -8,27 +8,28 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        zoneId: {
+        locaitonId: {
           type: DataTypes.INTEGER,
           primaryKey: true
+        },
+        locationName: {
+          type: DataTypes.STRING(30)
         },
         totalActiveUsers: {
           type: DataTypes.INTEGER
         },
-        activeLearners: {
+        activeUsersSinceLastMonth: {
           type: DataTypes.INTEGER
         },
-        activeFacultiesAndAdmins: {
+        enrolledUsers: {
           type: DataTypes.INTEGER
         },
-        onlineDelivery: {
+        enrolledUsersSinceLastMonth: {
           type: DataTypes.INTEGER
         },
-        offlineDelivery: {
-          type: DataTypes.INTEGER
-        },
-        jobId: {
-          type: DataTypes.STRING(30)
+        Date: {
+          type: DataTypes.DATE,
+          primaryKey: true
         },
         createdBy: {
           type: DataTypes.STRING(30)
@@ -42,10 +43,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_current_active_users'
       });
-  
-  return currentActiveUsers;
+  return daywiseUserActivityByLocation;
 };

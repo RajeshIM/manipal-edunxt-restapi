@@ -1,18 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
-  var coursewiseTimeSpent = sequelize.define('muln_lnduser_course_wise_timeSpent', {
+  var userwiseTimeSpent = sequelize.define('muln_lnduser_wise_timeSpent', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
-        },
-        courseId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true
-        },
-        courseStartdate: {
-          type: DataTypes.DATE
-        },
-        courseEnddate: {
-          type: DataTypes.DATE
         },
         durationSpent: {
           type: DataTypes.INTEGER
@@ -57,9 +47,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_lnduser_course_wise_timeSpent'
       });
-  return coursewiseTimeSpent;
+  return userwiseTimeSpent;
 };

@@ -60,9 +60,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_organizations_interests'
       });
   return organizationsInterests;
 };

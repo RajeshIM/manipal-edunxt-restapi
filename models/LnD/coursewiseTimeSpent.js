@@ -1,7 +1,5 @@
-var moment = require('moment');
-
 module.exports = (sequelize, DataTypes) => {
-  var daywiseActiveUsers = sequelize.define('muln_day_wise_active_users', {
+  var coursewiseTimeSpent = sequelize.define('muln_lnduser_course_wise_timeSpent', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -10,26 +8,40 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        zoneId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true
+        courseStartdate: {
+          type: DataTypes.DATE
         },
-        totalActiveUsers: {
+        courseEnddate: {
+          type: DataTypes.DATE
+        },
+        durationSpent: {
           type: DataTypes.INTEGER
         },
-        activeLearners: {
+        courseDuration: {
           type: DataTypes.INTEGER
         },
-        activeFacultiesAndAdmins: {
+        durationNeedToSpent: {
           type: DataTypes.INTEGER
         },
-        onlineDelivery: {
+        timeSpentPercentage: {
+          type: DataTypes.DOUBLE
+        },
+        expectedTimeSpentPercentage: {
+          type: DataTypes.DOUBLE
+        },
+        usersTrained: {
           type: DataTypes.INTEGER
         },
-        offlineDelivery: {
+        usersCompletedTraining: {
           type: DataTypes.INTEGER
         },
-        day: {
+        usersCompletedTrainingPercentage: {
+          type: DataTypes.DOUBLE
+        },
+        usersCompletedTrainingExpectedPercentage: {
+          type: DataTypes.DOUBLE
+        },
+        date: {
           type: DataTypes.DATE,
           primaryKey: true
         },
@@ -45,14 +57,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_day_wise_active_users'
       });
-  // Orders.associate = function(models) {
-
-  //   Orders.Persons = Orders.belongsTo(models.Persons, {as:'PersonsData', foreignKey: 'PersonID'});
-  //   Orders.Users = Orders.belongsTo(models.User, {as:'userData', foreignKey: 'UserID'});
-  // };
-  return daywiseActiveUsers;
+  return coursewiseTimeSpent;
 };

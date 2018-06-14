@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var learnerWiseOrganizationPerformance = sequelize.define('muln_learner_organization_performance', {
+  var contentConsumption = sequelize.define('muln_content_consumption', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -8,40 +8,34 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        zoneId: {
+        courseName: {
+          type: DataTypes.STRING(30)
+        },
+        contentId: {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        learnerId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true
-        },
-        learnerName: {
+        contentName: {
           type: DataTypes.STRING(30)
         },
-        learnerSerialNumber: {
+        contentType: {
           type: DataTypes.STRING(30)
         },
-        pointsEarned: {
+        author: {
+          type: DataTypes.STRING(30)
+        },
+        views: {
           type: DataTypes.INTEGER
         },
-        pointsEarnedSinceLastMonth: {
-          type: DataTypes.INTEGER
-        },
-        testPerformance: {
+        avgRating: {
           type: DataTypes.DOUBLE
         },
-        avgTestPerformance: {
-          type: DataTypes.DOUBLE
-        },
-        examScore: {
+        duration: {
           type: DataTypes.INTEGER
-        },
-        actionMessage: {
-          type: DataTypes.STRING(20)
         },
         date: {
-          type: DataTypes.DATE
+          type: DataTypes.DATE,
+          primaryKey: true
         },
         createdBy: {
           type: DataTypes.STRING(30)
@@ -55,9 +49,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_learner_organization_performance'
       });
-  return learnerWiseOrganizationPerformance;
+  return contentConsumption;
 };

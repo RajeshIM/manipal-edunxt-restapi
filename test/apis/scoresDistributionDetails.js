@@ -5,6 +5,7 @@ var chai = require('chai'),
   should = chai.should(),
   assert = chai.assert,
   moment = require('moment'),
+  courseId = 0,
   quiz = 'quiz',
   assignment = 'assignment',
   test = 'test';
@@ -15,6 +16,16 @@ chai.use(chaiHttp);
 
 describe('Scores Distribution Details API', function () {
   describe('/api/v1/lnd/scores-distribution-details', function () {
+
+    before('all courses', function(done) {
+      chai.request(server)
+        .get('/api/v1/lnd/courses-dropdown')
+        .end(function (err, res) {
+          var data = res.body.data;
+          if (data.length > 0) courseId = data[0].courseId;
+          done();
+        })
+    })
 
     // it('should give error if LnDUserId is not passed', function (done) {
     //   chai.request(server)
@@ -49,12 +60,81 @@ describe('Scores Distribution Details API', function () {
         })
     });
 
-    it('should give the default response if valid LnDUserId is passed', function (done) {
+    it('should give the success response if valid LnDUserId is passed', function (done) {
       // this.timeout(5000);
       chai.request(server)
         .post('/api/v1/lnd/scores-distribution-details')
         .set({
           'LnDUserId': 1
+        })
+        .end(function (err, res) {
+          should.equal(err, null);
+          res.should.have.status(200);
+          res.body.should.have.property('status');
+          res.body.status.should.be.a('object');
+          res.body.status.should.have.property('type').eql('success');
+          res.body.should.have.property('data');
+          expect(res.body.data).to.be.an('array');
+          if (res.body.data.length > 0) {
+            expect(res.body.data[0]).to.have.all.keys('learnerId', 'learnerName', 'serialNumber', 'team','courseId', 
+                                                      'batchId', 'scoreAvg', 'batchName', 'noOfAttempts', 'Progress');
+            expect(res.body.data[0].learnerId).to.be.a('number');
+            expect(res.body.data[0].learnerName).to.be.a('string');
+            expect(res.body.data[0].serialNumber).to.be.a('string');
+            expect(res.body.data[0].team).to.be.a('string');
+            expect(res.body.data[0].courseId).to.be.a('number');
+            expect(res.body.data[0].batchId).to.be.a('number');
+            expect(res.body.data[0].scoreAvg).to.be.a('number');
+            expect(res.body.data[0].batchName).to.be.a('string');
+            expect(res.body.data[0].noOfAttempts).to.be.a('number');
+            expect(res.body.data[0].Progress).to.be.a('number');
+          }
+          done();
+        })
+    });
+
+    it('should give the success response if valid LnDUserId is passed', function (done) {
+      // this.timeout(5000);
+      var endDate = moment().format(__('YMD')),
+        startDate = moment(endDate, __('YMD')).subtract(30, 'days').format(__('YMD'));
+      chai.request(server)
+        .post('/api/v1/lnd/scores-distribution-details?start_date=' + startDate + '&end_date=' + endDate)
+        .set({
+          'LnDUserId': 1
+        })
+        .end(function (err, res) {
+          should.equal(err, null);
+          res.should.have.status(200);
+          res.body.should.have.property('status');
+          res.body.status.should.be.a('object');
+          res.body.status.should.have.property('type').eql('success');
+          res.body.should.have.property('data');
+          expect(res.body.data).to.be.an('array');
+          if (res.body.data.length > 0) {
+            expect(res.body.data[0]).to.have.all.keys('learnerId', 'learnerName', 'serialNumber', 'team','courseId', 
+                                                      'batchId', 'scoreAvg', 'batchName', 'noOfAttempts', 'Progress');
+            expect(res.body.data[0].learnerId).to.be.a('number');
+            expect(res.body.data[0].learnerName).to.be.a('string');
+            expect(res.body.data[0].serialNumber).to.be.a('string');
+            expect(res.body.data[0].team).to.be.a('string');
+            expect(res.body.data[0].courseId).to.be.a('number');
+            expect(res.body.data[0].batchId).to.be.a('number');
+            expect(res.body.data[0].scoreAvg).to.be.a('number');
+            expect(res.body.data[0].batchName).to.be.a('string');
+            expect(res.body.data[0].noOfAttempts).to.be.a('number');
+            expect(res.body.data[0].Progress).to.be.a('number');
+          }
+          done();
+        })
+    });
+
+    it('should give the success response if valid LnDUserId and courseId is passed', function (done) {
+      // this.timeout(5000);
+      chai.request(server)
+        .post('/api/v1/lnd/scores-distribution-details')
+        .set({
+          'LnDUserId': 1,
+          'courseId': courseId
         })
         .end(function (err, res) {
           should.equal(err, null);

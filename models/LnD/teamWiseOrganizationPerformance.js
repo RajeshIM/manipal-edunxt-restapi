@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var learnerPerformanceAndProgress = sequelize.define('muln_learner_performance_and_progress', {
+  var teamWiseOrganizationPerformance = sequelize.define('muln_team_wise_organization_performance', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -8,28 +8,28 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        courseName: {
-          type: DataTypes.STRING(30)
-        },
-        batchId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true
-        },
-        batchName: {
-          type: DataTypes.STRING(30)
-        },
         zoneId: {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        zoneName: {
+        teamId: {
+          type: DataTypes.INTEGER,
+          primaryKey: true
+        },
+        teamName: {
           type: DataTypes.STRING(30)
         },
-        performance: {
+        completion: {
           type: DataTypes.INTEGER
         },
-        progress: {
+        completedProgram: {
           type: DataTypes.INTEGER
+        },
+        teamsize: {
+          type: DataTypes.INTEGER
+        },
+        actionMessage: {
+          type: DataTypes.STRING(20)
         },
         date: {
           type: DataTypes.DATE
@@ -46,10 +46,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_learner_performance_and_progress'
       });
-
-  return learnerPerformanceAndProgress;
+  return teamWiseOrganizationPerformance;
 };

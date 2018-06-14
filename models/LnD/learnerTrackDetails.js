@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var daywiseLearnerTrackDetails = sequelize.define('muln_day_wise_learner_track_details', {
+  var learnerTrackDetails = sequelize.define('muln_learner_track_details', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -54,18 +54,11 @@ module.exports = (sequelize, DataTypes) => {
         learnerPaceType: {
           type: DataTypes.STRING(30)
         },
-        learnerPerformanceType: {
+        learnerPerformanceType:{
           type: DataTypes.STRING(30)
         },
         actionMessage: {
           type: DataTypes.STRING(20)
-        },
-        day: {
-          type: DataTypes.DATE,
-          primaryKey: true
-        },
-        jobId: {
-          type: DataTypes.STRING(30)
         },
         createdBy: {
           type: DataTypes.STRING(30)
@@ -79,9 +72,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_day_wise_learner_track_details'
       });
-  return daywiseLearnerTrackDetails;
+  return learnerTrackDetails;
 };

@@ -48,9 +48,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_hour_wise_active_users'
       });
 
   return hourwiseActiveUsers;

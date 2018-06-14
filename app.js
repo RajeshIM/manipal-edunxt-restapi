@@ -9,6 +9,7 @@ var express = require('express'),
 	app = express();
 
 global._ = underscore;
+global.models = db;
 
 // i18n config
 i18n.configure({

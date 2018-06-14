@@ -1,38 +1,31 @@
 module.exports = (sequelize, DataTypes) => {
-  var trainerWiseOrganizationPerformance = sequelize.define('muln_trainer_organization_performance', {
+  var userActivityByLocation = sequelize.define('muln_current_user_activity_by_location', {
         LnDUserId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true
+        	type: DataTypes.INTEGER,
+        	primaryKey: true
         },
         courseId: {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        zoneId: {
+        locaitonId: {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        trainerId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true
-        },
-        trainerName: {
+        locationName: {
           type: DataTypes.STRING(30)
         },
-        trainingsConducted: {
+        totalActiveUsers: {
           type: DataTypes.INTEGER
         },
-        peopleTrained: {
+        activeUsersSinceLastMonth: {
           type: DataTypes.INTEGER
         },
-        avgRating: {
-          type: DataTypes.DOUBLE
+        enrolledUsers: {
+          type: DataTypes.INTEGER
         },
-        actionMessage: {
-          type: DataTypes.STRING(20)
-        },
-        date: {
-          type: DataTypes.DATE
+        enrolledUsersSinceLastMonth: {
+          type: DataTypes.INTEGER
         },
         createdBy: {
           type: DataTypes.STRING(30)
@@ -46,9 +39,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_trainer_organization_performance'
       });
-  return trainerWiseOrganizationPerformance;
+  return userActivityByLocation;
 };

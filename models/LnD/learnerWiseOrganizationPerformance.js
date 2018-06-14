@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var coursesDropDown = sequelize.define('muln_im_lnduser_course', {
+  var learnerWiseOrganizationPerformance = sequelize.define('muln_learner_organization_performance', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -8,38 +8,39 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        courseName: {
-          type: DataTypes.STRING(30)
-        },
-        batchId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true
-        },
-        batchName: {
-          type: DataTypes.STRING(30)
-        },
-        teamId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true
-        },
-        teamName: {
-          type: DataTypes.STRING(30)
-        },
         zoneId: {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        zoneName: {
-          type: DataTypes.STRING(30)
-        },
-        domainId: {
-          type: DataTypes.STRING(100),
+        learnerId: {
+          type: DataTypes.INTEGER,
           primaryKey: true
         },
-        courseStartDate: {
-          type: DataTypes.DATE
+        learnerName: {
+          type: DataTypes.STRING(30)
         },
-        courseEndDate: {
+        learnerSerialNumber: {
+          type: DataTypes.STRING(30)
+        },
+        pointsEarned: {
+          type: DataTypes.INTEGER
+        },
+        pointsEarnedSinceLastMonth: {
+          type: DataTypes.INTEGER
+        },
+        testPerformance: {
+          type: DataTypes.DOUBLE
+        },
+        avgTestPerformance: {
+          type: DataTypes.DOUBLE
+        },
+        examScore: {
+          type: DataTypes.INTEGER
+        },
+        actionMessage: {
+          type: DataTypes.STRING(20)
+        },
+        date: {
           type: DataTypes.DATE
         },
         createdBy: {
@@ -54,9 +55,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_im_lnduser_course'
       });
-  return coursesDropDown;
+  return learnerWiseOrganizationPerformance;
 };

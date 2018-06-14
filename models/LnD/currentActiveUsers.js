@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var contentConsumption = sequelize.define('muln_content_consumption', {
+  var currentActiveUsers = sequelize.define('muln_current_active_users', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -8,34 +8,27 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        courseName: {
-          type: DataTypes.STRING(30)
-        },
-        contentId: {
+        zoneId: {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        contentName: {
-          type: DataTypes.STRING(30)
-        },
-        contentType: {
-          type: DataTypes.STRING(30)
-        },
-        author: {
-          type: DataTypes.STRING(30)
-        },
-        views: {
+        totalActiveUsers: {
           type: DataTypes.INTEGER
         },
-        avgRating: {
-          type: DataTypes.DOUBLE
-        },
-        duration: {
+        activeLearners: {
           type: DataTypes.INTEGER
         },
-        date: {
-          type: DataTypes.DATE,
-          primaryKey: true
+        activeFacultiesAndAdmins: {
+          type: DataTypes.INTEGER
+        },
+        onlineDelivery: {
+          type: DataTypes.INTEGER
+        },
+        offlineDelivery: {
+          type: DataTypes.INTEGER
+        },
+        jobId: {
+          type: DataTypes.STRING(30)
         },
         createdBy: {
           type: DataTypes.STRING(30)
@@ -49,9 +42,7 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_content_consumption'
       });
-  return contentConsumption;
+  
+  return currentActiveUsers;
 };

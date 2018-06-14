@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var daywiseUserActivityByLocation = sequelize.define('muln_day_wise_user_activity_by_location', {
+  var learnerPerformanceAndProgressDetails = sequelize.define('muln_learner_performance_and_progress_details', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
@@ -8,26 +8,38 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        locaitonId: {
+        courseName: {
+          type: DataTypes.STRING(30)
+        },
+        batchId: {
           type: DataTypes.INTEGER,
           primaryKey: true
         },
-        locationName: {
+        batchName: {
           type: DataTypes.STRING(30)
         },
-        totalActiveUsers: {
+        courseStartDate: {
+          type: DataTypes.DATE
+        },
+        courseEndDate: {
+          type: DataTypes.DATE
+        },
+        studentCount: {
           type: DataTypes.INTEGER
         },
-        activeUsersSinceLastMonth: {
+        programStatus: {
+          type: DataTypes.STRING(30)
+        },
+        completionAvg: {
+          type: DataTypes.DOUBLE
+        },
+        testScoreAvg: {
           type: DataTypes.INTEGER
         },
-        enrolledUsers: {
+        highestScore: {
           type: DataTypes.INTEGER
         },
-        enrolledUsersSinceLastMonth: {
-          type: DataTypes.INTEGER
-        },
-        Date: {
+        date: {
           type: DataTypes.DATE,
           primaryKey: true
         },
@@ -43,9 +55,7 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_day_wise_user_activity_by_location'
       });
-  return daywiseUserActivityByLocation;
+
+  return learnerPerformanceAndProgressDetails;
 };

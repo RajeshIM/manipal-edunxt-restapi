@@ -71,9 +71,6 @@ module.exports = (sequelize, DataTypes) => {
         modifiedOn: {
           type: DataTypes.DATE
         }
-      },
-      {
-        tableName: 'muln_learning_activities'
       });
   // Orders.associate = function(models) {
 
