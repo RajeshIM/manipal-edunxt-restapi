@@ -44,7 +44,8 @@ exports.learnerPaceAndPerformance = function (req, res) {
     performanceData = {
     	"excelling": 0,
     	"passing": 0,
-    	"struggling": 0
+    	"struggling": 0,
+    	"haveNotStarted": 0
     },
     responseData = {};
   
@@ -80,9 +81,11 @@ exports.learnerPaceAndPerformance = function (req, res) {
 							case 'Excelling': performanceData.excelling = obj.learnerId;
 											  break;
 							case 'Passing': performanceData.passing = obj.learnerId;
-										break;
+											break;
 							case 'Struggling': performanceData.struggling = obj.learnerId;
-										   break;
+										  	   break;
+							case 'HaveNotStarted': performanceData.haveNotStarted  = obj.learnerId;
+												   break;
 						}
 					})
 				}

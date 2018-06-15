@@ -8,13 +8,24 @@ exports.learnerPerformanceAndProgress = function (req, res) {
 			//endDate: true
 			attributes: attributes
 		},
-		query = apis.getQuery(options);
+		query = apis.getQuery(options),
+		responseData = [];
 
 	models.learnerPerformanceAndProgress.findAll(query).then(function (data) {
 		data = _.groupBy(data, function (obj) {
 			return obj.courseName;
-		})
-	    response.sendSuccessResponse(res, data);
+		});
+		
+		if (!_.isEmpty(data)) {
+			for (var key in data) {
+				var courseData = data[key],
+					courseObj = {};
+				courseObj.courseName = key;
+				courseObj.batches = courseData;
+				responseData.push(courseObj);	
+			}
+		}
+	    response.sendSuccessResponse(res, responseData);
 	}).catch(function (err) {
 	    response.customErrorMessage(res, err.message);
 	});

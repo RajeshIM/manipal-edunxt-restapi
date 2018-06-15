@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "root",
-    "password": "admin",
-    "database": "test",
-    "host": "127.0.0.1",
+    "username": "edunxtdbadmin",
+    "password": "EduNxt#321",
+    "database": "mulnplatform_analytics",
+    "host": "innominds-analytics.cmmtocbvzm4p.ap-southeast-1.rds.amazonaws.com",
     "dialect": "mysql"
   },
   "test": {
