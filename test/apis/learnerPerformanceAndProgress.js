@@ -72,7 +72,7 @@ describe('Learner-Performance-Progress API', function () {
           res.body.status.should.be.a('object');
           res.body.status.should.have.property('type').eql('success');
           res.body.should.have.property('data');
-          expect(res.body.data).to.be.a('object');
+          expect(res.body.data).to.be.an('array');
           done();
         })
     });
@@ -93,7 +93,7 @@ describe('Learner-Performance-Progress API', function () {
           res.body.status.should.be.a('object');
           res.body.status.should.have.property('type').eql('success');
           res.body.should.have.property('data');
-          expect(res.body.data).to.be.a('object');
+          expect(res.body.data).to.be.an('array');
           done();
         })
     });

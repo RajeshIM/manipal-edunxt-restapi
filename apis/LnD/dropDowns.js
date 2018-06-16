@@ -4,40 +4,25 @@ var response = require('./../../helpers/response'),
 
 exports.dropDowns = function (req, res) {
 	var LnDUserId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
-		types = req.query.type ? req.query.type.split(',') : [],
-		courseQuery = {},
-		batchQuery = {},
-		teamQuery = {},
-		zoneQuery = {},
-		where = {},
-		attributes = [],
+		orgHeadId = req.headers['orgheadid'] ? parseInt([req.headers['orgheadid']]) : null,
+		types = req.query.type ? req.query.type.split(',') : '',
+		filters = '';
 		isCourse = false,
 		isBatch = false,
 		isTeam = false,
 		isZone = false,
 		responseData = [];
 
-	if (LnDUserId) {
-		where.LnDUserId = LnDUserId;
-		courseQuery.where = where;
-		batchQuery.where = where;
-		teamQuery.where = where;
-		zoneQuery.where = where;
-	}
-		var courseAttributes = [['courseId', 'id'], ['courseName', 'name']],
-		batchAttributes = [['batchId', 'id'], ['batchName', 'name']],
-		teamAttributes = [['teamId', 'id'], ['teamName', 'name']],
-		zoneAttributes = [['zoneId', 'id'], ['zoneName', 'name']];
+		filters = LnDUserId ? 'LnDUserId='+LnDUserId : '';
+   		filters = (filters.length > 0 && orgHeadId) ? (filters + ' AND ' + 'orgHeadId='+orgHeadId) : 
+   				(orgHeadId ? 'orgHeadId='+orgHeadId : filters);
+   		filters = (filters.length > 0) ? (' where ' + filters) : '';
 
+   	var courseQuery = 'select distinct courseId as id, courseName as name from muln_Im_LNDUser_Course' + filters,
+   	zoneQuery = 'select distinct zoneId as id, zoneName as name from muln_Im_LNDUser_Course' + filters,
+   	batchQuery = 'select distinct batchId as id, batchName as name from muln_Im_LNDUser_Course' + filters,
+   	teamQuery = 'select distinct teamId as id, teamName as name from muln_Im_LNDUser_Course' + filters;
 
-		courseQuery.attributes = courseAttributes;
-		courseQuery.distinct = true;
-		batchQuery.attributes = batchAttributes;
-		batchQuery.distinct = true;
-		teamQuery.attributes = teamAttributes;
-		teamQuery.distinct = true;
-		zoneQuery.attributes = zoneAttributes;
-		zoneQuery.distinct = true;
 
 	if (types.length > 0) {
 		_.each(types, function(type) {
@@ -66,7 +51,7 @@ exports.dropDowns = function (req, res) {
 	async.parallel({
 		coursesData: function (next) {
 			if (isCourse) {
-				models.coursesDropDown.findAll(courseQuery).then(function (data) {
+				models.sequelize.query(courseQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
 				    next(null, data);
 				}).catch(function (err) {
 				    next(err);
@@ -77,7 +62,7 @@ exports.dropDowns = function (req, res) {
 		},
 		batchesData: function (next) {
 			if (isBatch) {
-				models.coursesDropDown.findAll(batchQuery).then(function (data) {
+				models.sequelize.query(batchQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
 				    next(null, data);
 				}).catch(function (err) {
 				    next(err);
@@ -88,7 +73,7 @@ exports.dropDowns = function (req, res) {
 		},
 		teamsData: function (next) {
 			if (isTeam) {
-				models.coursesDropDown.findAll(teamQuery).then(function (data) {
+				models.sequelize.query(teamQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
 				    next(null, data);
 				}).catch(function (err) {
 				    next(err);
@@ -99,7 +84,7 @@ exports.dropDowns = function (req, res) {
 		},
 		zonesData: function (next) {
 			if (isZone) {
-				models.coursesDropDown.findAll(zoneQuery).then(function (data) {
+				models.sequelize.query(zoneQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
 				    next(null, data);
 				}).catch(function (err) {
 				    next(err);

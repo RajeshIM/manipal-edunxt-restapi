@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var userActivityByLocation = sequelize.define('muln_current_user_activity_by_location', {
+  var userActivityByLocation = sequelize.define('muln_Current_User_Activity_By_Location', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true

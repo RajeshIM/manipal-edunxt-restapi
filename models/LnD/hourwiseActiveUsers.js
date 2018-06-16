@@ -1,7 +1,7 @@
 var moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
-  var hourwiseActiveUsers = sequelize.define('muln_hour_wise_active_users', {
+  var hourwiseActiveUsers = sequelize.define('muln_Hour_Wise_Active_Users', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true

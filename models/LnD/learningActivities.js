@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var learningActivities = sequelize.define('muln_learning_activities', {
+  var learningActivities = sequelize.define('muln_Learning_Activities', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true

@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var learnerWiseOrganizationPerformance = sequelize.define('muln_learner_organization_performance', {
+  var learnerWiseOrganizationPerformance = sequelize.define('muln_Learner_Organization_Performance', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true

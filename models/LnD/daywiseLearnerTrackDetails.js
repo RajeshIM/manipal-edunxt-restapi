@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var daywiseLearnerTrackDetails = sequelize.define('muln_day_wise_learner_track_details', {
+  var daywiseLearnerTrackDetails = sequelize.define('muln_Day_Wise_Learner_Track_Details', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true

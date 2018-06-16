@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var daywiseUserActivityByLocation = sequelize.define('muln_day_wise_user_activity_by_location', {
+  var daywiseUserActivityByLocation = sequelize.define('muln_Day_Wise_User_Activity_By_Location', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true

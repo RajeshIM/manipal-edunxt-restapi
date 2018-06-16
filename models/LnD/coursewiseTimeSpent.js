@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var coursewiseTimeSpent = sequelize.define('muln_lnduser_course_wise_timeSpent', {
+  var coursewiseTimeSpent = sequelize.define('muln_LNDUser_Course_Wise_TimeSpent', {
         LnDUserId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
