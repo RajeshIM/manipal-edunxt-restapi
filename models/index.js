@@ -32,7 +32,8 @@ var options = {
     define: {
       freezeTableName: true,
       timestamps: false
-    }
+    },
+    timezone : "+05:30"
   };
 
 var sequelize = new Sequelize(config.database, config.username, config.password, options);

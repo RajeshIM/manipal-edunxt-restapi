@@ -6,9 +6,8 @@ exports.learnerPerformanceAndProgressDetails = function (req, res) {
 					  'programStatus', 'completionAvg', 'testScoreAvg', 'highestScore'],
 		options = {
 			req: req,
-			attributes: attributes,
-			startDate: false,
-			endDate: true
+			//endDate: true,
+			attributes: attributes
 		},
 		query = apis.getQuery(options),
 		displayFor = req.body.displayFor ? req.body.displayFor: null,
