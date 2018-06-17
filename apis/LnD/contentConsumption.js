@@ -12,8 +12,8 @@ exports.contentConsumption = function (req, res) {
 		options = {
 			req: req,
 			attributes: attributes,
-			// startDate: true,
-			// endDate: true,
+			startDate: true,
+			endDate: true,
 			group: group
 		},
 		query = apis.getQuery(options);

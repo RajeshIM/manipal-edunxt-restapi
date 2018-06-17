@@ -62,8 +62,46 @@ exports.scoresDistribution = function (req, res) {
 
   	query = query + filters + group;
 
+  	var result = [{
+  		'scoreRanges': '0-20',
+  		'numberOfUsers': 0
+  	},
+  	{
+  		'scoreRanges': '21-40',
+  		'numberOfUsers': 0
+  	},
+  	{
+  		'scoreRanges': '41-60',
+  		'numberOfUsers': 0
+  	},
+  	{
+  		'scoreRanges': '61-80',
+  		'numberOfUsers': 0
+  	},
+  	{
+  		'scoreRanges': '81-100',
+  		'numberOfUsers': 0
+  	}];
+
 	models.sequelize.query(query, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-	    response.sendSuccessResponse(res, data);
+		if (data.length > 0) {
+			for (var i in result) {
+				var obj = _.findWhere(data, {scoreRanges: result[i].scoreRanges});
+				if (!_.isEmpty(obj)) {
+					result[i].scoreRanges = obj.scoreRanges.split('-');
+					result[i].scoreRanges[0] = parseInt(result[i].scoreRanges[0]);
+					result[i].scoreRanges[1] = parseInt(result[i].scoreRanges[1]);
+					result[i].numberOfUsers = obj.numberOfUsers;
+				} else {
+					result[i].scoreRanges = result[i].scoreRanges.split('-');
+					result[i].scoreRanges[0] = parseInt(result[i].scoreRanges[0]);
+					result[i].scoreRanges[1] = parseInt(result[i].scoreRanges[1]);
+				}
+			}
+		} else {
+			result = [];
+		}
+	    response.sendSuccessResponse(res, result);
 	}).catch(function (err) {
 	    response.customErrorMessage(res, err.message);
 	});

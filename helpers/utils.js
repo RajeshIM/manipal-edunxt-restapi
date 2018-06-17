@@ -21,7 +21,7 @@ exports.getDates = function (req, addOneDay) {
     if (date.start === date.currentDate || date.end === date.currentDate) date.current = true;
   } else {
     date.current = true;
-    date.start = moment(date.currentDate, __('YMD')).subtract(30, 'days').format(__('YMD'));
+    date.start = moment(date.currentDate, __('YMD')).subtract(60, 'days').format(__('YMD'));
     date.end = moment(date.currentDate, __('YMD')).format(__('YMD'));
   }
   if (addOneDay) date.end = moment(date.end, __('YMD')).add(1, 'days').format(__('YMD'));

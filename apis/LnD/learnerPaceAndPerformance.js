@@ -32,8 +32,8 @@ exports.learnerPaceAndPerformance = function (req, res) {
     	table = 'learnerTrackDetails';
     } else {
     	table = 'daywiseLearnerTrackDetails';
-    	//paceQuery.where.day = date.end;
-    	//performanceQuery.where.day = date.end;
+    	paceQuery.where.day = date.end;
+    	performanceQuery.where.day = date.end;
     }
     var paceData = {
     	"aheadOfSchedule": 0,
@@ -44,8 +44,7 @@ exports.learnerPaceAndPerformance = function (req, res) {
     performanceData = {
     	"excelling": 0,
     	"passing": 0,
-    	"struggling": 0,
-    	"haveNotStarted": 0
+    	"struggling": 0
     },
     responseData = {};
   
@@ -55,16 +54,18 @@ exports.learnerPaceAndPerformance = function (req, res) {
 				if (!_.isEmpty(data)) {
 					_.each(data, function(obj) {
 						obj = obj ? obj.toJSON() : {};
-						switch(obj.learnerPaceType) {
-							case 'AheadOfSchedule':  paceData.aheadOfSchedule = obj.learnerId;
-												   	 break;
-							case 'BehindSchedule':   paceData.behindSchedule = obj.learnerId;
-												     break;
-							case 'OnTrack': 		 paceData.onTrack  = obj.learnerId;
-												     break;
-							case 'HaveNotStarted': 	 paceData.haveNotStarted  = obj.learnerId;
-												     break;
-					    }
+						if (obj.learnerPaceType) {
+							switch(obj.learnerPaceType.toUpperCase()) {
+								case 'PACEAHEADSCHEDULE':  paceData.aheadOfSchedule = obj.learnerId;
+													   	 break;
+								case 'PACEBEHINDSCHEDULE':   paceData.behindSchedule = obj.learnerId;
+													     break;
+								case 'PACEONTRACK': 		 paceData.onTrack  = obj.learnerId;
+													     break;
+								case 'PACEHAVENOTSTARTED': 	 paceData.haveNotStarted  = obj.learnerId;
+													     break;
+						    }
+						}
 					})
 				}
 				next(null, paceData);
@@ -77,15 +78,15 @@ exports.learnerPaceAndPerformance = function (req, res) {
 				if (!_.isEmpty(data)) {
 					_.each(data, function(obj) {
 						obj = obj ? obj.toJSON() : {};
-						switch(obj.learnerPerformanceType) {
-							case 'Excelling': performanceData.excelling = obj.learnerId;
-											  break;
-							case 'Passing': performanceData.passing = obj.learnerId;
-											break;
-							case 'Struggling': performanceData.struggling = obj.learnerId;
-										  	   break;
-							case 'HaveNotStarted': performanceData.haveNotStarted  = obj.learnerId;
-												   break;
+						if (obj.learnerPerformanceType) {
+							switch(obj.learnerPerformanceType.toUpperCase()) {
+								case 'EXCELLING': performanceData.excelling = obj.learnerId;
+												  break;
+								case 'PASSING': performanceData.passing = obj.learnerId;
+												break;
+								case 'STRUGGLING': performanceData.struggling = obj.learnerId;
+											  	   break;
+							}
 						}
 					})
 				}

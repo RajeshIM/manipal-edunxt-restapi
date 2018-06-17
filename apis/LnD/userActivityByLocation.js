@@ -25,7 +25,7 @@ exports.userActivityByLocation = function (req, res) {
 		isCurrent = true;
 	} else {
 		isDay = true;
-		//query.date = date.end;
+		query.date = date.end;
 	}
 	
 	async.parallel({

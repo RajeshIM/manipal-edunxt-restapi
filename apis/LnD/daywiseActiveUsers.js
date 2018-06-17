@@ -33,13 +33,13 @@ exports.daywiseActiveUsers = function (req, res) {
 		var hourOptions = {
 			req: req,
 			attributes: hourAttributes,
-			//startDate: true,
-			//endDate: true,
+			startDate: true,
+			endDate: true,
 			group: group
 		};
 		hourQuery = apis.getQuery(hourOptions);
-		// hourQuery.where.hour = hourQuery.where.date;
-		// delete hourQuery.where.date;
+		hourQuery.where.hour = hourQuery.where.date;
+		delete hourQuery.where.date;
 	} else {
 		isDay = true;
 		dayAttributes = ['LnDUserId', ['day', 'date']];
@@ -48,13 +48,13 @@ exports.daywiseActiveUsers = function (req, res) {
 		var dayOptions = {
 			req: req,
 			attributes: dayAttributes,
-			// startDate: true,
-			// endDate: true,
+			startDate: true,
+			endDate: true,
 			group: group
 		};
 		dayQuery = apis.getQuery(dayOptions);
-		// dayQuery.where.day = dayQuery.where.date;
-		// delete dayQuery.where.date;
+		dayQuery.where.day = dayQuery.where.date;
+		delete dayQuery.where.date;
 	}
 
 	if (date.current) {
