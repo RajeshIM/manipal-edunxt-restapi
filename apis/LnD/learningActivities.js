@@ -85,12 +85,12 @@ exports.learningActivities = function (req, res) {
 						learnerPace.aheadOfSchedule = data.usersAheadSchedule ? parseInt(data.usersAheadSchedule) : 0;
 					}
 
-					feedback.learnerSatisfaction = data.learnerSatisfaction ? parseFloat(data.learnerSatisfaction.toFixed(2)) : 0;
-			        feedback.learnerSatisfactionChange = data.learnerSatisfactionBy ? parseFloat(data.learnerSatisfactionBy.toFixed(2)) : 0;
-			        feedback.trainerRating = data.trainerRating ? parseFloat(data.trainerRating.toFixed(2)) : 0;
-			        feedback.trainerRatingChange = data.trainerRatingBy ? parseFloat(data.trainerRatingBy.toFixed(2)) : 0;
-			        feedback.contentRating = data.contentRating ? parseFloat(data.contentRating.toFixed(2)) : 0;
-			        feedback.contentRatingChange = data.contentRatingBy ? parseFloat(data.contentRatingBy.toFixed(2)) : 0;
+					feedback.learnerSatisfaction = data.learnerSatisfaction ? parseFloat(parseFloat(data.learnerSatisfaction).toFixed(2)) : 0;
+			        feedback.learnerSatisfactionChange = data.learnerSatisfactionBy ? parseFloat(parseFloat(data.learnerSatisfactionBy).toFixed(2)) : 0;
+			        feedback.trainerRating = data.trainerRating ? parseFloat(parseFloat(data.trainerRating).toFixed(2)) : 0;
+			        feedback.trainerRatingChange = data.trainerRatingBy ? parseFloat(parseFloat(data.trainerRatingBy).toFixed(2)) : 0;
+			        feedback.contentRating = data.contentRating ? parseFloat(parseFloat(data.contentRating).toFixed(2)) : 0;
+			        feedback.contentRatingChange = data.contentRatingBy ? parseFloat(parseFloat(data.contentRatingBy).toFixed(2)) : 0;
 				}
 
 				next(null, {
