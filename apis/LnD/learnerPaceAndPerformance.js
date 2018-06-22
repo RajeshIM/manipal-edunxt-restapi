@@ -60,7 +60,7 @@ exports.learnerPaceAndPerformance = function (req, res) {
 													   	 break;
 								case 'PACEBEHINDSCHEDULE':   paceData.behindSchedule = obj.learnerId;
 													     break;
-								case 'PACEONTRACK': 		 paceData.onTrack  = obj.learnerId;
+								case 'PACEUSERSONTRACK': 		 paceData.onTrack  = obj.learnerId;
 													     break;
 								case 'PACEHAVENOTSTARTED': 	 paceData.haveNotStarted  = obj.learnerId;
 													     break;
