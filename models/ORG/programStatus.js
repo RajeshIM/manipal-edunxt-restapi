@@ -1,13 +1,20 @@
 module.exports = (sequelize, DataTypes) => {
-  var topActiveUsers = sequelize.define('muln_top_active_users', {
-        personId: {
+  var programStatus = sequelize.define('muln_program_status', {
+        orgHeadId: {
         	type: DataTypes.INTEGER,
         	primaryKey: true
         },
-        fileLocation: {
-          type: DataTypes.STRING(1000)
+        inProgressCount: {
+          type: DataTypes.INTEGER,
+          primaryKey: true
         },
-        fileId: {
+        hoursSinceLastMonth: {
+          type: DataTypes.INTEGER
+        },
+        behindScheduleCount: {
+          type: DataTypes.INTEGER
+        },
+        programsSinceLastMonth: {
           type: DataTypes.INTEGER
         },
         createdBy: {
@@ -23,5 +30,5 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.DATE
         }
       });
-  return topActiveUsers;
+  return programStatus;
 };

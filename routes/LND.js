@@ -1,8 +1,8 @@
 var router = require('express').Router(),
 	apis = require('./../apis/LnD');
 
+router.get('/active-users', apis.activeUsers);
 router.get('/learning-activities', apis.learningActivities);
-router.get('/top-acive-users', apis.topActiveUsers);
 router.get('/goals', apis.goals);
 router.post('/active-users-graph', apis.daywiseActiveUsers);
 router.post('/activity-by-location', apis.userActivityByLocation);

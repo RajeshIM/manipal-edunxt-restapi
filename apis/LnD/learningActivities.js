@@ -1,36 +1,30 @@
 var response = require('./../../helpers/response'),
 	apis = require('./../../helpers/apis'),
-	utils = require('./../../helpers/utils'),
 	async = require('async');
 
 exports.learningActivities = function (req, res) {
-	var date = utils.getDates(req),
+	var courseId =  req.headers['courseid'] ? parseInt([req.headers['courseid']]) : null,
 		type = req.query.type ? req.query.type.toUpperCase() : '',
-		activeUserFields = ['totalActiveUsers:SUM', 'activeUsersSinceLastMonth:SUM', 'enrolledUsers:SUM','enrolledUsersSinceLastMonth:SUM'],
-		learnerFields = ['usersCompletedTraining:SUM', 'usersCompletedTrainingSinceLastMonth:SUM','usersBehindSchedule:SUM', 
-							'usersHaveNotStarted:SUM','usersOnTrack:SUM','usersAheadSchedule:SUM'],
-		feedbackFields = ['learnerSatisfaction:AVG','learnerSatisfactionBy:AVG','trainerRating:AVG',
-						'trainerRatingBy:AVG','contentRating:AVG','contentRatingBy:AVG'],
-		totalFields = (type === 'ORG') ? feedbackFields : _.union(learnerFields, feedbackFields),
-		userAttributes = apis.getAttributes(activeUserFields),
-		learnerAttributes = apis.getAttributes(totalFields),
-		userOptions = {
-			req: req,
-			attributes: userAttributes
-		},
-		learnerOptions = {
+		userAttributes = ['activeUsersSinceLastMonth', 'enrolledUsers','enrolledUsersSinceLastMonth'],
+		learnerAttributes = ['userCompletedTraining', 'usersCompletedTrainingSinceLastMonth','behindSchedule', 
+							'usersHaveNotStarted','onTrack','aheadSchedule'],
+		feedbackAttributes = ['currentLearnerSatisfaction','learnerSatisfactionBy','trainerRating',
+								'trainerRatingBy','contentRating','contentRatingBy'],
+		totalAttributes = (type === 'ORG') ? _.union(userAttributes, feedbackAttributes) : _.union(userAttributes, learnerAttributes, feedbackAttributes),
+		options = {
 			req: req,
 			//endDate: true,
-			attributes: learnerAttributes
+			attributes: totalAttributes
 		},
-		userQuery = apis.getQuery(userOptions),
-		learnerQuery = apis.getQuery(learnerOptions),
+		query = apis.getQuery(options),
+		table = 'learningActivities',
 		responseData = {};
 
-	//userQuery.where.date = date.currentDate;
+	if (courseId) {
+		table = 'courseWiseLearningActivities';
+	}
 
 	var activeUsers = {
-			  	activeUsers: 0,
 				changeInUsers: 0,
 				peopleCurrentlyEnrolled: 0,
 				usersSinceLastMonth: 0
@@ -54,68 +48,37 @@ exports.learningActivities = function (req, res) {
 				contentRatingChange: 0
 			};
 
-	async.parallel({
-		activeUsersData: function(next) {
-			models.learningActivities.findAll(userQuery).then(function(data) {
-				data = !_.isEmpty(data) ? data[0] : null;
-				if (data) {
-					activeUsers.activeUsers = data.totalActiveUsers ? parseInt(data.totalActiveUsers) : 0;
-					activeUsers.changeInUsers = data.activeUsersSinceLastMonth ? parseInt(data.activeUsersSinceLastMonth) : 0;
-					activeUsers.peopleCurrentlyEnrolled = data.enrolledUsers ? parseInt(data.enrolledUsers) : 0;
-					activeUsers.usersSinceLastMonth = data.enrolledUsersSinceLastMonth ? parseInt(data.enrolledUsersSinceLastMonth) : 0;
-				}
-				next(null, activeUsers);
-			}).catch(function(err) {
-				next(err);
-			});
-		},
-		learnerData: function(next) {
-			models.learningActivities.findAll(learnerQuery).then(function(data) {
-				data = !_.isEmpty(data) ? data[0] : null;
-
-				if (data) {
-
-					if (type !== 'ORG') {
-						learnerEngagement.peopleCompletedTraining = data.usersCompletedTraining ? parseInt(data.usersCompletedTraining) : 0;
-						learnerEngagement.peopleChange = data.usersCompletedTrainingSinceLastMonth ? parseInt(data.usersCompletedTrainingSinceLastMonth) : 0;
-
-						learnerPace.behindSchedule = data.usersBehindSchedule ? parseInt(data.usersBehindSchedule) : 0;
-						learnerPace.haventStarted = data.usersHaveNotStarted ? parseInt(data.usersHaveNotStarted) : 0;
-						learnerPace.onTrack = data.usersOnTrack ? parseInt(data.usersOnTrack) : 0;
-						learnerPace.aheadOfSchedule = data.usersAheadSchedule ? parseInt(data.usersAheadSchedule) : 0;
-					}
-
-					feedback.learnerSatisfaction = data.learnerSatisfaction ? parseFloat(parseFloat(data.learnerSatisfaction).toFixed(2)) : 0;
-			        feedback.learnerSatisfactionChange = data.learnerSatisfactionBy ? parseFloat(parseFloat(data.learnerSatisfactionBy).toFixed(2)) : 0;
-			        feedback.trainerRating = data.trainerRating ? parseFloat(parseFloat(data.trainerRating).toFixed(2)) : 0;
-			        feedback.trainerRatingChange = data.trainerRatingBy ? parseFloat(parseFloat(data.trainerRatingBy).toFixed(2)) : 0;
-			        feedback.contentRating = data.contentRating ? parseFloat(parseFloat(data.contentRating).toFixed(2)) : 0;
-			        feedback.contentRatingChange = data.contentRatingBy ? parseFloat(parseFloat(data.contentRatingBy).toFixed(2)) : 0;
-				}
-
-				next(null, {
-					learnerEngagement: learnerEngagement,
-					learnerPace: learnerPace,
-					feedback: feedback
-				});
-			}).catch(function(err) {
-				next(err);
-			});	
-		}
-	}, function(err, results) {
-		if (err) {
-			response.customErrorMessage(res, err.message);
-		} else {
-			var activeUsersData = results.activeUsersData,
-				learnerData = results.learnerData;
-
-			responseData.activeUsers = activeUsersData;
-			responseData.feedback = learnerData.feedback;
+	models[table].findOne(query).then(function(data) {
+		data = data ? data : null;
+		if (data) {
+			activeUsers.changeInUsers = data.activeUsersSinceLastMonth ? parseFloat(data.activeUsersSinceLastMonth) : 0;
+			activeUsers.peopleCurrentlyEnrolled = data.enrolledUsers ? parseFloat(data.enrolledUsers) : 0;
+			activeUsers.usersSinceLastMonth = data.enrolledUsersSinceLastMonth ? parseFloat(data.enrolledUsersSinceLastMonth) : 0;
 			if (type !== 'ORG') {
-				responseData.learnerEngagement = learnerData.learnerEngagement;
-				responseData.learnerPace = learnerData.learnerPace;
+				learnerEngagement.peopleCompletedTraining = data.userCompletedTraining ? parseFloat(data.userCompletedTraining) : 0;
+				learnerEngagement.peopleChange = data.usersCompletedTrainingSinceLastMonth ? parseFloat(data.usersCompletedTrainingSinceLastMonth) : 0;
+
+				learnerPace.behindSchedule = data.behindSchedule ? parseFloat(data.behindSchedule) : 0;
+				learnerPace.haventStarted = data.usersHaveNotStarted ? parseFloat(data.usersHaveNotStarted) : 0;
+				learnerPace.onTrack = data.onTrack ? parseFloat(data.onTrack) : 0;
+				learnerPace.aheadOfSchedule = data.aheadSchedule ? parseFloat(data.aheadSchedule) : 0;
 			}
-			response.sendSuccessResponse(res, responseData);
-		}			
+
+			feedback.learnerSatisfaction = data.currentLearnerSatisfaction ? parseFloat(parseFloat(data.currentLearnerSatisfaction).toFixed(2)) : 0;
+			feedback.learnerSatisfactionChange = data.learnerSatisfactionBy ? parseFloat(parseFloat(data.learnerSatisfactionBy).toFixed(2)) : 0;
+			feedback.trainerRating = data.trainerRating ? parseFloat(parseFloat(data.trainerRating).toFixed(2)) : 0;
+			feedback.trainerRatingChange = data.trainerRatingBy ? parseFloat(parseFloat(data.trainerRatingBy).toFixed(2)) : 0;
+			feedback.contentRating = data.contentRating ? parseFloat(parseFloat(data.contentRating).toFixed(2)) : 0;
+		    feedback.contentRatingChange = data.contentRatingBy ? parseFloat(parseFloat(data.contentRatingBy).toFixed(2)) : 0;
+		}
+		responseData.activeUsers = activeUsers;
+		responseData.feedback = feedback;
+		if (type !== 'ORG') {
+			responseData.learnerEngagement = learnerEngagement;
+			responseData.learnerPace = learnerPace;
+		}
+		response.sendSuccessResponse(res, responseData);
+	}).catch(function(err) {
+		response.customErrorMessage(res, err.message);
 	});
 }

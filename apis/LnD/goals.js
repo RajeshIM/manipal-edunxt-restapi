@@ -13,12 +13,10 @@ exports.goals = function (req, res) {
 			attributes: attributes
 		},
 		query = apis.getQuery(options),
-		table = '';
+		table = 'userwiseTimeSpent';
 		
 	if (courseId) {
 		table = 'coursewiseTimeSpent'
-	} else {
-		table = 'userwiseTimeSpent';
 	}
 
     var responseData = {},

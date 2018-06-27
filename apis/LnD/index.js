@@ -1,5 +1,5 @@
-var apis = ['learningActivities',
-			'topActiveUsers',
+var apis = ['activeUsers',
+			'learningActivities',
 			'goals',
 			'daywiseActiveUsers',
 			'userActivityByLocation',

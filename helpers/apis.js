@@ -15,6 +15,7 @@ exports.getQuery = function (options) {
 		group = options.group,
 		LnDUserId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
 		courseId =  req.headers['courseid'] ? parseInt([req.headers['courseid']]) : null,
+		programId =  req.headers['programid'] ? parseInt([req.headers['programid']]) : null,
 		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
 		zoneId = req.body.zoneId ? _.flatten([req.body.zoneId]) : [],
 		teamId = req.body.teamId ? _.flatten([req.body.teamId]) : [],
@@ -34,6 +35,7 @@ exports.getQuery = function (options) {
 	
 	if(LnDUserId) where.LnDUserId = LnDUserId;
 	if(courseId) where.courseId = courseId;
+	if(programId) where.programId = programId;
 	if(!_.isEmpty(batchId)) where.batchId = batchId;
 	if(!_.isEmpty(zoneId)) where.zoneId = zoneId;
 	if(!_.isEmpty(teamId)) where.teamId = teamId;

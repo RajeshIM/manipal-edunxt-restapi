@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  var learningActivities = sequelize.define('muln_user_wise_learning_activities', {
+  var courseWiseLearningActivities = sequelize.define('muln_course_wise_learning_activities', {
         domainId: {
           type: DataTypes.STRING(100),
           field: 'domain_id'
@@ -8,6 +8,15 @@ module.exports = (sequelize, DataTypes) => {
         	type: DataTypes.INTEGER,
         	primaryKey: true,
           field: 'user_id'
+        },
+        programId: {
+          type: DataTypes.INTEGER,
+          field: 'program_id'
+        },
+        courseId: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          field: 'course_id'
         },
         userType: {
           type: DataTypes.STRING(3),
@@ -58,9 +67,8 @@ module.exports = (sequelize, DataTypes) => {
         contentRatingBy: {
           type: DataTypes.DECIMAL(38,2)
         },
-        date: {
-          type: DataTypes.DATE,
-          field: 'loaddate'
+        loadDate: {
+          type: DataTypes.DATE
         },
         createdBy: {
           type: DataTypes.STRING(30)
@@ -80,5 +88,5 @@ module.exports = (sequelize, DataTypes) => {
   //   Orders.Persons = Orders.belongsTo(models.Persons, {as:'PersonsData', foreignKey: 'PersonID'});
   //   Orders.Users = Orders.belongsTo(models.User, {as:'userData', foreignKey: 'UserID'});
   // };
-  return learningActivities;
+  return courseWiseLearningActivities;
 };
