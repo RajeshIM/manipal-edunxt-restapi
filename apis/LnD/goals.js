@@ -4,6 +4,7 @@ var response = require('./../../helpers/response'),
 
 exports.goals = function (req, res) {
 	var courseId = req.headers['courseid'] ? parseInt(req.headers['courseid']) : null,
+		programId =  req.headers['programid'] ? parseInt([req.headers['programid']]) : null,
 		attributes = ['durationSpent', 'courseDuration', 'timeSpentPercentage', 
 					 'expectedTimeSpentPercentage','usersTrained','usersCompletedTraining', 
 					 'usersCompletedTrainingPercentage','usersCompletedTrainingExpectedPercentage'],
@@ -17,6 +18,7 @@ exports.goals = function (req, res) {
 		
 	if (courseId) {
 		table = 'coursewiseTimeSpent'
+		if (programId) query.where.programId = programId;
 	}
 
     var responseData = {},

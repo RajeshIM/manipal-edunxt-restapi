@@ -35,7 +35,7 @@ exports.getQuery = function (options) {
 	
 	if(LnDUserId) where.LnDUserId = LnDUserId;
 	if(courseId) where.courseId = courseId;
-	if(programId) where.programId = programId;
+	//if(programId) where.programId = programId;
 	if(!_.isEmpty(batchId)) where.batchId = batchId;
 	if(!_.isEmpty(zoneId)) where.zoneId = zoneId;
 	if(!_.isEmpty(teamId)) where.teamId = teamId;

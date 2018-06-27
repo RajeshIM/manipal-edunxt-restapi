@@ -4,6 +4,7 @@ var response = require('./../../helpers/response'),
 
 exports.learningActivities = function (req, res) {
 	var courseId =  req.headers['courseid'] ? parseInt([req.headers['courseid']]) : null,
+		programId =  req.headers['programid'] ? parseInt([req.headers['programid']]) : null,
 		type = req.query.type ? req.query.type.toUpperCase() : '',
 		userAttributes = ['activeUsersSinceLastMonth', 'enrolledUsers','enrolledUsersSinceLastMonth'],
 		learnerAttributes = ['userCompletedTraining', 'usersCompletedTrainingSinceLastMonth','behindSchedule', 
@@ -22,6 +23,7 @@ exports.learningActivities = function (req, res) {
 
 	if (courseId) {
 		table = 'courseWiseLearningActivities';
+		if (programId) query.where.programId = programId;
 	}
 
 	var activeUsers = {
