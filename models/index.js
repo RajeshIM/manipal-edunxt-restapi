@@ -8,7 +8,7 @@ var userSchemas = [
                   'learningActivities',
                   'courseWiseLearningActivities',
                   'userwiseTimeSpent',
-                  'coursewiseTimeSpent',
+                  'coursewiseTimeSpent'
                 ],
     LnDSchemas = ['daywiseActiveUsers',
                   'hourwiseActiveUsers',
@@ -63,6 +63,7 @@ LnDSchemas.forEach(function (schema) {
 });
 
 db.sequelize = sequelize;
+db.sequelize_test = sequelize_test;
 db.Sequelize = Sequelize;
 db.Op = Sequelize.Op;
 
