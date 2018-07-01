@@ -2,11 +2,10 @@ var utils = require('./utils'),
 	moment = require('moment'),
 	Sequelize = require('sequelize');
 	
-/** Function to get request filters
+/** Function to generate query dynamically based on the request filters
  *
- * @param {Object} req all the request data
- * @param {Boolean} pagination To add pagination data
- * @return {Object} Returns all the filters
+ * @param {Object} options list of params needed to prepare the query
+ * @return {Object} Returns an object
  */
 
 exports.getQuery = function (options) {
@@ -19,7 +18,7 @@ exports.getQuery = function (options) {
 		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
 		zoneId = req.body.zoneId ? _.flatten([req.body.zoneId]) : [],
 		teamId = req.body.teamId ? _.flatten([req.body.teamId]) : [],
-		//displayFor = req.body.displayFor ? _.flatten([req.body.displayFor]): [],
+		//displayFor = req.query.displayFor ? req.query.displayFor: [],
 		page = req.query.page ? parseInt(req.query.page) : null,
 		limit = req.query.limit ? parseInt(req.query.limit): null,
 		sortBy = req.query.sortBy ? req.query.sortBy : null,
@@ -77,6 +76,13 @@ exports.getQuery = function (options) {
 	return query;
 }
 
+/** Function to get the pagination data
+ *
+ * @param {Array} total data received from DB
+ * @param {Object} page page number
+ * @param {Object} limit
+ * @return {Object} Returns an object
+ */
 exports.getPaginationObject = function (total, page, limit) {
 	page = page || 1;
 	limit = limit || 10;
@@ -97,6 +103,11 @@ exports.getPaginationObject = function (total, page, limit) {
 	return res;
 }
 
+/** Function to get the aggregated attributes
+ *
+ * @param {Object} attributes list of columns to be aggregated
+ * @return {Array} Returns an Array
+ */
 exports.getAttributes = function(attributes) {
 	var results = [],
 		sequelize = models.sequelize;
