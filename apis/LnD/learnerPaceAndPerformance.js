@@ -4,26 +4,23 @@ var response = require('./../../helpers/response'),
 	async = require('async');
 
 exports.learnerPaceAndPerformance = function (req, res) {
-	var type = req.query.type ? req.query.type.toUpperCase() : '',
-		paceFields = ['learnerPaceType'],
+	var paceFields = ['learnerPaceType'],
 		performanceFields = ['learnerPerformanceType'],
 		aggFields = ['learnerId:COUNT'],
 		date = utils.getDates(req),
 		aggData = apis.getAttributes(aggFields),
 		paceAttributes = _.union(paceFields, aggData),
 		performanceAttributes = _.union(performanceFields, aggData),
-		paceGroup = ['learnerPaceType'],
-		performanceGroup = ['learnerPerformanceType'],
 		paceOptions = {
 			req: req,
 			attributes: paceAttributes,
-			group: paceGroup
+			group: paceFields
 		},
 		paceQuery = apis.getQuery(paceOptions),
 		performanceOptions = {
 			req: req,
 			attributes: performanceAttributes,
-			group: performanceGroup
+			group: performanceFields
 		},
 		performanceQuery = apis.getQuery(performanceOptions),
 		table = '';
@@ -106,4 +103,3 @@ exports.learnerPaceAndPerformance = function (req, res) {
 	});
 	
 }
-
