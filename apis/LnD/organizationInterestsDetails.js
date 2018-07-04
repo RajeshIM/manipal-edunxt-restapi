@@ -14,7 +14,7 @@ exports.organizationInterestsDetails = function (req, res) {
 		options = {
 			req: req,
 			group: group,
-			//endDate: true,
+			endDate: true,
 			attributes: attributes
 		},
 		query = apis.getQuery(options);

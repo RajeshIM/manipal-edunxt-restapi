@@ -11,7 +11,7 @@ exports.organizationInterests = function (req, res) {
 		interestsOptions = {
 			req: req,
 			group: intGroup,
-			//endDate: true,
+			endDate: true,
 			attributes: interestsAttributes
 		},
 		sequelize = models.sequelize;

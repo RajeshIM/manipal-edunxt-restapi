@@ -12,8 +12,8 @@ exports.trainerLeaderBoard = function (req, res) {
 		options = {
 			req: req,
 			attributes: attributes,
-			// startDate: false,
-			// endDate: true,
+			startDate: false,
+			endDate: true,
 			group: group
 		},
 		query = apis.getQuery(options);

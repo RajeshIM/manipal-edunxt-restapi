@@ -5,7 +5,7 @@ exports.learnerPerformanceAndProgress = function (req, res) {
 	var attributes = ['courseName', 'batchName', 'performance', 'progress'],
 		options = {
 			req: req,
-			//endDate: true
+			endDate: true
 			attributes: attributes
 		},
 		query = apis.getQuery(options),

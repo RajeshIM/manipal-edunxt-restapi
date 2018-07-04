@@ -10,7 +10,7 @@ exports.goals = function (req, res) {
 					 'usersCompletedTrainingPercentage','usersCompletedTrainingExpectedPercentage'],
 		options = {
 			req: req,
-			//endDate: true,
+			endDate: true,
 			attributes: attributes
 		},
 		query = apis.getQuery(options),
