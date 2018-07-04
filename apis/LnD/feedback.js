@@ -46,7 +46,7 @@ exports.feedback = function (req, res) {
 
    	if (date.currentStatus) {
    		if (courseId){
-			ratingQuery = `select trainerating, learnersatisfation, contentrating from muln_course_wise_daily_feedback WHERE load_date=DATE(NOW()) `+ filters;
+			ratingQuery = `select trainerrating, learnersatisfation, contentrating from muln_course_wise_daily_feedback WHERE load_date=DATE(NOW()) `+ filters;
 		}else {
 			ratingQuery = `select trainerrating, learnersatisfation, contentrating from muln_all_courses_daily_feedback WHERE load_date=DATE(NOW()) `+ filters;
 		}

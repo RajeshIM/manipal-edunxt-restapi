@@ -14,7 +14,7 @@ exports.learnerPace = function (req, res) {
 		courseIdFilter = '',
 		userTypeFilter = '',
 		programIdFilter = '',
-		table = courseId ? 'muln_courese_wise_daily_learner_pace ': 'muln_all_coureses_daily_learner_pace ',
+		table = courseId ? 'muln_course_wise_daily_learner_pace ': 'muln_all_courses_daily_learner_pace ',
 		dateFilter = date.currentStatus ? 'where load_date=DATE(now())' : `where load_date=DATE('${date.end}')`,
 		filters = '',
 		learnerPaceQuery = '',
