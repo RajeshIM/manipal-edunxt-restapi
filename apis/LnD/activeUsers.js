@@ -44,7 +44,7 @@ exports.activeUsers = function (req, res) {
 
 	activeUsersSinceLastMonthQuery = `SELECT monthly_active_users_count AS activeUsersSinceLastMonth FROM muln_monthly_active_users 
 										WHERE load_date=date_format(last_day(DATE_SUB(NOW(),INTERVAL 1 MONTH)), '%M-%Y')`;
-	console.log(activeUsersSinceLastMonthQuery)
+
    filters = userId ? userIdFilter : '';
    filters = (filters.length > 0 && courseId) ? (filters + ' AND' + courseIdFilter) : 
    				(courseId ? courseIdFilter : filters);
