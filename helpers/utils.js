@@ -41,8 +41,8 @@ exports.getDates = function (req, addOneDay) {
 function addLeadingZero (date, withDash) {
   date = withDash ? date.split('-') : date.split('/');
 
-  var day = parseInt(date[0]) <= 9 ? ('0' + parseInt(date[0].toString())) : date[0],
-    month = parseInt(date[1]) <= 9 ? ('0' + parseInt(date[1].toString())) : date[1],
+  var month = parseInt(date[0]) <= 9 ? ('0' + parseInt(date[0].toString())) : date[0],
+    day = parseInt(date[1]) <= 9 ? ('0' + parseInt(date[1].toString())) : date[1],
     year = parseInt(date[2]);
   return year + '-' + month + '-' + day;
 }

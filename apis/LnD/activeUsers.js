@@ -43,8 +43,8 @@ exports.activeUsers = function (req, res) {
 	}
 
 	activeUsersSinceLastMonthQuery = `SELECT monthly_active_users_count AS activeUsersSinceLastMonth FROM muln_monthly_active_users 
-										WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01 00:00:00')`;
-
+										WHERE load_date=date_format(last_day(DATE_SUB(NOW(),INTERVAL 1 MONTH)), '%M-%Y')`;
+	console.log(activeUsersSinceLastMonthQuery)
    filters = userId ? userIdFilter : '';
    filters = (filters.length > 0 && courseId) ? (filters + ' AND' + courseIdFilter) : 
    				(courseId ? courseIdFilter : filters);
@@ -63,10 +63,10 @@ exports.activeUsers = function (req, res) {
    
    if (courseId) {
    		enrolledUsersSinceLastMonthQuery = `SELECT monthly_enrolled_users_count as enrolledUsersSinceLastMonth FROM muln_courses_wise_monthly_enrolled_persons_count
-										where load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01 00:00:00')` + filters;
+										where load_date=date_format(last_day(DATE_SUB(NOW(),INTERVAL 1 MONTH)), '%M-%Y')` + filters;
    } else {
    		enrolledUsersSinceLastMonthQuery = `SELECT monthly_enrolled_users_count as enrolledUsersSinceLastMonth FROM muln_all_courses_monthly_enrolled_persons_count 
-   		   								where load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01 00:00:00')` + filters;
+   		   								where load_date=date_format(last_day(DATE_SUB(NOW(),INTERVAL 1 MONTH)), '%M-%Y')` + filters;
    }
    
 	async.parallel({
