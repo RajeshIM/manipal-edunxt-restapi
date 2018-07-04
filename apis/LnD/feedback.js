@@ -11,24 +11,33 @@ exports.feedback = function (req, res) {
 		courseId =  req.headers['courseid'] ? parseInt(req.headers['courseid']) : null,
 		programId =  req.headers['programid'] ? parseInt(req.headers['programid']) : null,
 		userIdFilter = '',
+		monthlyUserIdFilter = '',
 		courseIdFilter = '',
+		monthlyCourseIdFilter = '',
 		userTypeFilter = '',
+		monthlyUserTypeFilter = '',
 		programIdFilter = '',
+		monthlyProgramIdFilter = '',
 		dateFilter = '',
 		filters = '',
+		monthlyFilters = '',
 		responseData = {};
 
 	if (userId) {
 		userIdFilter = ` user_id = ${userId}`;
+		monthlyUserIdFilter = ` df.user_id = ${userId}`;
 	}
 	if (userType) {
 		userTypeFilter = ` user_type = '${userType}'`;
+		monthlyUserTypeFilter = ` df.user_type = '${userType}'`;
 	}
 	if (courseId){
 		courseIdFilter = ` course_id = ${courseId}`;
+		monthlyCourseIdFilter = ` df.course_id = ${courseId}`;
 	}
 	if (programId){
 		programIdFilter = ` program_id = ${programId}`;
+		monthlyProgramIdFilter = ` df.program_id = ${programId}`;
 	}
 
 	var ratingQuery = '',
@@ -44,39 +53,60 @@ exports.feedback = function (req, res) {
    	   		(userType ? userTypeFilter : filters);
    	filters = (filters.length > 0) ? (' AND ' + filters) : '';
 
+   	monthlyFilters = userId ? monthlyUserIdFilter : '';
+   	monthlyFilters = (monthlyFilters.length > 0 && courseId) ? (monthlyFilters + ' AND' + monthlyCourseIdFilter) : 
+   				(courseId ? monthlyCourseIdFilter : monthlyFilters);
+   	monthlyFilters = (monthlyFilters.length > 0 && programId) ? (monthlyFilters + ' AND' + monthlyProgramIdFilter): 
+   	   		(programId ? monthlyProgramIdFilter : monthlyFilters);
+   	monthlyFilters = (monthlyFilters.length > 0 && userType) ? (monthlyFilters + ' AND' + monthlyUserTypeFilter) : 
+   	   		(userType ? userTypeFilter : monthlyFilters);
+   	monthlyFilters = (monthlyFilters.length > 0) ? (' AND ' + monthlyFilters) : '';
+
    	if (date.currentStatus) {
    		if (courseId){
-			ratingQuery = `select trainerrating, learnersatisfation, contentrating from muln_course_wise_daily_feedback WHERE load_date=DATE(NOW()) `+ filters;
+			ratingQuery = `select trainerrating, learnersatisfaction, contentrating from muln_course_wise_daily_feedback WHERE load_date=DATE(NOW()) `+ filters;
 		}else {
-			ratingQuery = `select trainerrating, learnersatisfation, contentrating from muln_all_courses_daily_feedback WHERE load_date=DATE(NOW()) `+ filters;
+			ratingQuery = `select trainerrating, learnersatisfaction, contentrating from muln_all_courses_daily_feedback WHERE load_date=DATE(NOW()) `+ filters;
 		}
    	}else {
 		if (courseId) {
-			ratingQuery = `select avg(trainerrating) as trainerrating, avg(learnersatisfation) as learnersatisfation, avg(contentrating) as contentrating
+			ratingQuery = `select avg(trainerrating) as trainerrating, avg(learnersatisfaction) as learnersatisfaction, avg(contentrating) as contentrating
 					from muln_course_wise_daily_feedback where load_date between '${date.start}' and '${date.end}'`;
 		}else {
-			ratingQuery = `select avg(trainerrating) as trainerrating, avg(learnersatisfation) as learnersatisfation, avg(contentrating) as contentrating 
+			ratingQuery = `select avg(trainerrating) as trainerrating, avg(learnersatisfaction) as learnersatisfaction, avg(contentrating) as contentrating 
 						from muln_all_courses_daily_feedback where load_date between '${date.start}' and '${date.end}'`+filters;
 		}
     }
    
     if (courseId) {
-    	changeInRatingQuery = `select monthly_trainerrating, monthly_learnersatisfation, monthly_contentrating from muln_couse_wise_monthly_feedback  
-								where load_date=date_format(last_day(DATE_SUB(NOW(),INTERVAL 1 MONTH)), '%M-%Y')` + filters;
+    	changeInRatingQuery = `SELECT df.load_date,  (trainerrating-monthly_trainerrating) AS trainerratingby, 
+								(learnersatisfaction-monthly_learnersatisfaction) AS learnersatisfactionby, 
+								(contentrating-monthly_contentrating) AS contentratingby
+								FROM muln_course_wise_daily_feedback AS df
+								INNER JOIN muln_course_wise_monthly_feedback AS mf
+								ON df.user_id=mf.user_id AND df.user_type=mf.user_type
+							   	where DATE_FORMAT(df.load_date, '%M-%Y')=
+							   	DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y')` + monthlyFilters;
     }else {
-    	changeInRatingQuery = `select monthly_trainerrating, monthly_learnersatisfation, monthly_contentrating from muln_couse_wise_monthly_feedback
-										where load_date=date_format(last_day(DATE_SUB(NOW(),INTERVAL 1 MONTH)), '%M-%Y')` + filters;
+    	changeInRatingQuery = `SELECT df.load_date,  (trainerrating-monthly_trainerrating) AS trainerratingby, 
+								(learnersatisfaction-monthly_learnersatisfaction) AS learnersatisfactionby, 
+								(contentrating-monthly_contentrating) AS contentratingby
+								FROM muln_all_courses_daily_feedback AS df
+								INNER JOIN muln_all_courses_monthly_feedback AS mf
+								ON df.user_id=mf.user_id AND df.user_type=mf.user_type
+							   	where DATE_FORMAT(df.load_date, '%M-%Y')=
+							   	DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y')` + monthlyFilters;
     }
 
 	async.parallel({
 		rating: function (next) {
 			models.sequelize_test.query(ratingQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
 				var trainerRating = data.length > 0 ? (data[0].trainerrating || 0): 0,
-					learnerSatisfation = data.length>0 ? (data[0].learnersatisfation || 0): 0,
+					learnerSatisfaction = data.length>0 ? (data[0].learnersatisfaction || 0): 0,
 					contentRating = data.length>0 ? (data[0].contentrating || 0): 0;
 			    next(null, {
 			    	trainerRating: trainerRating,
-			    	learnerSatisfation: learnerSatisfation,
+			    	learnerSatisfaction: learnerSatisfaction,
 			    	contentRating: contentRating
 			    });
 			}).catch(function (err) {
@@ -85,9 +115,9 @@ exports.feedback = function (req, res) {
 		},
 		changeInRating: function (next) {
 			models.sequelize_test.query(changeInRatingQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-				var trainerRatingBy = data.length > 0 ? (data[0].monthly_trainerrating || 0): 0,
-					learnerSatisfationBy = data.length>0 ? (data[0].monthly_learnersatisfation || 0): 0,
-					contentRatingBy = data.length>0 ? (data[0].monthly_contentrating || 0): 0;
+				var trainerRatingBy = data.length > 0 ? (data[0].trainerratingby || 0): 0,
+					learnerSatisfationBy = data.length>0 ? (data[0].learnersatisfationby || 0): 0,
+					contentRatingBy = data.length>0 ? (data[0].contentratingby || 0): 0;
 			    next(null, {
 			    	trainerRatingBy: trainerRatingBy,
 			    	learnerSatisfationBy: learnerSatisfationBy,
@@ -106,7 +136,7 @@ exports.feedback = function (req, res) {
 
 			responseData.trainerRating = rating.trainerRating;
 			responseData.contentRating = rating.contentRating;
-			responseData.learnerSatisfation = rating.learnerSatisfation;
+			responseData.learnerSatisfaction = rating.learnerSatisfaction;
 			responseData.trainerRatingBy = changeInRating.trainerRatingBy;
 			responseData.contentRatingBy = changeInRating.contentRatingBy;
 			responseData.learnerSatisfationBy = changeInRating.learnerSatisfationBy;
