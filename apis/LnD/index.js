@@ -1,4 +1,7 @@
 var apis = ['activeUsers',
+			'learnerEngagement',
+			'learnerPace',
+			'feedback',
 			'learningActivities',
 			'goals',
 			'daywiseActiveUsers',

@@ -11,6 +11,7 @@ exports.getDates = function (req, addOneDay) {
     endDate = req.query.end_date,
     date = {
       current: false,
+      currentStatus: false,
       currentDate: moment().format(__('YMD')),
       currentHour: moment().format('YYYY-MM-DD HH:mm:ss')
     };
@@ -19,6 +20,7 @@ exports.getDates = function (req, addOneDay) {
     date.start = addLeadingZero(startDate);
     date.end = addLeadingZero(endDate);
     if (date.start === date.currentDate || date.end === date.currentDate) date.current = true;
+    if (date.start === date.currentDate && date.end === date.currentDate) date.currentStatus = true;
   } else {
     date.current = true;
     date.start = moment(date.currentDate, __('YMD')).subtract(90, 'days').format(__('YMD'));

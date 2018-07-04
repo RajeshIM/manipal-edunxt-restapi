@@ -54,9 +54,9 @@ var sequelize_test = new Sequelize(config.testdb, config.username, config.passwo
     console.error('Unable to connect to the database:', err);
   });
 
-userSchemas.forEach(function (schema) {
-  db[schema] = sequelize_test.import(__dirname + '/LnD/' + schema);
-});
+// userSchemas.forEach(function (schema) {
+//   db[schema] = sequelize_test.import(__dirname + '/LnD/' + schema);
+// });
 
 LnDSchemas.forEach(function (schema) {
   db[schema] = sequelize.import(__dirname + '/LnD/' + schema);
