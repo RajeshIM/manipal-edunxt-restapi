@@ -37,7 +37,7 @@ exports.activeUsers = function (req, res) {
 		enrolledUsersSinceLastMonthQuery = '';
 
 	if (date.currentStatus) {
-		activeUsersQuery = `SELECT COUNT(distinct person_id) as activeUsers FROM muln_current_active_users`;
+		activeUsersQuery = `SELECT COUNT(distinct person_id) as activeUsers FROM muln_current_active_users WHERE (login_time BETWEEN DATE_SUB(NOW(), INTERVAL 30 MINUTE) AND NOW())`;
 	}else {
 		activeUsersQuery = `SELECT AVG(active_users_count) as activeUsers FROM muln_daily_active_users  where load_date between '${date.start}' and '${date.end}'`;
 	}
