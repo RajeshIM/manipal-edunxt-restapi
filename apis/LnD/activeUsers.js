@@ -72,8 +72,7 @@ exports.activeUsers = function (req, res) {
 	async.parallel({
 		activeUsers: function (next) {
 			models.sequelize_test.query(activeUsersQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-				data = data.length > 0 ? data[0].activeUsers : 0;
-				data = data ? data : 0;
+				data = data.length > 0 ? parseInt(data[0].activeUsers || 0) : 0;
 			    next(null, data);
 			}).catch(function (err) {
 			    next(err);
@@ -81,8 +80,7 @@ exports.activeUsers = function (req, res) {
 		},
 		activeUsersSinceLastMonth: function (next) {
 			models.sequelize_test.query(activeUsersSinceLastMonthQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-				data = data.length > 0 ? data[0].activeUsersSinceLastMonth : 0;
-				data = data ? data : 0;
+				data = data.length > 0 ? parseInt(data[0].activeUsersSinceLastMonth || 0) : 0;
 			    next(null, data);
 			}).catch(function (err) {
 			    next(err);
@@ -90,8 +88,7 @@ exports.activeUsers = function (req, res) {
 		},
 		enrolledUsers: function (next) {
 			models.sequelize_test.query(enrolledUsersQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-				data = data.length > 0 ? data[0].enrolledUsers : 0;
-				data = data ? data : 0;
+				data = data.length > 0 ? parseInt (data[0].enrolledUsers || 0) : 0;
 			    next(null, data);
 			}).catch(function (err) {
 			    next(err);
@@ -100,8 +97,7 @@ exports.activeUsers = function (req, res) {
 		},
 		enrolledUsersSinceLastMonth: function (next) {
 			models.sequelize_test.query(enrolledUsersSinceLastMonthQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-				data = data.length > 0 ? data[0].enrolledUsersSinceLastMonth : 0;
-				data = data ? data : 0;
+				data = data.length > 0 ? parseInt(data[0].enrolledUsersSinceLastMonth) : 0;
 			    next(null, data);
 			}).catch(function (err) {
 			    next(err);
