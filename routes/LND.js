@@ -5,6 +5,7 @@ router.get('/active-users', apis.activeUsers);
 router.get('/learner-pace', apis.learnerPace);
 router.get('/learner-engagement', apis.learnerEngagement);
 router.get('/feedback', apis.feedback);
+router.get('/time-spent', apis.timeSpent);
 router.get('/learning-activities', apis.learningActivities);
 router.get('/goals', apis.goals);
 router.post('/active-users-graph', apis.daywiseActiveUsers);

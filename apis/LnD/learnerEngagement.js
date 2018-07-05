@@ -52,7 +52,7 @@ exports.learnerEngagement = function (req, res) {
 		}
    	}else {
 		if (courseId) {
-			completedTrainingQuery = `select avg(completed) as completed from muln_course_wise_daily_learner_engagement where load_date between '${date.start}' and '${date.end}'`;
+			completedTrainingQuery = `select avg(completed) as completed from muln_course_wise_daily_learner_engagement where load_date between '${date.start}' and '${date.end}'`+filters;
 		}else {
 			completedTrainingQuery = `select completed from muln_all_courses_daily_learner_engagement where load_date between '${date.start}' and '${date.end}'`+filters;
 		}
