@@ -71,7 +71,7 @@ exports.feedback = function (req, res) {
    	}else {
 		if (courseId) {
 			ratingQuery = `select avg(trainerrating) as trainerrating, avg(learnersatisfaction) as learnersatisfaction, avg(contentrating) as contentrating
-					from muln_course_wise_daily_feedback where load_date between '${date.start}' and '${date.end}'`;
+					from muln_course_wise_daily_feedback where load_date between '${date.start}' and '${date.end}'`+filters;
 		}else {
 			ratingQuery = `select avg(trainerrating) as trainerrating, avg(learnersatisfaction) as learnersatisfaction, avg(contentrating) as contentrating 
 						from muln_all_courses_daily_feedback where load_date between '${date.start}' and '${date.end}'`+filters;
