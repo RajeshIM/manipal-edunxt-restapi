@@ -2,8 +2,8 @@
   "development": {
     "username": "edunxtdbadmin",
     "password": "EduNxt#321",
-    "database": "mulnplatform_analytics",
-    "testdb": "mulnplatform_analytics_test",
+    "MAB": "mab_analytics",
+    "MAIT": "mulnplatform_analytics_test",
     "host": "innominds-analytics.cmmtocbvzm4p.ap-southeast-1.rds.amazonaws.com",
     "dialect": "mysql"
   },

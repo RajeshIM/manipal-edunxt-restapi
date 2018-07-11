@@ -5,7 +5,8 @@ var response = require('./../../helpers/response'),
 	moment = require('moment');
 
 exports.learnerPace = function (req, res) {
-	var date = utils.getDates(req),
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		date = utils.getDates(req),
 		userId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
 		userType  =  req.headers['usertype'] ? req.headers['usertype'] : null,
 		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
@@ -47,7 +48,7 @@ exports.learnerPace = function (req, res) {
    	learnerPaceQuery = `select aheadschedule, ontrack, behindschedule,have_not_started as havenotstarted  
 						from `+ table + filters;
 	
-	models.sequelize_test.query(learnerPaceQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
+	models[tenant].query(learnerPaceQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 			responseData.aheadSchedule = data.length>0 ? parseFloat(data[0].aheadschedule || 0) : 0;
 			responseData.onTrack = data.length>0 ? parseFloat(data[0].ontrack || 0) : 0;
 			responseData.behindSchedule = data.length>0 ? parseFloat(data[0].behindschedule || 0) : 0;

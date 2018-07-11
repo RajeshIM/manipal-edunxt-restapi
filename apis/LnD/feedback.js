@@ -5,7 +5,8 @@ var response = require('./../../helpers/response'),
 	moment = require('moment');
 
 exports.feedback = function (req, res) {
-	var date = utils.getDates(req),
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		date = utils.getDates(req),
 		userId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
 		userType  =  req.headers['usertype'] ? req.headers['usertype'] : null,
 		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
@@ -138,7 +139,7 @@ exports.feedback = function (req, res) {
 
 	async.parallel({
 		rating: function (next) {
-			models.sequelize_test.query(ratingQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
+			models[tenant].query(ratingQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 				var trainerRating = data.length > 0 ? parseFloat(data[0].trainerrating || 0): 0,
 					learnerSatisfaction = data.length>0 ? parseFloat(data[0].learnersatisfaction || 0): 0,
 					contentRating = data.length>0 ? parseFloat(data[0].contentrating || 0): 0;
@@ -152,7 +153,7 @@ exports.feedback = function (req, res) {
 			});
 		},
 		changeInRating: function (next) {
-			models.sequelize_test.query(changeInRatingQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
+			models[tenant].query(changeInRatingQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 				var trainerRatingBy = data.length > 0 ? parseFloat(data[0].trainerratingby || 0): 0,
 					learnerSatisfationBy = data.length>0 ? parseFloat(data[0].learnersatisfationby || 0): 0,
 					contentRatingBy = data.length>0 ? parseFloat(data[0].contentratingby || 0): 0;

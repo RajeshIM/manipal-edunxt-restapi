@@ -39,17 +39,17 @@ var options = {
     }
   };
 
-var sequelize = new Sequelize(config.database, config.username, config.password, options);
-var sequelize_test = new Sequelize(config.testdb, config.username, config.password, options);
+var MAIT = new Sequelize(config.MAIT, config.username, config.password, options);
+var MAB = new Sequelize(config.MAB, config.username, config.password, options);
   
-  sequelize.authenticate().then(() => {
-    console.log('Connection has been established successfully to ', config.database);
+  MAIT.authenticate().then(() => {
+    console.log('Connection has been established successfully to ', config.MAIT);
   }).catch(err => {
     console.error('Unable to connect to the database:', err);
   });
 
-  sequelize_test.authenticate().then(() => {
-    console.log('Connection has been established successfully to ', config.testdb);
+  MAB.authenticate().then(() => {
+    console.log('Connection has been established successfully to ', config.MAB);
   }).catch(err => {
     console.error('Unable to connect to the database:', err);
   });
@@ -59,11 +59,12 @@ var sequelize_test = new Sequelize(config.testdb, config.username, config.passwo
 // });
 
 LnDSchemas.forEach(function (schema) {
-  db[schema] = sequelize.import(__dirname + '/LnD/' + schema);
+  // db['MAIT'][schema] = MAIT.import(__dirname + '/LnD/' + schema);
+  // db['MAB'][schema] = MAIT.import(__dirname + '/LnD/' + schema);
 });
 
-db.sequelize = sequelize;
-db.sequelize_test = sequelize_test;
+db.MAIT = MAIT;
+db.MAB = MAB;
 db.Sequelize = Sequelize;
 db.Op = Sequelize.Op;
 

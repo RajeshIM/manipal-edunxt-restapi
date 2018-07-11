@@ -5,10 +5,11 @@ var response = require('./../../helpers/response'),
 	moment = require('moment');
 
 exports.learnerEngagement = function (req, res) {
-	var date = utils.getDates(req),
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		date = utils.getDates(req),
 		userId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
 		userType  =  req.headers['usertype'] ? req.headers['usertype'] : null,
-		courseId =  req.query.courseId ? req.query.courseId : null,
+		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
 		programId =  req.query.programId ? parseInt(req.query.programId) : null,
 		userIdFilter = '',
 		courseIdFilter = '',
@@ -68,15 +69,15 @@ exports.learnerEngagement = function (req, res) {
     
 	async.parallel({
 		usersCompleted: function (next) {
-			models.sequelize_test.query(completedTrainingQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-				data = data.length > 0 ?( data[0].completed || 0) : 0;
+			models[tenant].query(completedTrainingQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+				data = data.length > 0 ? parseFloat( data[0].completed || 0) : 0;
 			    next(null, data);
 			}).catch(function (err) {
 			    next(err);
 			});
 		},
 		usersCompletedSinceLastMonth: function (next) {
-			models.sequelize_test.query(completedTrainingSinceLastMonthQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
+			models[tenant].query(completedTrainingSinceLastMonthQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 				data = data.length > 0 ? parseFloat(data[0].monthlyCompleted || 0) : 0;
 				data = data ? data : 0;
 			    next(null, data);

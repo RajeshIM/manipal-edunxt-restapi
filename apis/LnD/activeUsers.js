@@ -5,7 +5,8 @@ var response = require('./../../helpers/response'),
 	moment = require('moment');
 
 exports.activeUsers = function (req, res) {
-	var date = utils.getDates(req),
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		date = utils.getDates(req),
 		userId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
 		userType  =  req.headers['usertype'] ? req.headers['usertype'] : null,
 		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
@@ -71,7 +72,7 @@ exports.activeUsers = function (req, res) {
    
 	async.parallel({
 		activeUsers: function (next) {
-			models.sequelize_test.query(activeUsersQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
+			models[tenant].query(activeUsersQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 				data = data.length > 0 ? parseInt(data[0].activeUsers || 0) : 0;
 			    next(null, data);
 			}).catch(function (err) {
@@ -79,7 +80,7 @@ exports.activeUsers = function (req, res) {
 			});
 		},
 		activeUsersSinceLastMonth: function (next) {
-			models.sequelize_test.query(activeUsersSinceLastMonthQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
+			models[tenant].query(activeUsersSinceLastMonthQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 				data = data.length > 0 ? parseInt(data[0].activeUsersSinceLastMonth || 0) : 0;
 			    next(null, data);
 			}).catch(function (err) {
@@ -87,7 +88,7 @@ exports.activeUsers = function (req, res) {
 			});
 		},
 		enrolledUsers: function (next) {
-			models.sequelize_test.query(enrolledUsersQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
+			models[tenant].query(enrolledUsersQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 				data = data.length > 0 ? parseInt (data[0].enrolledUsers || 0) : 0;
 			    next(null, data);
 			}).catch(function (err) {
@@ -96,7 +97,7 @@ exports.activeUsers = function (req, res) {
 			
 		},
 		enrolledUsersSinceLastMonth: function (next) {
-			models.sequelize_test.query(enrolledUsersSinceLastMonthQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
+			models[tenant].query(enrolledUsersSinceLastMonthQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 				data = data.length > 0 ? parseInt(data[0].enrolledUsersSinceLastMonth) : 0;
 			    next(null, data);
 			}).catch(function (err) {
