@@ -8,8 +8,8 @@ exports.learnerPace = function (req, res) {
 	var date = utils.getDates(req),
 		userId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
 		userType  =  req.headers['usertype'] ? req.headers['usertype'] : null,
-		courseId =  req.headers['courseid'] ? parseInt(req.headers['courseid']) : null,
-		programId =  req.headers['programid'] ? parseInt(req.headers['programid']) : null,
+		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
+		programId =  req.query.programId ? parseInt(req.query.programId) : null,
 		userIdFilter = '',
 		courseIdFilter = '',
 		userTypeFilter = '',
@@ -44,15 +44,14 @@ exports.learnerPace = function (req, res) {
    	filters = (filters.length > 0 && userType) ? (filters + ' AND' + userTypeFilter) : 
    	   		(userType ? userTypeFilter : filters);
 
-   	learnerPaceQuery = `select aheadschedule, ontrack, behindschedule, 
-					(total_learners_count-(aheadschedule+ontrack+behindschedule)) as havenotstarted 
-					from `+ table + filters;
+   	learnerPaceQuery = `select aheadschedule, ontrack, behindschedule,have_not_started as havenotstarted  
+						from `+ table + filters;
 	
 	models.sequelize_test.query(learnerPaceQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-			responseData.aheadSchedule = data.length>0 ? (data[0].aheadschedule || 0) : 0;
-			responseData.onTrack = data.length>0 ? (data[0].ontrack || 0) : 0;
-			responseData.behindSchedule = data.length>0 ? (data[0].behindschedule || 0) : 0;
-			responseData.haveNotStarted = data.length>0 ? (data[0].havenotstarted || 0) : 0;
+			responseData.aheadSchedule = data.length>0 ? parseFloat(data[0].aheadschedule || 0) : 0;
+			responseData.onTrack = data.length>0 ? parseFloat(data[0].ontrack || 0) : 0;
+			responseData.behindSchedule = data.length>0 ? parseFloat(data[0].behindschedule || 0) : 0;
+			responseData.haveNotStarted = data.length>0 ? parseFloat(data[0].havenotstarted || 0) : 0;
 			response.sendSuccessResponse(res, responseData);	
 	}).catch(function (err) {
 			response.customErrorMessage(res, err.message);

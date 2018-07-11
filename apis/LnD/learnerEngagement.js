@@ -8,8 +8,8 @@ exports.learnerEngagement = function (req, res) {
 	var date = utils.getDates(req),
 		userId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
 		userType  =  req.headers['usertype'] ? req.headers['usertype'] : null,
-		courseId =  req.headers['courseid'] ? parseInt(req.headers['courseid']) : null,
-		programId =  req.headers['programid'] ? parseInt(req.headers['programid']) : null,
+		courseId =  req.query.courseId ? req.query.courseId : null,
+		programId =  req.query.programId ? parseInt(req.query.programId) : null,
 		userIdFilter = '',
 		courseIdFilter = '',
 		userTypeFilter = '',
@@ -60,17 +60,16 @@ exports.learnerEngagement = function (req, res) {
    
     if (courseId) {
     	completedTrainingSinceLastMonthQuery = `SELECT monthly_completed as monthlyCompleted FROM muln_course_wise_monthly_learner_engagement
-										where load_date=date_format(last_day(DATE_SUB(NOW(),INTERVAL 1 MONTH)), '%M-%Y')` + filters;
+										where load_date= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y')` + filters;
     }else {
     	completedTrainingSinceLastMonthQuery = `SELECT monthly_completed as monthlyCompleted FROM muln_all_courses_monthly_learner_engagement
-										where load_date=date_format(last_day(DATE_SUB(NOW(),INTERVAL 1 MONTH)), '%M-%Y')` + filters;
+										where load_date= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y')` + filters;
     }
     
 	async.parallel({
 		usersCompleted: function (next) {
 			models.sequelize_test.query(completedTrainingQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-				data = data.length > 0 ? data[0].completed : 0;
-				data = data ? data : 0;
+				data = data.length > 0 ?( data[0].completed || 0) : 0;
 			    next(null, data);
 			}).catch(function (err) {
 			    next(err);
@@ -78,7 +77,7 @@ exports.learnerEngagement = function (req, res) {
 		},
 		usersCompletedSinceLastMonth: function (next) {
 			models.sequelize_test.query(completedTrainingSinceLastMonthQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-				data = data.length > 0 ? data[0].monthlyCompleted : 0;
+				data = data.length > 0 ? parseFloat(data[0].monthlyCompleted || 0) : 0;
 				data = data ? data : 0;
 			    next(null, data);
 			}).catch(function (err) {

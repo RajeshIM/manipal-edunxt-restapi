@@ -8,8 +8,8 @@ exports.feedback = function (req, res) {
 	var date = utils.getDates(req),
 		userId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
 		userType  =  req.headers['usertype'] ? req.headers['usertype'] : null,
-		courseId =  req.headers['courseid'] ? parseInt(req.headers['courseid']) : null,
-		programId =  req.headers['programid'] ? parseInt(req.headers['programid']) : null,
+		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
+		programId =  req.query.programId ? parseInt(req.query.programId) : null,
 		userIdFilter = '',
 		monthlyUserIdFilter = '',
 		courseIdFilter = '',
@@ -77,33 +77,71 @@ exports.feedback = function (req, res) {
 						from muln_all_courses_daily_feedback where load_date between '${date.start}' and '${date.end}'`+filters;
 		}
     }
-   
-    if (courseId) {
-    	changeInRatingQuery = `SELECT df.load_date,  (trainerrating-monthly_trainerrating) AS trainerratingby, 
-								(learnersatisfaction-monthly_learnersatisfaction) AS learnersatisfactionby, 
-								(contentrating-monthly_contentrating) AS contentratingby
-								FROM muln_course_wise_daily_feedback AS df
-								INNER JOIN muln_course_wise_monthly_feedback AS mf
-								ON df.user_id=mf.user_id AND df.user_type=mf.user_type
-							   	where DATE_FORMAT(df.load_date, '%M-%Y')=
-							   	DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y')` + monthlyFilters;
+
+    if (date.currentStatus) {
+    	if (courseId) {
+    		changeInRatingQuery = `SELECT (AVG(df.trainerrating)-lmf.lm_trainerrating) AS trainerratingby,
+    							 (AVG(df.learnersatisfaction)-lmf.lm_learnersatisfaction) AS learnersatisfationby,
+    							(AVG(df.contentrating)-lmf.lm_contentrating) AS contentratingby 
+    							FROM muln_course_wise_daily_feedback  AS df
+    							INNER JOIN ( SELECT  user_id, user_type, program_id, course_id, 
+    							    monthly_trainerrating AS lm_trainerrating,
+    								monthly_learnersatisfaction AS lm_learnersatisfaction, 
+    								monthly_contentrating AS lm_contentrating 
+    								FROM muln_course_wise_monthly_feedback 
+    								WHERE load_date= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y')`+ filters +
+    								`) AS lmf ON df.user_id=lmf.user_id AND df.user_type=lmf.user_type AND 
+    							df.program_id=lmf.program_id AND df.course_id=lmf.course_id
+    							WHERE df.load_date=DATE(NOW())` + monthlyFilters;
+    	} else {
+    		changeInRatingQuery = `SELECT (AVG(df.trainerrating)-lmf.lm_trainerrating) AS trainerratingby,
+    							 (AVG(df.learnersatisfaction)-lmf.lm_learnersatisfaction) AS learnersatisfationby,
+    							(AVG(df.contentrating)-lmf.lm_contentrating) AS contentratingby 
+    							FROM muln_all_courses_daily_feedback AS df
+    							INNER JOIN ( SELECT  user_id, user_type, monthly_trainerrating AS lm_trainerrating,
+    								monthly_learnersatisfaction AS lm_learnersatisfaction, 
+    								monthly_contentrating AS lm_contentrating 
+    								FROM muln_all_courses_monthly_feedback 
+    								WHERE load_date= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y')`+ filters +
+    								`) AS lmf ON df.user_id=lmf.user_id AND df.user_type=lmf.user_type
+    							WHERE df.load_date=DATE(NOW())` + monthlyFilters;
+        }
     }else {
-    	changeInRatingQuery = `SELECT df.load_date,  (trainerrating-monthly_trainerrating) AS trainerratingby, 
-								(learnersatisfaction-monthly_learnersatisfaction) AS learnersatisfactionby, 
-								(contentrating-monthly_contentrating) AS contentratingby
-								FROM muln_all_courses_daily_feedback AS df
-								INNER JOIN muln_all_courses_monthly_feedback AS mf
-								ON df.user_id=mf.user_id AND df.user_type=mf.user_type
-							   	where DATE_FORMAT(df.load_date, '%M-%Y')=
-							   	DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y')` + monthlyFilters;
+    	if (courseId) {
+    		changeInRatingQuery = `SELECT (AVG(df.trainerrating)-lmf.lm_trainerrating) AS trainerratingby,
+    							 (AVG(df.learnersatisfaction)-lmf.lm_learnersatisfaction) AS learnersatisfationby,
+    							(AVG(df.contentrating)-lmf.lm_contentrating) AS contentratingby 
+    							FROM muln_course_wise_daily_feedback  AS df
+    							INNER JOIN ( SELECT  user_id, user_type, program_id, course_id,
+    							    monthly_trainerrating AS lm_trainerrating,
+    								monthly_learnersatisfaction AS lm_learnersatisfaction, 
+    								monthly_contentrating AS lm_contentrating 
+    								FROM muln_course_wise_monthly_feedback 
+    								WHERE load_date= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y')`+ filters +
+    								`) AS lmf ON df.user_id=lmf.user_id AND df.user_type=lmf.user_type AND 
+    							df.program_id=lmf.program_id AND df.course_id=lmf.course_id
+    							WHERE df.load_date between '${date.start}' and '${date.end}'` + monthlyFilters;
+    	} else {
+    		changeInRatingQuery = `SELECT (AVG(df.trainerrating)-lmf.lm_trainerrating) AS trainerratingby,
+    							 (AVG(df.learnersatisfaction)-lmf.lm_learnersatisfaction) AS learnersatisfationby,
+    							(AVG(df.contentrating)-lmf.lm_contentrating) AS contentratingby 
+    							FROM muln_all_courses_daily_feedback  AS df
+    							INNER JOIN ( SELECT  user_id, user_type, monthly_trainerrating AS lm_trainerrating,
+    								monthly_learnersatisfaction AS lm_learnersatisfaction, 
+    								monthly_contentrating AS lm_contentrating 
+    								FROM muln_all_courses_monthly_feedback 
+    								WHERE load_date= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y')`+ filters +
+    								`) AS lmf ON df.user_id=lmf.user_id AND df.user_type=lmf.user_type
+    							WHERE df.load_date between '${date.start}' and '${date.end}'` + monthlyFilters;
+    	}
     }
 
 	async.parallel({
 		rating: function (next) {
 			models.sequelize_test.query(ratingQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-				var trainerRating = data.length > 0 ? (data[0].trainerrating || 0): 0,
-					learnerSatisfaction = data.length>0 ? (data[0].learnersatisfaction || 0): 0,
-					contentRating = data.length>0 ? (data[0].contentrating || 0): 0;
+				var trainerRating = data.length > 0 ? parseFloat(data[0].trainerrating || 0): 0,
+					learnerSatisfaction = data.length>0 ? parseFloat(data[0].learnersatisfaction || 0): 0,
+					contentRating = data.length>0 ? parseFloat(data[0].contentrating || 0): 0;
 			    next(null, {
 			    	trainerRating: trainerRating,
 			    	learnerSatisfaction: learnerSatisfaction,
@@ -115,9 +153,9 @@ exports.feedback = function (req, res) {
 		},
 		changeInRating: function (next) {
 			models.sequelize_test.query(changeInRatingQuery, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
-				var trainerRatingBy = data.length > 0 ? (data[0].trainerratingby || 0): 0,
-					learnerSatisfationBy = data.length>0 ? (data[0].learnersatisfationby || 0): 0,
-					contentRatingBy = data.length>0 ? (data[0].contentratingby || 0): 0;
+				var trainerRatingBy = data.length > 0 ? parseFloat(data[0].trainerratingby || 0): 0,
+					learnerSatisfationBy = data.length>0 ? parseFloat(data[0].learnersatisfationby || 0): 0,
+					contentRatingBy = data.length>0 ? parseFloat(data[0].contentratingby || 0): 0;
 			    next(null, {
 			    	trainerRatingBy: trainerRatingBy,
 			    	learnerSatisfationBy: learnerSatisfationBy,
