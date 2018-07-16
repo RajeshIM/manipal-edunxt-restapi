@@ -58,10 +58,10 @@ var MAB = new Sequelize(config.MAB, config.username, config.password, options);
 //   db[schema] = sequelize_test.import(__dirname + '/LnD/' + schema);
 // });
 
-LnDSchemas.forEach(function (schema) {
-  // db['MAIT'][schema] = MAIT.import(__dirname + '/LnD/' + schema);
-  // db['MAB'][schema] = MAIT.import(__dirname + '/LnD/' + schema);
-});
+// LnDSchemas.forEach(function (schema) {
+//   db['MAIT'][schema] = MAIT.import(__dirname + '/LnD/' + schema);
+//   db['MAB'][schema] = MAIT.import(__dirname + '/LnD/' + schema);
+// });
 
 db.MAIT = MAIT;
 db.MAB = MAB;

@@ -5,11 +5,12 @@ var response = require('./../../helpers/response'),
 	moment = require('moment');
 
 exports.usersTrained = function (req, res) {
-	var date = utils.getDates(req),
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		date = utils.getDates(req),
 		userId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
 		userType  =  req.headers['usertype'] ? req.headers['usertype'] : null,
-		courseId =  req.headers['courseid'] ? parseInt(req.headers['courseid']) : null,
-		programId =  req.headers['programid'] ? parseInt(req.headers['programid']) : null,
+		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
+		programId =  req.query.programId ? parseInt(req.query.programId) : null,
 		userIdFilter = '',
 		courseIdFilter = '',
 		userTypeFilter = '',
@@ -50,7 +51,7 @@ exports.usersTrained = function (req, res) {
 
  	query = 'select trained_percentage,completed_training,total_learners from '+ table + ` where load_date=date(now())`+ filters;
     
-    models.sequelize_test.query(query, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
+    models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		responseData.trainedPercentage = data.length>0 ? parseFloat(data[0].trained_percentage || 0) : 0;	
 		responseData.expectedtrainedPercentage = 0;
 		responseData.completedTraining = data.length>0 ? parseInt(data[0].completed_training || 0) : 0;

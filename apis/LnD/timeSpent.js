@@ -5,11 +5,12 @@ var response = require('./../../helpers/response'),
 	moment = require('moment');
 
 exports.timeSpent = function (req, res) {
-	var date = utils.getDates(req),
+	var	tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT', 
+		date = utils.getDates(req),
 		userId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
 		userType  =  req.headers['usertype'] ? req.headers['usertype'] : null,
-		courseId =  req.headers['courseid'] ? parseInt(req.headers['courseid']) : null,
-		programId =  req.headers['programid'] ? parseInt(req.headers['programid']) : null,
+		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
+		programId =  req.query.programId ? parseInt(req.query.programId) : null,
 		userIdFilter = '',
 		courseIdFilter = '',
 		userTypeFilter = '',
@@ -50,12 +51,12 @@ exports.timeSpent = function (req, res) {
 
  	query = 'select time_spent_percentage, expected_time_spent_percentage, duration_spent, course_duration from '+ table + ` where load_date=date(now())`+ filters;
     
-    models.sequelize_test.query(query, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
+    models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
     	if (data.length > 0) {
-    		responseData.timeSpent = data[0].time_spent_percentage ? parseFloat(data[0].time_spent_percentage) : 0;
-    		responseData.expectedTimeSpent = data[0].expected_time_spent_percentage ? parseFloat(data[0].expected_time_spent_percentage) : 0;
-    		responseData.durationSpent = data[0].duration_spent ? parseInt(parseInt(data[0].duration_spent)/60) : 0;
-    		responseData.courseDuration = data[0].course_duration ? parseInt(parseInt(data[0].course_duration)/60) : 0;
+    		responseData.timeSpent = data[0].time_spent_percentage ? parseFloat(data[0].time_spent_percentage || 0) : 0;
+    		responseData.expectedTimeSpent = data[0].expected_time_spent_percentage ? parseFloat(data[0].expected_time_spent_percentage || 0) : 0;
+    		responseData.durationSpent = data[0].duration_spent ? parseInt(parseInt(data[0].duration_spent || 0)/60) : 0;
+    		responseData.courseDuration = data[0].course_duration ? parseInt(parseInt(data[0].course_duration || 0)/60) : 0;
     	}
 		response.sendSuccessResponse(res, responseData);
 	}).catch(function (err) {
