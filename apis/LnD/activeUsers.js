@@ -7,30 +7,10 @@ var response = require('./../../helpers/response'),
 exports.activeUsers = function (req, res) {
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
 		date = utils.getDates(req),
-		userId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
-		userType  =  req.headers['usertype'] ? req.headers['usertype'] : null,
 		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
-		programId =  req.query.programId ? parseInt(req.query.programId) : null,
-		userIdFilter = '',
-		courseIdFilter = '',
-		userTypeFilter = '',
-		programIdFilter = '',
-		dateFilter = '',
-		filters = '',
+		filters = apis.getFiltersForRawQuery(req, false),
 		responseData = {};
 
-	if (userId) {
-		userIdFilter = ` user_id = ${userId}`;
-	}
-	if (userType) {
-		userTypeFilter = ` user_type = '${userType}'`;
-	}
-	if (courseId){
-		courseIdFilter = ` course_id = ${courseId}`;
-	}
-	if (programId){
-		programIdFilter = ` program_id = ${programId}`;
-	}
 
 	var activeUsersQuery = '',
 		activeUsersSinceLastMonthQuery = '',
@@ -45,15 +25,6 @@ exports.activeUsers = function (req, res) {
 
 	activeUsersSinceLastMonthQuery = `SELECT monthly_active_users_count AS activeUsersSinceLastMonth FROM muln_monthly_active_users 
 										WHERE load_date= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y')`;
-
-   filters = userId ? userIdFilter : '';
-   filters = (filters.length > 0 && courseId) ? (filters + ' AND' + courseIdFilter) : 
-   				(courseId ? courseIdFilter : filters);
-   filters = (filters.length > 0 && programId) ? (filters + ' AND' + programIdFilter): 
-   	   		(programId ? programIdFilter : filters);
-   filters = (filters.length > 0 && userType) ? (filters + ' AND' + userTypeFilter) : 
-   	   		(userType ? userTypeFilter : filters);
-   filters = (filters.length > 0) ? (' AND ' + filters) : '';
 
    var enrolledUsersDate = date.currentStatus ? 'WHERE load_date=DATE(NOW()) ' : `WHERE load_date between '${date.start}' and '${date.end}' `; 
    if (courseId) {
@@ -73,7 +44,7 @@ exports.activeUsers = function (req, res) {
 	async.parallel({
 		activeUsers: function (next) {
 			models[tenant].query(activeUsersQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
-				data = data.length > 0 ? parseInt(data[0].activeUsers || 0) : 0;
+				data = data.length > 0 ? Math.round(data[0].activeUsers || 0) : 0;
 			    next(null, data);
 			}).catch(function (err) {
 			    next(err);
@@ -81,7 +52,7 @@ exports.activeUsers = function (req, res) {
 		},
 		activeUsersSinceLastMonth: function (next) {
 			models[tenant].query(activeUsersSinceLastMonthQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
-				data = data.length > 0 ? parseInt(data[0].activeUsersSinceLastMonth || 0) : 0;
+				data = data.length > 0 ? Math.round(data[0].activeUsersSinceLastMonth || 0) : 0;
 			    next(null, data);
 			}).catch(function (err) {
 			    next(err);
@@ -89,7 +60,7 @@ exports.activeUsers = function (req, res) {
 		},
 		enrolledUsers: function (next) {
 			models[tenant].query(enrolledUsersQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
-				data = data.length > 0 ? parseInt (data[0].enrolledUsers || 0) : 0;
+				data = data.length > 0 ? Math.round(data[0].enrolledUsers || 0) : 0;
 			    next(null, data);
 			}).catch(function (err) {
 			    next(err);
@@ -98,7 +69,7 @@ exports.activeUsers = function (req, res) {
 		},
 		enrolledUsersSinceLastMonth: function (next) {
 			models[tenant].query(enrolledUsersSinceLastMonthQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
-				data = data.length > 0 ? parseInt(data[0].enrolledUsersSinceLastMonth) : 0;
+				data = data.length > 0 ? Math.round(data[0].enrolledUsersSinceLastMonth) : 0;
 			    next(null, data);
 			}).catch(function (err) {
 			    next(err);

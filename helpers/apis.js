@@ -103,6 +103,42 @@ exports.getPaginationObject = function (total, page, limit) {
 	return res;
 }
 
+exports.getFiltersForRawQuery = function(req, isJoin) {
+	var userId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
+		userType = req.headers['user-type'] ? req.headers['user-type'] : null,
+		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
+		programId =  req.query.programId ? parseInt(req.query.programId) : null,
+		userIdFilter = '',
+		userTypeFilter = '',
+		courseIdFilter = '',
+		programIdFilter = '',
+		filters = '';
+	
+	if (userId) {
+		userIdFilter = isJoin ? ` df.user_id = ${userId}` : ` user_id = ${userId}`;
+	}
+	if (userType) {
+		userTypeFilter = isJoin ? ` df.user_type = '${userType}'`: ` user_type = '${userType}'`;
+	}
+	if (courseId){
+		courseIdFilter = isJoin ?  ` df.course_id = ${courseId}`: ` course_id = ${courseId}`;
+	}
+	if (programId){
+		programIdFilter = isJoin ? ` df.program_id = ${programId}`: ` program_id = ${programId}`;
+	}
+
+	filters = userId ? userIdFilter : '';
+   	filters = (filters.length > 0 && courseId) ? (filters + ' AND' + courseIdFilter) : 
+   				(courseId ? courseIdFilter : filters);
+   	filters = (filters.length > 0 && programId) ? (filters + ' AND' + programIdFilter): 
+   	   		(programId ? programIdFilter : filters);
+   	filters = (filters.length > 0 && userType) ? (filters + ' AND' + userTypeFilter) : 
+   	   		(userType ? userTypeFilter : filters);
+	filters = (filters.length > 0) ? (' AND ' + filters) : '';
+	
+	return filters;
+}
+
 /** Function to get the aggregated attributes
  *
  * @param {Object} attributes list of columns to be aggregated

@@ -7,61 +7,12 @@ var response = require('./../../helpers/response'),
 exports.feedback = function (req, res) {
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
 		date = utils.getDates(req),
-		userId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
-		userType  =  req.headers['usertype'] ? req.headers['usertype'] : null,
 		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
-		programId =  req.query.programId ? parseInt(req.query.programId) : null,
-		userIdFilter = '',
-		monthlyUserIdFilter = '',
-		courseIdFilter = '',
-		monthlyCourseIdFilter = '',
-		userTypeFilter = '',
-		monthlyUserTypeFilter = '',
-		programIdFilter = '',
-		monthlyProgramIdFilter = '',
-		dateFilter = '',
-		filters = '',
-		monthlyFilters = '',
+		filters = apis.getFiltersForRawQuery(req, false),
+		monthlyFilters = apis.getFiltersForRawQuery(req, true),
+		ratingQuery = '',
+		changeInRatingQuery = '',
 		responseData = {};
-
-	if (userId) {
-		userIdFilter = ` user_id = ${userId}`;
-		monthlyUserIdFilter = ` df.user_id = ${userId}`;
-	}
-	if (userType) {
-		userTypeFilter = ` user_type = '${userType}'`;
-		monthlyUserTypeFilter = ` df.user_type = '${userType}'`;
-	}
-	if (courseId){
-		courseIdFilter = ` course_id = ${courseId}`;
-		monthlyCourseIdFilter = ` df.course_id = ${courseId}`;
-	}
-	if (programId){
-		programIdFilter = ` program_id = ${programId}`;
-		monthlyProgramIdFilter = ` df.program_id = ${programId}`;
-	}
-
-	var ratingQuery = '',
-		changeInRatingQuery = '';
-
-
-   	filters = userId ? userIdFilter : '';
-   	filters = (filters.length > 0 && courseId) ? (filters + ' AND' + courseIdFilter) : 
-   				(courseId ? courseIdFilter : filters);
-   	filters = (filters.length > 0 && programId) ? (filters + ' AND' + programIdFilter): 
-   	   		(programId ? programIdFilter : filters);
-   	filters = (filters.length > 0 && userType) ? (filters + ' AND' + userTypeFilter) : 
-   	   		(userType ? userTypeFilter : filters);
-   	filters = (filters.length > 0) ? (' AND ' + filters) : '';
-
-   	monthlyFilters = userId ? monthlyUserIdFilter : '';
-   	monthlyFilters = (monthlyFilters.length > 0 && courseId) ? (monthlyFilters + ' AND' + monthlyCourseIdFilter) : 
-   				(courseId ? monthlyCourseIdFilter : monthlyFilters);
-   	monthlyFilters = (monthlyFilters.length > 0 && programId) ? (monthlyFilters + ' AND' + monthlyProgramIdFilter): 
-   	   		(programId ? monthlyProgramIdFilter : monthlyFilters);
-   	monthlyFilters = (monthlyFilters.length > 0 && userType) ? (monthlyFilters + ' AND' + monthlyUserTypeFilter) : 
-   	   		(userType ? userTypeFilter : monthlyFilters);
-   	monthlyFilters = (monthlyFilters.length > 0) ? (' AND ' + monthlyFilters) : '';
 
    	if (date.currentStatus) {
    		if (courseId){
@@ -140,13 +91,13 @@ exports.feedback = function (req, res) {
 	async.parallel({
 		rating: function (next) {
 			models[tenant].query(ratingQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
-				var trainerRating = data.length > 0 ? parseFloat(data[0].trainerrating || 0): 0,
-					learnerSatisfaction = data.length>0 ? parseFloat(data[0].learnersatisfaction || 0): 0,
-					contentRating = data.length>0 ? parseFloat(data[0].contentrating || 0): 0;
+				var trainerRating = data.length > 0 ? parseFloat(data[0].trainerrating || 0).toFixed(2): 0,
+					learnerSatisfaction = data.length>0 ? parseFloat(data[0].learnersatisfaction || 0).toFixed(2): 0,
+					contentRating = data.length>0 ? parseFloat(data[0].contentrating || 0).toFixed(2): 0;
 			    next(null, {
-			    	trainerRating: trainerRating,
-			    	learnerSatisfaction: learnerSatisfaction,
-			    	contentRating: contentRating
+			    	trainerRating: parseFloat(trainerRating),
+			    	learnerSatisfaction: parseFloat(learnerSatisfaction),
+			    	contentRating: parseFloat(contentRating)
 			    });
 			}).catch(function (err) {
 			    next(err);
@@ -154,13 +105,13 @@ exports.feedback = function (req, res) {
 		},
 		changeInRating: function (next) {
 			models[tenant].query(changeInRatingQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
-				var trainerRatingBy = data.length > 0 ? parseFloat(data[0].trainerratingby || 0): 0,
-					learnerSatisfationBy = data.length>0 ? parseFloat(data[0].learnersatisfationby || 0): 0,
-					contentRatingBy = data.length>0 ? parseFloat(data[0].contentratingby || 0): 0;
+				var trainerRatingBy = data.length > 0 ? parseFloat(data[0].trainerratingby || 0).toFixed(2): 0,
+					learnerSatisfationBy = data.length>0 ? parseFloat(data[0].learnersatisfationby || 0).toFixed(2): 0,
+					contentRatingBy = data.length>0 ? parseFloat(data[0].contentratingby || 0).toFixed(2): 0;
 			    next(null, {
-			    	trainerRatingBy: trainerRatingBy,
-			    	learnerSatisfationBy: learnerSatisfationBy,
-			    	contentRatingBy: contentRatingBy
+			    	trainerRatingBy: parseFloat(trainerRatingBy),
+			    	learnerSatisfationBy: parseFloat(learnerSatisfationBy),
+			    	contentRatingBy: parseFloat(contentRatingBy)
 			    });
 			}).catch(function (err) {
 			    next(err);
