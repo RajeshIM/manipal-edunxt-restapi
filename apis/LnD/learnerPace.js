@@ -26,6 +26,4 @@ exports.learnerPace = function (req, res) {
 	}).catch(function (err) {
 			response.customErrorMessage(res, err.message);
 	});
-	
-
 }
