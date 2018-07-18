@@ -3,65 +3,33 @@ var response = require('./../../helpers/response'),
 	utils = require('./../../helpers/utils');
 
 exports.scoresDistribution = function (req, res) {
-	var LnDUserId = req.headers['lnduserid'] ? parseInt(req.headers['lnduserid']) : null,
-		courseId = req.headers['courseid'] ? parseInt(req.headers['courseid']) : null,
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		courseId = parseInt(req.query.courseId || 0),
 		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
-		type = req.query.type ? req.query.type.toUpperCase() : '',
 		date = utils.getDates(req),
-		courseFilter = '',
-		batches = '',
-		lndUserFilter = '',
-		batchFilter = '',
-		examTypeFilter = '',
-		dateFilter = '',
-		filters = '',
+		filters = apis.getFiltersForRawQuery(req, false),
+		table = '',
 		group = '',
 		query = '';
 
-   	if (LnDUserId) {
-		lndUserFilter = ` LnDUserId = ${LnDUserId}`;
+	if (courseId || !_.isEmpty(batchId)) {
+		group = ' GROUP BY user_id,user_type,course_id,program_id';
+		table = ' muln_course_wise_scores';
+	}else {
+		group = ' GROUP BY user_id,user_type'
+		table = ' muln_all_courses_scores';
 	}
 
-	if (courseId){
-		courseFilter = ` courseId = ${courseId}`;
-	} 
-
-    if (type === 'QUIZ') {
-		examTypeFilter = ` examTypeId = 1`;
-	} else if (type === 'ASSIGNMENT') {
-		examTypeFilter = ` examTypeId = 5`;
-	}
-
-	if (!_.isEmpty(batchId)) {
-		batches = '(' + batchId.toString() + ')';
-		batchFilter = ` batchId IN ` + batches;
-	}
-
-	dateFilter = ` DATE BETWEEN '${date.start}' AND '${date.end}'`;   
-
-   filters = LnDUserId ? lndUserFilter : '';
-   filters = (filters.length > 0 && courseId) ? (filters + ' AND' + courseFilter) : 
-   				(courseId ? courseFilter : filters);
-   filters = (filters.length > 0 && examTypeFilter.length > 0) ? (filters + ' AND' + examTypeFilter): 
-   	   		(examTypeFilter.length > 0 ? examTypeFilter : filters);
-   filters = (filters.length > 0 & batchFilter.length > 0) ? (filters + ' AND' + batchFilter) : 
-   	   		(batchFilter.length > 0 ? batchFilter : filters);
-   filters = (filters.length > 0 & dateFilter.length > 0) ? (filters + ' AND' + dateFilter) : 
-   	   		(dateFilter.length > 0 ? dateFilter : filters);
-   filters = (filters.length > 0) ? (' where ' + filters) : '';
-
-   query = `SELECT CASE WHEN ScoreAvg BETWEEN 0 AND 20 THEN '0-20'
-						 WHEN ScoreAvg BETWEEN 21 AND 40 THEN '21-40'
-						 WHEN ScoreAvg BETWEEN 41 AND 60 THEN '41-60'
-						 WHEN ScoreAvg BETWEEN 61 AND 80 THEN '61-80'
-						 WHEN ScoreAvg BETWEEN 81 AND 100 THEN '81-100'
-				END AS scoreRanges, COUNT(ScoreAvg) AS numberOfUsers
-				FROM muln_Learner_Score_Distribution`;
-
-	group = ` GROUP BY ScoreRanges`;
-
-  	query = query + filters + group;
-
+	dateFilter = ` where load_date BETWEEN '${date.start}' AND '${date.end}'`;   
+  
+   query = `SELECT CASE WHEN scores BETWEEN 0 AND 20 THEN '0-20'
+						 WHEN scores BETWEEN 21 AND 40 THEN '21-40'
+						 WHEN scores BETWEEN 41 AND 60 THEN '41-60'
+						 WHEN scores BETWEEN 61 AND 80 THEN '61-80'
+						 WHEN scores BETWEEN 81 AND 100 THEN '81-100'
+				END AS scoreRanges, COUNT(person_id) AS numberOfUsers
+				FROM `+ table + dateFilter + filters + group;
+				
   	var result = [{
   		'scoreRanges': '0-20',
   		'numberOfUsers': 0
@@ -83,7 +51,7 @@ exports.scoresDistribution = function (req, res) {
   		'numberOfUsers': 0
   	}];
 
-	models.sequelize.query(query, {type: models.sequelize.QueryTypes.SELECT}).then(function (data) {
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		if (data.length > 0) {
 			for (var i in result) {
 				var obj = _.findWhere(data, {scoreRanges: result[i].scoreRanges});

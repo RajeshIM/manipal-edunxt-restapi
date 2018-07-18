@@ -104,14 +104,19 @@ exports.getPaginationObject = function (total, page, limit) {
 }
 
 exports.getFiltersForRawQuery = function(req, isJoin) {
-	var userId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
+	var userId =  parseInt([req.headers['lnduserid']] || 0),
 		userType = req.headers['user-type'] ? req.headers['user-type'] : null,
-		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
-		programId =  req.query.programId ? parseInt(req.query.programId) : null,
+		courseId =  parseInt(req.query.courseId || 0),
+		programId =  parseInt(req.query.programId || 0),
+		batchId = req.query.batchId ?  _.flatten([req.body.batchId]) : [],
+		scoreType = req.query.type.toUpperCase(),
 		userIdFilter = '',
 		userTypeFilter = '',
 		courseIdFilter = '',
 		programIdFilter = '',
+		examTypeFilter = '',
+		batches = '',
+		batchFilter = '',
 		filters = '';
 	
 	if (userId) {
@@ -126,6 +131,15 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 	if (programId){
 		programIdFilter = isJoin ? ` df.program_id = ${programId}`: ` program_id = ${programId}`;
 	}
+	if (scoreType === 'QUIZ') {
+		examTypeFilter = ` questionpapertype_id = 1`;
+	}else if(scoreType === 'ASSIGNMENT') {
+		examTypeFilter = ` questionpapertype_id = 5`;
+	}
+	if (!_.isEmpty(batchId)) {
+		batches = '(' + batchId.toString() + ')';
+		batchFilter = ` batch_id IN ` + batches;
+	}
 
 	filters = userId ? userIdFilter : '';
    	filters = (filters.length > 0 && courseId) ? (filters + ' AND' + courseIdFilter) : 
@@ -134,6 +148,10 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
    	   		(programId ? programIdFilter : filters);
    	filters = (filters.length > 0 && userType) ? (filters + ' AND' + userTypeFilter) : 
    	   		(userType ? userTypeFilter : filters);
+    filters = (filters.length > 0 && scoreType) ? (filters + ' AND' + examTypeFilter) : 
+   	   		(scoreType ? examTypeFilter : filters);
+   	filters = (filters.length > 0 && batchId.length > 0) ? (filters + ' AND' + batchFilter) : 
+   	   		(batchId.length > 0 ? batchFilter : filters);
 	filters = (filters.length > 0) ? (' AND ' + filters) : '';
 	
 	return filters;
