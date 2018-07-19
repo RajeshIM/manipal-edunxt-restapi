@@ -109,7 +109,7 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 		courseId =  parseInt(req.query.courseId || 0),
 		programId =  parseInt(req.query.programId || 0),
 		batchId = req.query.batchId ?  _.flatten([req.body.batchId]) : [],
-		scoreType = req.query.type.toUpperCase(),
+		scoreType = req.query.type ? req.query.type.toUpperCase() : null,
 		userIdFilter = '',
 		userTypeFilter = '',
 		courseIdFilter = '',
@@ -148,8 +148,8 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
    	   		(programId ? programIdFilter : filters);
    	filters = (filters.length > 0 && userType) ? (filters + ' AND' + userTypeFilter) : 
    	   		(userType ? userTypeFilter : filters);
-    filters = (filters.length > 0 && scoreType) ? (filters + ' AND' + examTypeFilter) : 
-   	   		(scoreType ? examTypeFilter : filters);
+    filters = (filters.length > 0 && examTypeFilter.length > 0) ? (filters + ' AND' + examTypeFilter) : 
+   	   		(examTypeFilter.length > 0 ? examTypeFilter : filters);
    	filters = (filters.length > 0 && batchId.length > 0) ? (filters + ' AND' + batchFilter) : 
    	   		(batchId.length > 0 ? batchFilter : filters);
 	filters = (filters.length > 0) ? (' AND ' + filters) : '';

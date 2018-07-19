@@ -35,6 +35,13 @@ exports.learnerEngagement = function (req, res) {
     	completedTrainingSinceLastMonthQuery = `SELECT monthly_completed as monthlyCompleted FROM muln_all_courses_monthly_learner_engagement
 										where load_date= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y')` + filters;
     }
+
+     var enrolledUsersDate = date.currentStatus ? 'WHERE load_date=DATE(NOW()) ' : `WHERE load_date between '${date.start}' and '${date.end}' `; 
+   	 if (courseId) {
+   		enrolledUsersQuery = `SELECT AVG(enrolled_users_count) as enrolledUsers FROM muln_courses_wise_daily_enrolled_pesons_count `+ enrolledUsersDate + filters;
+   	 } else {
+   		enrolledUsersQuery = `SELECT AVG(enrolled_users_count) as enrolledUsers FROM muln_all_courses_daily_enrolled_pesons_count `+ enrolledUsersDate + filters;
+   	 }
     
 	async.parallel({
 		usersCompleted: function (next) {
@@ -52,16 +59,26 @@ exports.learnerEngagement = function (req, res) {
 			}).catch(function (err) {
 			    next(err);
 			});
+		},
+		enrolledUsers: function (next) {
+			models[tenant].query(enrolledUsersQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+				data = data.length > 0 ? Math.round(data[0].enrolledUsers || 0) : 0;
+			    next(null, data);
+			}).catch(function (err) {
+			    next(err);
+			});	
 		}
 	}, function (err, results) {
 		if (err) {
 			response.customErrorMessage(res, err.message);
 		} else {
 			var usersCompletedPrograms = results.usersCompleted,
-				completedProgramsSinceLastMonth = results.usersCompletedSinceLastMonth;
+				completedProgramsSinceLastMonth = results.usersCompletedSinceLastMonth,
+				enrolledUsers = results.enrolledUsers;
 
 			responseData.usersCompletedPrograms = usersCompletedPrograms;
 			responseData.completedProgramsSinceLastMonth = completedProgramsSinceLastMonth;
+			responseData.enrolledUsers = enrolledUsers;
 		    response.sendSuccessResponse(res, responseData);
 		}
 	});

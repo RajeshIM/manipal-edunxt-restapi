@@ -64,8 +64,7 @@ exports.activeUsers = function (req, res) {
 			    next(null, data);
 			}).catch(function (err) {
 			    next(err);
-			});
-			
+			});	
 		},
 		enrolledUsersSinceLastMonth: function (next) {
 			models[tenant].query(enrolledUsersSinceLastMonthQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
