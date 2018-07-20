@@ -12,6 +12,8 @@ exports.getDates = function (req, addOneDay) {
     date = {
       current: false,
       currentStatus: false,
+      lastHalfAnHour: moment().subtract(30,'minutes').format('YYYY-MM-DD HH:mm:ss'),
+      lastMonth: moment().subtract(1,'month').format("MMMM-YYYY"),
       currentDate: moment().format(__('YMD')),
       currentHour: moment().format('YYYY-MM-DD HH:mm:ss')
     };

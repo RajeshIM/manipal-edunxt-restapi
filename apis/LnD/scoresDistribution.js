@@ -22,7 +22,7 @@ exports.scoresDistribution = function (req, res) {
 
 	dateFilter = ` where load_date BETWEEN '${date.start}' AND '${date.end}'`;   
   
-   query = `SELECT CASE WHEN scores BETWEEN 0 AND 20 THEN '0-20'
+    query = `SELECT CASE WHEN scores BETWEEN 0 AND 20 THEN '0-20'
 						 WHEN scores BETWEEN 21 AND 40 THEN '21-40'
 						 WHEN scores BETWEEN 41 AND 60 THEN '41-60'
 						 WHEN scores BETWEEN 61 AND 80 THEN '61-80'

@@ -1,14 +1,16 @@
 module.exports = (sequelize, DataTypes) => {
-  var activeUsers = sequelize.define('muln_activeusers', {
+  var activeUsers = sequelize.define('muln_current_active_users', {
         personId: {
-        	type: DataTypes.INTEGER,
-        	field: 'person_id'
+        	type: DataTypes.INTEGER(11),
+          field: 'person_id',
+          primaryKey: true
         },
         fileLocation: {
           type: DataTypes.STRING(510)
         },
-        login_time: {
-          type: DataTypes.DATE
+        date: {
+          type: DataTypes.DATE,
+          field:'login_time'
         }
       });
   return activeUsers;

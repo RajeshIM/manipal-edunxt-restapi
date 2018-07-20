@@ -4,24 +4,9 @@ var apis = ['activeUsers',
 			'feedback',
 			'timeSpent',
 			'usersTrained',
-			'learningActivities',
-			'goals',
-			'daywiseActiveUsers',
-			'userActivityByLocation',
-			'learnerPaceAndPerformance',
-			'learnerPaceAndPerformanceDetails',
-			'learnerPerformanceAndProgress',
-			'learnerPerformanceAndProgressDetails',
-			'scoresDistribution',
-			'scoresDistributionDetails',
-			'trainerLeaderBoard',
-			'learnerLeaderBoard',
-			'teamLeaderBoard',
-			'contentConsumption',
-			'organizationInterests',
-			'organizationInterestsDetails',
 			'coursesDropDown',
-			'dropDowns'
+			'learnerPerformanceAndProgress',
+			'scoresDistribution'
 			];
 
 apis.forEach(function (api) {

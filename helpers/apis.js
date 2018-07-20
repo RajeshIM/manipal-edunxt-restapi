@@ -12,7 +12,8 @@ exports.getQuery = function (options) {
 	var req = options.req,
 		attributes = options.attributes,
 		group = options.group,
-		LnDUserId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
+		userId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
+		userType = req.headers['user-type'] ? req.headers['user-type'] : null,
 		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
 		programId =  req.query.programId ? parseInt(req.query.programId) : null,
 		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
@@ -32,9 +33,10 @@ exports.getQuery = function (options) {
 		Op = Sequelize.Op,
 		filters = {};
 	
-	if(LnDUserId) where.LnDUserId = LnDUserId;
+	if(userId) where.userId = userId;
+	if(userType) where.userType = userType;
 	if(courseId) where.courseId = courseId;
-	//if(programId) where.programId = programId;
+	if(programId) where.programId = programId;
 	if(!_.isEmpty(batchId)) where.batchId = batchId;
 	if(!_.isEmpty(zoneId)) where.zoneId = zoneId;
 	if(!_.isEmpty(teamId)) where.teamId = teamId;
@@ -49,6 +51,12 @@ exports.getQuery = function (options) {
 	} else if (options.endDate) {
 		where.date = moment(dateInfo.end, __('YMD')).subtract(1, 'days').format(__('YMD'));
 	} 
+	if(options.lastMonth) {
+		where.date = dateInfo.lastMonth;
+	}
+	if(options.currentDate) {
+		where.date = dateInfo.currentDate;
+	}
 
 	if(sortBy && sortOrder) {
 		var arr = [];
@@ -76,6 +84,42 @@ exports.getQuery = function (options) {
 	return query;
 }
 
+exports.getFiltersForRawQuery = function(req, isJoin) {
+	var userId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
+		userType = req.headers['user-type'] ? req.headers['user-type'] : null,
+		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
+		programId =  req.query.programId ? parseInt(req.query.programId) : null,
+		userIdFilter = '',
+		userTypeFilter = '',
+		courseIdFilter = '',
+		programIdFilter = '',
+		filters = '';
+	
+	if (userId) {
+		userIdFilter = isJoin ? ` df.user_id = ${userId}` : ` user_id = ${userId}`;
+	}
+	if (userType) {
+		userTypeFilter = isJoin ? ` df.user_type = '${userType}'`: ` user_type = '${userType}'`;
+	}
+	if (courseId){
+		courseIdFilter = isJoin ?  ` df.course_id = ${courseId}`: ` course_id = ${courseId}`;
+	}
+	if (programId){
+		programIdFilter = isJoin ? ` df.program_id = ${programId}`: ` program_id = ${programId}`;
+	}
+
+	filters = userId ? userIdFilter : '';
+   	filters = (filters.length > 0 && courseId) ? (filters + ' AND' + courseIdFilter) : 
+   				(courseId ? courseIdFilter : filters);
+   	filters = (filters.length > 0 && programId) ? (filters + ' AND' + programIdFilter): 
+   	   		(programId ? programIdFilter : filters);
+   	filters = (filters.length > 0 && userType) ? (filters + ' AND' + userTypeFilter) : 
+   	   		(userType ? userTypeFilter : filters);
+	filters = (filters.length > 0) ? (' AND ' + filters) : '';
+	
+	return filters;
+};
+
 /** Function to get the pagination data
  *
  * @param {Array} total data received from DB
@@ -101,60 +145,6 @@ exports.getPaginationObject = function (total, page, limit) {
 	res.pagination = pagination;
 
 	return res;
-}
-
-exports.getFiltersForRawQuery = function(req, isJoin) {
-	var userId =  parseInt([req.headers['lnduserid']] || 0),
-		userType = req.headers['user-type'] ? req.headers['user-type'] : null,
-		courseId =  parseInt(req.query.courseId || 0),
-		programId =  parseInt(req.query.programId || 0),
-		batchId = req.query.batchId ?  _.flatten([req.body.batchId]) : [],
-		scoreType = req.query.type ? req.query.type.toUpperCase() : null,
-		userIdFilter = '',
-		userTypeFilter = '',
-		courseIdFilter = '',
-		programIdFilter = '',
-		examTypeFilter = '',
-		batches = '',
-		batchFilter = '',
-		filters = '';
-	
-	if (userId) {
-		userIdFilter = isJoin ? ` df.user_id = ${userId}` : ` user_id = ${userId}`;
-	}
-	if (userType) {
-		userTypeFilter = isJoin ? ` df.user_type = '${userType}'`: ` user_type = '${userType}'`;
-	}
-	if (courseId){
-		courseIdFilter = isJoin ?  ` df.course_id = ${courseId}`: ` course_id = ${courseId}`;
-	}
-	if (programId){
-		programIdFilter = isJoin ? ` df.program_id = ${programId}`: ` program_id = ${programId}`;
-	}
-	if (scoreType === 'QUIZ') {
-		examTypeFilter = ` questionpapertype_id = 1`;
-	}else if(scoreType === 'ASSIGNMENT') {
-		examTypeFilter = ` questionpapertype_id = 5`;
-	}
-	if (!_.isEmpty(batchId)) {
-		batches = '(' + batchId.toString() + ')';
-		batchFilter = ` batch_id IN ` + batches;
-	}
-
-	filters = userId ? userIdFilter : '';
-   	filters = (filters.length > 0 && courseId) ? (filters + ' AND' + courseIdFilter) : 
-   				(courseId ? courseIdFilter : filters);
-   	filters = (filters.length > 0 && programId) ? (filters + ' AND' + programIdFilter): 
-   	   		(programId ? programIdFilter : filters);
-   	filters = (filters.length > 0 && userType) ? (filters + ' AND' + userTypeFilter) : 
-   	   		(userType ? userTypeFilter : filters);
-    filters = (filters.length > 0 && examTypeFilter.length > 0) ? (filters + ' AND' + examTypeFilter) : 
-   	   		(examTypeFilter.length > 0 ? examTypeFilter : filters);
-   	filters = (filters.length > 0 && batchId.length > 0) ? (filters + ' AND' + batchFilter) : 
-   	   		(batchId.length > 0 ? batchFilter : filters);
-	filters = (filters.length > 0) ? (' AND ' + filters) : '';
-	
-	return filters;
 }
 
 /** Function to get the aggregated attributes

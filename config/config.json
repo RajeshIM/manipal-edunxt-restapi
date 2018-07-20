@@ -2,8 +2,11 @@
   "development": {
     "username": "edunxtdbadmin",
     "password": "EduNxt#321",
-    "MAB": "mab_analytics",
-    "MAIT": "mait_analytics",
+    "databases": {
+      "MAIT": "mait_analytics",
+      "MAB": "mab_analytics",
+      "HDFC": "hdfc_analytics"
+    },
     "host": "innominds-analytics.cmmtocbvzm4p.ap-southeast-1.rds.amazonaws.com",
     "dialect": "mysql"
   },

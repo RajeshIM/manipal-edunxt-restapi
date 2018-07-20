@@ -3,15 +3,11 @@ var response = require('./../../helpers/response'),
 
 exports.coursesDropDown = function (req, res) {	
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
-		LnDUserId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
-		orgHeadId = req.headers['orgheadid'] ? parseInt([req.headers['orgheadid']]) : null,
+		userId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
 		filters = '';
 
-	if (LnDUserId) {
-		filters = ' where user_id='+LnDUserId;	
-	}
-	else if(orgHeadId) {
-		filters = ' where user_id='+orgHeadId;
+	if (userId) {
+		filters = ' where user_id='+userId;	
 	}
 
 	var query = `select distinct program_id as programId, course_id as courseId,CONCAT(program_name, '-',course_name) as courseName from muln_im_enrolled_courses`;

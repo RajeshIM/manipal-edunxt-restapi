@@ -1,32 +1,28 @@
 var Sequelize = require('sequelize'),
     env       = process.env.NODE_ENV || 'development',
-    config    = require('../config/config.json')[env];
+    config    = require('../config/config.json')[env],
     db        = {};
 
-var userSchemas = [
-                  'activeUsers',
-                  'learningActivities',
-                  'courseWiseLearningActivities',
-                  'userwiseTimeSpent',
-                  'coursewiseTimeSpent'
-                ],
-    LnDSchemas = ['daywiseActiveUsers',
-                  'hourwiseActiveUsers',
-                  'currentActiveUsers',
-                  'userActivityByLocation',
-                  'daywiseUserActivityByLocation',
-                  'learnerTrackDetails',
-                  'daywiseLearnerTrackDetails',
-                  'learnerPerformanceAndProgress',
-                  'learnerPerformanceAndProgressDetails',
-                  'trainerWiseOrganizationPerformance',
-                  'learnerWiseOrganizationPerformance',
-                  'teamWiseOrganizationPerformance',
-                  'contentConsumption',
-                  'organizationsInterests',
-                  'coursesDropDown'
-                ],
-  orgSchemas = ['programStatus'];
+var userSchemas = ['activeUsers',
+                  'dailyActiveUsers',
+                  'monthlyActiveUsers',
+                  'allCoursesEnrolledPersons',
+                  'courseWiseEnrolledPersons',
+                  'allCoursesMonthlyEnrolledPersons',
+                  'courseWiseMonthlyEnrolledPersons',
+                  'allCoursesLearnerEngagement',
+                  'courseWiseLearnerEngagement',
+                  'allCoursesMonthlyLearnerEngagement',
+                  'courseWiseMonthlyLearnerEngagement',
+                  'allCoursesLearnerPace',
+                  'courseWiseLearnerPace',
+                  'allCoursesTimeSpent',
+                  'courseWiseTimeSpent',
+                  'allCoursesPersonsTrained',
+                  'courseWisePersonsTrained',
+                  'courseWiseLearnerPerformance',
+                  'courseWiseLearnerProgress'
+                ];
 
 var options = {
     host: config.host,
@@ -38,33 +34,32 @@ var options = {
       timestamps: false
     }
   };
+  databases = config.databases,
+  connections = {};
 
-var MAIT = new Sequelize(config.MAIT, config.username, config.password, options);
-var MAB = new Sequelize(config.MAB, config.username, config.password, options);
+  for (var key in databases) {
+    connections[key] = new Sequelize(databases[key], config.username, config.password, options);
+  }
+
+  async function connectionsStatus() {
+    for (var key in connections) {
+      await connections[key].authenticate().then(() => {
+        console.log('Connection has been established successfully to ', key);
+      }).catch(err => {
+        console.error('Unable to connect to the database:', err);
+      })
+    }
+  }
+
+  connectionsStatus();
+
+  for (var key in connections) {
+    db[key] = connections[key];
+    userSchemas.forEach(function (schema) {
+      db[key+'_'+schema] =  connections[key]['import'](__dirname + '/LnD/' + schema);
+    });
+  }
   
-  MAIT.authenticate().then(() => {
-    console.log('Connection has been established successfully to ', config.MAIT);
-  }).catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
-
-  MAB.authenticate().then(() => {
-    console.log('Connection has been established successfully to ', config.MAB);
-  }).catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
-
-// userSchemas.forEach(function (schema) {
-//   db[schema] = sequelize_test.import(__dirname + '/LnD/' + schema);
-// });
-
-// LnDSchemas.forEach(function (schema) {
-//   db['MAIT'][schema] = MAIT.import(__dirname + '/LnD/' + schema);
-//   db['MAB'][schema] = MAIT.import(__dirname + '/LnD/' + schema);
-// });
-
-db.MAIT = MAIT;
-db.MAB = MAB;
 db.Sequelize = Sequelize;
 db.Op = Sequelize.Op;
 

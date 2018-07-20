@@ -6,14 +6,12 @@ var response = require('./../../helpers/response'),
 
 exports.feedback = function (req, res) {
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
-		date = utils.getDates(req),
 		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
+		date = utils.getDates(req),
 		filters = apis.getFiltersForRawQuery(req, false),
 		monthlyFilters = apis.getFiltersForRawQuery(req, true),
-		ratingQuery = '',
-		changeInRatingQuery = '',
 		responseData = {};
-
+	
    	if (date.currentStatus) {
    		if (courseId){
 			ratingQuery = `select trainerrating, learnersatisfaction, contentrating from muln_course_wise_daily_feedback WHERE load_date=DATE(NOW()) `+ filters;

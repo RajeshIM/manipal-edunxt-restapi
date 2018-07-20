@@ -1,76 +1,42 @@
 module.exports = (sequelize, DataTypes) => {
-  var coursewiseTimeSpent = sequelize.define('muln_course_wise_timespent', {
-        domainId: {
-          type: DataTypes.STRING(100),
-          field: 'domain_id'
-        },
-        LnDUserId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true,
-          field: 'user_id'
+  var courseWiseTimeSpent = sequelize.define('muln_course_wise_timespent', {
+        userId: {
+          type: DataTypes.INTEGER(11),
+          field: 'user_id',
+          primaryKey: true
         },
         userType: {
           type: DataTypes.STRING(3),
           field: 'user_type'
         },
-        programId: {
-          type: DataTypes.INTEGER,
-          field: 'program_id'
-        },
         courseId: {
-          type: DataTypes.INTEGER,
-          primaryKey: true,
+          type: DataTypes.INTEGER(11),
           field: 'course_id'
         },
-        courseStartdate: {
-          type: DataTypes.DATE
-        },
-        courseEnddate: {
-          type: DataTypes.DATE
+        programId: {
+          type: DataTypes.INTEGER(11),
+          field: 'program_id'
         },
         durationSpent: {
-          type: DataTypes.INTEGER
+            type: DataTypes.DECIMAL(65,0),
+            field: 'duration_spent'
         },
         courseDuration: {
-          type: DataTypes.INTEGER
-        },
-        durationNeedToSpent: {
-          type: DataTypes.INTEGER
+          type: DataTypes.DECIMAL(65,0),
+          field: 'course_duration'
         },
         timeSpentPercentage: {
-          type: DataTypes.DOUBLE
+          type: DataTypes.DECIMAL(64,2),
+          field: 'time_spent_percentage'
         },
         expectedTimeSpentPercentage: {
-          type: DataTypes.DOUBLE
-        },
-        usersTrained: {
-          type: DataTypes.INTEGER
-        },
-        usersCompletedTraining: {
-          type: DataTypes.INTEGER
-        },
-        usersCompletedTrainingPercentage: {
-          type: DataTypes.DOUBLE
-        },
-        usersCompletedTrainingExpectedPercentage: {
-          type: DataTypes.DOUBLE
+          type: DataTypes.DECIMAL(64,2),
+          field: 'expected_time_spent_percentage'
         },
         date: {
-          type: DataTypes.DATE,
+          type: DataTypes.DATEONLY,
           field: 'load_date'
-        },
-        createdBy: {
-          type: DataTypes.STRING(30)
-        },
-        createdOn: {
-          type: DataTypes.DATE
-        },
-        modifiedBy: {
-          type: DataTypes.STRING(30)
-        },
-        modifiedOn: {
-          type: DataTypes.DATE
         }
       });
-  return coursewiseTimeSpent;
+  return courseWiseTimeSpent;
 };

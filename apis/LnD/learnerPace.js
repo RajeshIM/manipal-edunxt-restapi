@@ -1,29 +1,35 @@
 var response = require('./../../helpers/response'),
-	apis = require('./../../helpers/apis'),
-	utils = require('./../../helpers/utils'),
-	async = require('async'),
-	moment = require('moment');
+	apis = require('./../../helpers/apis');
 
 exports.learnerPace = function (req, res) {
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
-		date = utils.getDates(req),
-		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
-		table = courseId ? 'muln_course_wise_daily_learner_pace ': 'muln_all_courses_daily_learner_pace ',
-		dateFilter = date.currentStatus ? 'where load_date=DATE(now()) ' : `where load_date=DATE('${date.end}') `,
-		filters = apis.getFiltersForRawQuery(req, false),
-		learnerPaceQuery = '',
-		responseData = {};
-
-   	learnerPaceQuery = `select aheadschedule, ontrack, behindschedule,have_not_started as havenotstarted  
-						from `+ table + dateFilter + filters;
-	
-	models[tenant].query(learnerPaceQuery, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
-			responseData.aheadSchedule = data.length>0 ? parseFloat(data[0].aheadschedule || 0) : 0;
-			responseData.onTrack = data.length>0 ? parseFloat(data[0].ontrack || 0) : 0;
-			responseData.behindSchedule = data.length>0 ? parseFloat(data[0].behindschedule || 0) : 0;
-			responseData.haveNotStarted = data.length>0 ? parseFloat(data[0].havenotstarted || 0) : 0;
-			response.sendSuccessResponse(res, responseData);	
+		courseId = req.query.courseId ? parseInt(req.query.courseId): null,
+		attributes = ['aheadSchedule', 'behindSchedule', 'onTrack', 'haveNotStarted'],
+		learnerPaceOptions = {
+			req: req,
+			attributes: attributes,
+			endDate: true
+		},
+		learnerPaceQuery = apis.getQuery(learnerPaceOptions),
+		table = courseId ? 'courseWiseLearnerPace': 'allCoursesLearnerPace',
+		responseData = {
+			aheadSchedule: 0,
+			behindSchedule: 0,
+			onTrack: 0,
+			haveNotStarted: 0
+		};
+		
+	models[tenant+'_'+table].findOne(learnerPaceQuery).then(function (data) {
+		if (data) {
+			responseData.aheadSchedule = data.aheadSchedule ? parseFloat(data.aheadSchedule || 0) : 0;
+			responseData.onTrack = data.onTrack ? parseFloat(data.onTrack || 0) : 0;
+			responseData.behindSchedule = data.behindSchedule ? parseFloat(data.behindSchedule || 0) : 0;
+			responseData.haveNotStarted = data.haveNotStarted ? parseFloat(data.haveNotStarted || 0) : 0;
+		}
+		response.sendSuccessResponse(res, responseData);	
 	}).catch(function (err) {
-			response.customErrorMessage(res, err.message);
+				response.customErrorMessage(res, err.message);
 	});
+	
+
 }
