@@ -12,7 +12,8 @@ exports.getQuery = function (options) {
 	var req = options.req,
 		attributes = options.attributes,
 		group = options.group,
-		LnDUserId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
+		userId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
+		userType = req.headers['user-type'] ? req.headers['user-type'] : null,
 		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
 		programId =  req.query.programId ? parseInt(req.query.programId) : null,
 		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
@@ -32,9 +33,10 @@ exports.getQuery = function (options) {
 		Op = Sequelize.Op,
 		filters = {};
 	
-	if(LnDUserId) where.LnDUserId = LnDUserId;
+	if(userId) where.userId = userId;
+	if(userType) where.userType = userType;
 	if(courseId) where.courseId = courseId;
-	//if(programId) where.programId = programId;
+	if(programId) where.programId = programId;
 	if(!_.isEmpty(batchId)) where.batchId = batchId;
 	if(!_.isEmpty(zoneId)) where.zoneId = zoneId;
 	if(!_.isEmpty(teamId)) where.teamId = teamId;
@@ -49,6 +51,12 @@ exports.getQuery = function (options) {
 	} else if (options.endDate) {
 		where.date = moment(dateInfo.end, __('YMD')).subtract(1, 'days').format(__('YMD'));
 	} 
+	if(options.lastMonth) {
+		where.date = dateInfo.lastMonth;
+	}
+	if(options.currentDate) {
+		where.date = dateInfo.currentDate;
+	}
 
 	if(sortBy && sortOrder) {
 		var arr = [];
