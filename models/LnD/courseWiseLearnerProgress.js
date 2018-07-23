@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER(11),
             field: 'program_id'
           },
-          course: {
+          courseName: {
               type: DataTypes.STRING(500),
               field: 'course_name'
           },
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
           progress: {
             type: DataTypes.DECIMAL(65,2),
             get: function() {
-              return parseFloat(this.getDataValue('progress'));
+              return parseFloat(this.getDataValue('progress') || 0);
             }
           },
           date: {

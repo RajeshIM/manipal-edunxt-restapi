@@ -140,9 +140,9 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 		programIdFilter = isJoin ? ` df.program_id = ${programId}`: ` program_id = ${programId}`;
 	}
 	if (scoreType === 'QUIZ') {
-		examTypeFilter = ` questionpapertype_id = 1`;
-	}else if(scoreType === 'ASSIGNMENT') {
 		examTypeFilter = ` questionpapertype_id = 5`;
+	}else if(scoreType === 'ASSIGNMENT') {
+		examTypeFilter = ` questionpapertype_id = 1`;
 	}
 	if (!_.isEmpty(batchId)) {
 		batches = '(' + batchId.toString() + ')';
