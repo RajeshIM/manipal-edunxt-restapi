@@ -21,7 +21,8 @@ var userSchemas = ['activeUsers',
                   'allCoursesPersonsTrained',
                   'courseWisePersonsTrained',
                   'courseWiseLearnerPerformance',
-                  'courseWiseLearnerProgress'
+                  'courseWiseLearnerProgress',
+                  'scoresDistributionFilters'
                 ];
 
 var options = {

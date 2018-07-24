@@ -6,7 +6,9 @@ var apis = ['activeUsers',
 			'usersTrained',
 			'coursesDropDown',
 			'learnerPerformanceAndProgress',
-			'scoresDistribution'
+			'scoresDistribution',
+			'scoresDistributionFilters',
+			'learnerPaceAndPerformance'
 			];
 
 apis.forEach(function (api) {

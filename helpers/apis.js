@@ -116,8 +116,10 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 		userType = req.headers['user-type'] ? req.headers['user-type'] : null,
 		courseId =  parseInt(req.query.courseId || 0),
 		programId =  parseInt(req.query.programId || 0),
-		batchId = req.query.batchId ?  _.flatten([req.body.batchId]) : [],
+		batchId = req.body.batchId ?  _.flatten([req.body.batchId]) : [],
 		scoreType = req.query.type ? req.query.type.toUpperCase() : null,
+		quizName = req.body.quizName ? req.body.quizName: null,
+		assignmentName = req.body.assignmentName ? req.body.assignmentName: null,
 		userIdFilter = '',
 		userTypeFilter = '',
 		courseIdFilter = '',
@@ -125,6 +127,7 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 		examTypeFilter = '',
 		batches = '',
 		batchFilter = '',
+		moduleNameFilter = '',
 		filters = '';
 	
 	if (userId) {
@@ -148,6 +151,8 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 		batches = '(' + batchId.toString() + ')';
 		batchFilter = ` batch_id IN ` + batches;
 	}
+	if(quizName) moduleNameFilter = ` module_name=`+quizName;
+	if(assignmentName) moduleNameFilter = ` module_name=`+assignmentName;
 
 	filters = userId ? userIdFilter : '';
    	filters = (filters.length > 0 && courseId) ? (filters + ' AND' + courseIdFilter) : 
@@ -160,6 +165,8 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
    	   		(examTypeFilter.length > 0 ? examTypeFilter : filters);
    	filters = (filters.length > 0 && batchId.length > 0) ? (filters + ' AND' + batchFilter) : 
    	   		(batchId.length > 0 ? batchFilter : filters);
+    filters = (filters.length > 0 && moduleNameFilter.length > 0) ? (filters + ' AND' + moduleNameFilter) : 
+   	   		(moduleNameFilter.length > 0 ? moduleNameFilter : filters);
 	filters = (filters.length > 0) ? (' AND ' + filters) : '';
 	
 	return filters;

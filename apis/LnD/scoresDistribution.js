@@ -12,7 +12,7 @@ exports.scoresDistribution = function (req, res) {
 		group = '',
 		query = '';
 
-	if (courseId || !_.isEmpty(batchId)) {
+	if (courseId) {
 		group = ' GROUP BY user_id,user_type,course_id,program_id';
 		table = ' muln_course_wise_scores';
 	}else {
