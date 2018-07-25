@@ -12,20 +12,21 @@ exports.getQuery = function (options) {
 	var req = options.req,
 		attributes = options.attributes,
 		group = options.group,
-		userId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
-		userType = req.headers['user-type'] ? req.headers['user-type'] : null,
-		courseId =  req.query.courseId ? parseInt(req.query.courseId) : null,
-		programId =  req.query.programId ? parseInt(req.query.programId) : null,
+		userId = parseInt(req.headers['lnduserid'] || 0),
+		userType = req.headers['user-type'] || null,
+		courseId =  parseInt(req.query.courseId || 0),
+		programId =  parseInt(req.query.programId || 0),
 		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
 		zoneId = req.body.zoneId ? _.flatten([req.body.zoneId]) : [],
 		teamId = req.body.teamId ? _.flatten([req.body.teamId]) : [],
+		contentType = req.body.contentType ? _.flatten([req.body.contentType]) : [],
 		//displayFor = req.query.displayFor ? req.query.displayFor: [],
-		page = req.query.page ? parseInt(req.query.page) : null,
-		limit = req.query.limit ? parseInt(req.query.limit): null,
-		sortBy = req.query.sortBy ? req.query.sortBy : null,
-		sortOrder = req.query.order ? req.query.order : null,
-		searchBy = req.query.searchBy ? req.query.searchBy : null,
-		searchTerm = req.query.searchTerm ? req.query.searchTerm  : null,
+		page = parseInt(req.query.page || 1),
+		limit = parseInt(req.query.limit | 10),
+		sortBy = req.query.sortBy || null,
+		sortOrder = req.query.order || null,
+		searchBy = req.query.searchBy || null,
+		searchTerm = req.query.searchTerm || null,
 		query = {},
 		where = {},
 		order = [],
@@ -40,6 +41,7 @@ exports.getQuery = function (options) {
 	if(!_.isEmpty(batchId)) where.batchId = batchId;
 	if(!_.isEmpty(zoneId)) where.zoneId = zoneId;
 	if(!_.isEmpty(teamId)) where.teamId = teamId;
+	if(!_.isEmpty(contentType)) where.contentType = contentType;
 	
 	var dateInfo = utils.getDates(req, true);
 	
@@ -177,12 +179,12 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
  * @param {Object} attributes list of columns to be aggregated
  * @return {Array} Returns an Array
  */
-exports.getAttributes = function(attributes) {
+exports.getAttributes = function(tenant, attributes) {
 	var results = [],
 		sequelize = models.sequelize;
 	_.each(attributes, function (attr) {
 		var split = attr.split(':'),
-			aggregation = [sequelize.fn(split[1], sequelize.col(split[0])), split[0]];
+			aggregation = [models[tenant].fn(split[2],models[tenant].col(split[1])), split[0]];
 		results.push(aggregation);
 	});
 	return results;

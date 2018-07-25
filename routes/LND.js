@@ -9,9 +9,13 @@ router.get('/time-spent', apis.timeSpent);
 router.get('/users-trained', apis.usersTrained);
 router.get('/learner-performance-progress', apis.learnerPerformanceAndProgress);
 router.post('/scores-distribution', apis.scoresDistribution);
-router.get('/scores-distribution-filters', apis.scoresDistributionFilters);
 router.post('/learner-pace-performance', apis.learnerPaceAndPerformance);
 router.post('/learner-pace-performance-details', apis.learnerPaceAndPerformanceDetails);
+router.post('/content-consumption', apis.contentConsumption);
+router.post('/team-leaderboard', apis.teamLeaderBoard);
+router.post('/trainer-leaderboard', apis.trainerLeaderBoard);
+// router.post('/learner-leaderboard', apis.learnerLeaderBoard);
 router.get('/courses-dropdown', apis.coursesDropDown);
+router.get('/dropDown', apis.dropDown);
 
 module.exports = router;

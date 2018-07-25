@@ -7,9 +7,12 @@ var apis = ['activeUsers',
 			'coursesDropDown',
 			'learnerPerformanceAndProgress',
 			'scoresDistribution',
-			'scoresDistributionFilters',
+			'dropDown',
 			'learnerPaceAndPerformance',
-			'learnerPaceAndPerformanceDetails'
+			'learnerPaceAndPerformanceDetails',
+			'contentConsumption',
+			'teamLeaderBoard',
+			'trainerLeaderBoard'
 			];
 
 apis.forEach(function (api) {
