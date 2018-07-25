@@ -11,6 +11,7 @@ router.get('/learner-performance-progress', apis.learnerPerformanceAndProgress);
 router.post('/scores-distribution', apis.scoresDistribution);
 router.get('/scores-distribution-filters', apis.scoresDistributionFilters);
 router.post('/learner-pace-performance', apis.learnerPaceAndPerformance);
+router.post('/learner-pace-performance-details', apis.learnerPaceAndPerformanceDetails);
 router.get('/courses-dropdown', apis.coursesDropDown);
 
 module.exports = router;

@@ -8,7 +8,8 @@ var apis = ['activeUsers',
 			'learnerPerformanceAndProgress',
 			'scoresDistribution',
 			'scoresDistributionFilters',
-			'learnerPaceAndPerformance'
+			'learnerPaceAndPerformance',
+			'learnerPaceAndPerformanceDetails'
 			];
 
 apis.forEach(function (api) {
