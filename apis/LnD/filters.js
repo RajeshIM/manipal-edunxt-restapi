@@ -2,7 +2,7 @@ var response = require('./../../helpers/response'),
 	apis = require('./../../helpers/apis'),
 	async = require('async');
 
-exports.dropDown = function (req, res) {
+exports.filters = function (req, res) {
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
 		types = req.query.type ? req.query.type.split(',') : '',
 		batchTable = 'enrolledBatches',

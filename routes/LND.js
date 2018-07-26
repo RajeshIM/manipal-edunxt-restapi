@@ -16,6 +16,6 @@ router.post('/team-leaderboard', apis.teamLeaderBoard);
 router.post('/trainer-leaderboard', apis.trainerLeaderBoard);
 // router.post('/learner-leaderboard', apis.learnerLeaderBoard);
 router.get('/courses-dropdown', apis.coursesDropDown);
-router.get('/dropDown', apis.dropDown);
+router.get('/filters', apis.filters);
 
 module.exports = router;
