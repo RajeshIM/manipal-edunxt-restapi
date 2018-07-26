@@ -5,10 +5,9 @@ var response = require('./../../helpers/response'),
 exports.filters = function (req, res) {
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
 		types = req.query.type ? req.query.type.split(',') : '',
-		batchTable = 'enrolledBatches',
 		scoresTable = 'courseWiseScoresDistribution',
 		contentTypeTable = 'contentConsumption',
-		batchAttributes = [[models[tenant].fn('DISTINCT',models[tenant].col('batch_id')), 'id'],'name'],
+		batchAttributes = [[models[tenant].fn('DISTINCT',models[tenant].col('batch_id')), 'id'],['batch_name','name']],
 		scoreAttributes = [[models[tenant].fn('DISTINCT',models[tenant].col('module_name')), 'filterName'],'questionPaperId'],
 		contentTypeAttributes = [[models[tenant].fn('DISTINCT',models[tenant].col('content_type')), 'id'],['content_type','name']],
 		batchOptions = {
@@ -50,7 +49,7 @@ exports.filters = function (req, res) {
 	async.parallel({
 		batches: function(next) {
 			if(isBatch){
-				models[tenant+'_'+batchTable].findAll(batchQuery).then(function (data) {
+				models[tenant+'_'+scoresTable].findAll(batchQuery).then(function (data) {
 					next(null, data);
 				}).catch(function (err) {
 					next(err);
