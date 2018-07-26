@@ -14,7 +14,7 @@ router.post('/learner-pace-performance-details', apis.learnerPaceAndPerformanceD
 router.post('/content-consumption', apis.contentConsumption);
 router.post('/team-leaderboard', apis.teamLeaderBoard);
 router.post('/trainer-leaderboard', apis.trainerLeaderBoard);
-// router.post('/learner-leaderboard', apis.learnerLeaderBoard);
+router.post('/learner-leaderboard', apis.learnerLeaderBoard);
 router.get('/courses-dropdown', apis.coursesDropDown);
 router.get('/filters', apis.filters);
 
