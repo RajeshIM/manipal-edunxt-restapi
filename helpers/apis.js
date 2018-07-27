@@ -16,10 +16,13 @@ exports.getQuery = function (options) {
 		userType = req.headers['user-type'] || null,
 		courseId =  parseInt(req.query.courseId || 0),
 		programId =  parseInt(req.query.programId || 0),
+		type = req.query.type? req.query.type.toUpperCase(): '',
 		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
 		zoneId = req.body.zoneId ? _.flatten([req.body.zoneId]) : [],
 		teamId = req.body.teamId ? _.flatten([req.body.teamId]) : [],
 		contentType = req.body.contentType ? _.flatten([req.body.contentType]) : [],
+		quizName = req.body.quizName ? _.flatten([req.body.quizName]) : [],
+		assignmentName = req.body.assignmentName ? _.flatten([req.body.assignmentName]) : [],
 		//displayFor = req.query.displayFor ? req.query.displayFor: [],
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit | 10),
@@ -42,6 +45,8 @@ exports.getQuery = function (options) {
 	if(!_.isEmpty(zoneId)) where.zoneId = zoneId;
 	if(!_.isEmpty(teamId)) where.teamId = teamId;
 	if(!_.isEmpty(contentType)) where.contentType = contentType;
+	if(type === 'QUIZ' && !_.isEmpty(quizName)) where.filterName = quizName; 
+	if(type === 'ASSIGNMENT' && !_.isEmpty(assignmentName)) where.filterName = assignmentName; 
 	
 	var dateInfo = utils.getDates(req, true);
 	

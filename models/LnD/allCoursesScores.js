@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    var courseWiseScoresDistribution = sequelize.define('muln_course_wise_scores', {
+    var allCoursesScores = sequelize.define('muln_all_courses_scores', {
           userId: {
             type: DataTypes.INTEGER(11),
             field: 'user_id',
@@ -8,14 +8,6 @@ module.exports = (sequelize, DataTypes) => {
           userType: {
             type: DataTypes.STRING(3),
             field: 'user_type'
-          },
-          courseId: {
-            type: DataTypes.INTEGER(11),
-            field: 'course_id'
-          },
-          programId: {
-            type: DataTypes.INTEGER(11),
-            field: 'program_id'
           },
           batchId: {
             type: DataTypes.INTEGER(11),
@@ -40,10 +32,6 @@ module.exports = (sequelize, DataTypes) => {
           personId: {
             type: DataTypes.INTEGER(11),
             field: 'person_id'
-          },
-          personName: {
-            type: DataTypes.STRING(50),
-            field: 'person_name'
           },
           learnerName: {
             type: DataTypes.STRING(50),
@@ -79,5 +67,5 @@ module.exports = (sequelize, DataTypes) => {
             }
           }
         });
-    return courseWiseScoresDistribution;
+    return allCoursesScores;
   };

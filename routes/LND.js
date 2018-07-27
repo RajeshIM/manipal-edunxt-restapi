@@ -9,6 +9,7 @@ router.get('/time-spent', apis.timeSpent);
 router.get('/users-trained', apis.usersTrained);
 router.get('/learner-performance-progress', apis.learnerPerformanceAndProgress);
 router.post('/scores-distribution', apis.scoresDistribution);
+router.post('/scores-distribution-details', apis.scoresDistributionDetails);
 router.post('/learner-pace-performance', apis.learnerPaceAndPerformance);
 router.post('/learner-pace-performance-details', apis.learnerPaceAndPerformanceDetails);
 router.post('/content-consumption', apis.contentConsumption);
