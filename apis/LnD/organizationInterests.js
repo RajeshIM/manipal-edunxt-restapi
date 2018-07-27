@@ -23,15 +23,14 @@ exports.organizationInterests = function (req, res) {
 							  ROUND(AVG(monthly_hits)) as monthly_hits
 				 	  FROM muln_monthly_organization_interests 
 	    			  WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y') `
-	    				+ filters + `GROUP BY 1,2,3,4
+	    				+ filters + ` GROUP BY 1,2,3,4
 			) AS mo
 			ON df.user_id=mo.user_id AND 
    			   df.user_type=mo.user_type AND 
    			   df.course_id=mo.course_id AND
    			   df.program_id=mo.program_id 
 			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
-			`GROUP BY 1,2,3,4 ORDER BY df.hits DESC LIMIT 10`;
-
+			` GROUP BY 1,2,3,4 ORDER BY df.hits DESC LIMIT 10`;
 
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		for(var i = 0; i < data.length; i++){
