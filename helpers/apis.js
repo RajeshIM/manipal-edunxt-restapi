@@ -154,9 +154,9 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 		batches = '(' + batchId.toString() + ')';
 		batchFilter = ` batch_id IN ` + batches;
 	}
-	
+
 	// if(!_.isEmpty(quizName)) {
-	// 	modules = '(' + 'Quiz2' + ')';
+	// 	modules = '${quizName}';
 	// 	moduleNameFilter = ` module_name IN `+ modules;
 	// }else if(!_.isEmpty(assignmentName)) {
 	// 	modules = '(' + assignmentName.toString() + ')';

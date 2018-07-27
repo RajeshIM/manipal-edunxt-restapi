@@ -10,6 +10,8 @@ exports.organizationInterests = function (req, res) {
 		filters = apis.getFiltersForRawQuery(req, false),
 		monthlyFilters = apis.getFiltersForRawQuery(req, true),
 		query = '',
+		topInterestsData = [],
+		popularTopicsData = [],
 		responseData = {};
 	
    	query = `SELECT df.user_id, df.user_type, df.course_id as courseId, df.program_id AS programId, 
@@ -32,8 +34,14 @@ exports.organizationInterests = function (req, res) {
 
 
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
-		responseData.topInterestsData = _.first(data, 3);
-		responseData.popularTopicsData = data;
+		for(var i = 0; i < data.length; i++){
+			var obj = data[i];
+			obj.rank = i+1;
+			if(i < 3) topInterestsData.push(obj);
+			popularTopicsData.push(obj);
+		}
+		responseData.topInterestsData = topInterestsData;
+		responseData.popularTopicsData = popularTopicsData;
 	    response.sendSuccessResponse(res, responseData);			
 	}).catch(function (err) {
 		response.customErrorMessage(res, err.message);
