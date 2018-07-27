@@ -18,7 +18,7 @@ exports.learnerLeaderBoard = function (req, res) {
 	   				ROUND(AVG(df.avg_test_performance),2) AS avgTestPerformance, 
 	   				op.last_month_points_earned AS pointsEarnedSinceLastMonth 
 	   				FROM muln_daily_lerner_organization_performance AS df
-			INNER JOIN (SELECT user_id, user_type, person_id, rollno, person_name, 
+			LEFT JOIN (SELECT user_id, user_type, person_id, rollno, person_name, 
 				   			   ROUND(AVG(points_earned)) AS last_month_points_earned 
 						FROM muln_monthly_lerner_organization_performance 
 	    				WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y') `

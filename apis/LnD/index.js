@@ -13,7 +13,9 @@ var apis = ['activeUsers',
 			'contentConsumption',
 			'teamLeaderBoard',
 			'trainerLeaderBoard',
-			'learnerLeaderBoard'
+			'learnerLeaderBoard',
+			'organizationInterests',
+			'organizationInterestsDetails'
 			];
 
 apis.forEach(function (api) {

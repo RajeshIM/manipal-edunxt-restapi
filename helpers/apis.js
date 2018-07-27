@@ -120,8 +120,8 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 		programId =  parseInt(req.query.programId || 0),
 		batchId = req.body.batchId ?  _.flatten([req.body.batchId]) : [],
 		scoreType = req.query.type ? req.query.type.toUpperCase() : null,
-		quizName = req.body.quizName ? req.body.quizName: null,
-		assignmentName = req.body.assignmentName ? req.body.assignmentName: null,
+		quizName = req.body.quizName ?_.flatten([req.body.quizName]): null,
+		assignmentName = req.body.assignmentName ? _.flatten([req.body.assignmentName]): null,
 		userIdFilter = '',
 		userTypeFilter = '',
 		courseIdFilter = '',
@@ -129,6 +129,7 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 		examTypeFilter = '',
 		batches = '',
 		batchFilter = '',
+		modules = '',
 		moduleNameFilter = '',
 		filters = '';
 	
@@ -153,9 +154,15 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 		batches = '(' + batchId.toString() + ')';
 		batchFilter = ` batch_id IN ` + batches;
 	}
-	if(quizName) moduleNameFilter = ` module_name=`+quizName;
-	if(assignmentName) moduleNameFilter = ` module_name=`+assignmentName;
-
+	
+	// if(!_.isEmpty(quizName)) {
+	// 	modules = '(' + 'Quiz2' + ')';
+	// 	moduleNameFilter = ` module_name IN `+ modules;
+	// }else if(!_.isEmpty(assignmentName)) {
+	// 	modules = '(' + assignmentName.toString() + ')';
+	// 	moduleNameFilter = ` module_name IN `+ modules;
+	// }
+    
 	filters = userId ? userIdFilter : '';
    	filters = (filters.length > 0 && courseId) ? (filters + ' AND' + courseIdFilter) : 
    				(courseId ? courseIdFilter : filters);

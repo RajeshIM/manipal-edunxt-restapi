@@ -63,15 +63,18 @@ exports.learnerPaceAndPerformance = function (req, res) {
 			var paceInfo = result.paceData,
 				performanceInfo = result.performanceData;
 
-			paceData.aheadSchedule = paceInfo.length>0 ? Math.round(paceInfo[0].aheadSchedule || 0) : 0;
-			paceData.onTrack = paceInfo.length>0 ? Math.round(paceInfo[0].onTrack || 0) : 0;
-			paceData.behindSchedule = paceInfo.length>0 ? Math.round(paceInfo[0].behindSchedule || 0) : 0;
-			paceData.haveNotStarted = paceInfo.length>0 ? Math.round(paceInfo[0].haveNotStarted || 0) : 0;
-
-			performanceData.excelling = performanceInfo.length>0 ? Math.round(performanceInfo[0].excelling || 0) : 0;
-			performanceData.passing = performanceInfo.length>0 ? Math.round(performanceInfo[0].passing || 0) : 0;
-			performanceData.struggling = performanceInfo.length>0 ? Math.round(performanceInfo[0].struggling || 0) : 0;
-			performanceData.haveNotStarted = performanceInfo.length>0 ? Math.round(performanceInfo[0].haveNotStarted || 0) : 0;
+			if (paceInfo.length > 0) {
+				paceData.aheadSchedule = Math.round(paceInfo[0].aheadSchedule || 0);
+				paceData.onTrack = Math.round(paceInfo[0].onTrack || 0);
+				paceData.behindSchedule = Math.round(paceInfo[0].behindSchedule || 0);
+				paceData.haveNotStarted = Math.round(paceInfo[0].haveNotStarted || 0);
+			}
+			if (performanceInfo.length > 0) {
+				performanceData.excelling = Math.round(performanceInfo[0].excelling || 0);
+				performanceData.passing = Math.round(performanceInfo[0].passing || 0);
+				performanceData.struggling = Math.round(performanceInfo[0].struggling || 0);
+				performanceData.haveNotStarted = Math.round(performanceInfo[0].haveNotStarted || 0);
+			}
 
 			responseData.paceData = paceData;
 			responseData.performanceData = performanceData;
