@@ -125,8 +125,8 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 		programId =  parseInt(req.query.programId || 0),
 		batchId = req.body.batchId ?  _.flatten([req.body.batchId]) : [],
 		scoreType = req.query.type ? req.query.type.toUpperCase() : null,
-		quizName = req.body.quizName ?_.flatten([req.body.quizName]): null,
-		assignmentName = req.body.assignmentName ? _.flatten([req.body.assignmentName]): null,
+		quizName = req.body.quizName ?_.flatten([req.body.quizName]): [],
+		assignmentName = req.body.assignmentName ? _.flatten([req.body.assignmentName]): [],
 		userIdFilter = '',
 		userTypeFilter = '',
 		courseIdFilter = '',
@@ -134,8 +134,9 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 		examTypeFilter = '',
 		batches = '',
 		batchFilter = '',
-		modules = '',
 		moduleNameFilter = '',
+		scoreData = [],
+		str = '',
 		filters = '';
 	
 	if (userId) {
@@ -152,21 +153,24 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
 	}
 	if (scoreType === 'QUIZ') {
 		examTypeFilter = ` questionpapertype_id = 5`;
+		scoreData = quizName;
 	}else if(scoreType === 'ASSIGNMENT') {
 		examTypeFilter = ` questionpapertype_id = 1`;
+		scoreData = assignmentName;
 	}
 	if (!_.isEmpty(batchId)) {
 		batches = '(' + batchId.toString() + ')';
 		batchFilter = ` batch_id IN ` + batches;
 	}
-
-	// if(!_.isEmpty(quizName)) {
-	// 	modules = '${quizName}';
-	// 	moduleNameFilter = ` module_name IN `+ modules;
-	// }else if(!_.isEmpty(assignmentName)) {
-	// 	modules = '(' + assignmentName.toString() + ')';
-	// 	moduleNameFilter = ` module_name IN `+ modules;
-	// }
+	
+	if(scoreData.length>0){
+		scoreData.forEach(function(val){
+			var s = `'${val}'`;
+			str = str.length>0 ? (str+','+s) : s;
+		})
+		str = str.length>0 ? ('('+str+')') : str;
+		moduleNameFilter = ` module_name IN `+ str;
+	}
     
 	filters = userId ? userIdFilter : '';
    	filters = (filters.length > 0 && courseId) ? (filters + ' AND' + courseIdFilter) : 
