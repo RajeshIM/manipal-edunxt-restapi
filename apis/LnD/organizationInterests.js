@@ -30,18 +30,10 @@ exports.organizationInterests = function (req, res) {
    			   df.course_id=mo.course_id AND
    			   df.program_id=mo.program_id 
 			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
-			` GROUP BY 1,2,3,4 ORDER BY df.hits DESC LIMIT 10`;
+			` GROUP BY 1,2,3,4 ORDER BY df.hits DESC LIMIT 3`;
 
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
-		for(var i = 0; i < data.length; i++){
-			var obj = data[i];
-			obj.rank = i+1;
-			if(i < 3) topInterestsData.push(obj);
-			popularTopicsData.push(obj);
-		}
-		responseData.topInterestsData = topInterestsData;
-		responseData.popularTopicsData = popularTopicsData;
-	    response.sendSuccessResponse(res, responseData);			
+	    response.sendSuccessResponse(res, data);			
 	}).catch(function (err) {
 		response.customErrorMessage(res, err.message);
 	});

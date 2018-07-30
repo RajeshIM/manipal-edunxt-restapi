@@ -16,6 +16,7 @@ var apis = ['activeUsers',
 			'trainerLeaderBoard',
 			'learnerLeaderBoard',
 			'organizationInterests',
+			'organizationPopularTopics',
 			'organizationInterestsDetails'
 			];
 
