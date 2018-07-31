@@ -5,7 +5,7 @@ exports.trainerLeaderBoard = function (req, res) {
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
-	    fields = ['courseName','programName','trainerName'],
+	    fields = ['trainerName'],
 		aggFields = ['trainingsConducted:trainings_conducted:SUM', 'peopleTrained:people_trained:SUM', 
 					 'avgRating:avg_rating:AVG'],
 		aggData = apis.getAttributes(tenant, aggFields),
