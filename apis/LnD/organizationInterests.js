@@ -4,6 +4,8 @@ var response = require('./../../helpers/response'),
 
 exports.organizationInterests = function (req, res) {
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		searchBy = req.query.searchBy ? req.query.searchBy : null,
+		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 		date = utils.getDates(req),
@@ -14,6 +16,9 @@ exports.organizationInterests = function (req, res) {
 		popularTopicsData = [],
 		responseData = {};
 	
+	if(searchBy && searchTerm){
+		monthlyFilters = monthlyFilters + ` AND df.program_name like '%${searchTerm}%'`;
+	}
    	query = `SELECT df.user_id, df.user_type, df.course_id as courseId, df.program_id AS programId, 
 	   	     	CONCAT(df.program_short_name,'-',df.course_name) AS courseName,
 	   	     	ROUND(AVG(df.hits)) as hits,
@@ -31,7 +36,7 @@ exports.organizationInterests = function (req, res) {
    			   df.program_id=mo.program_id 
 			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
 			` GROUP BY 1,2,3,4 ORDER BY df.hits DESC LIMIT 3`;
-
+	
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 	    response.sendSuccessResponse(res, data);			
 	}).catch(function (err) {
