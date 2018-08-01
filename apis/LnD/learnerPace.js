@@ -12,12 +12,7 @@ exports.learnerPace = function (req, res) {
 		},
 		learnerPaceQuery = apis.getQuery(learnerPaceOptions),
 		table = courseId ? 'courseWiseLearnerPace': 'allCoursesLearnerPace',
-		responseData = {
-			aheadSchedule: 0,
-			behindSchedule: 0,
-			onTrack: 0,
-			haveNotStarted: 0
-		};
+		responseData = {};
 		
 	models[tenant+'_'+table].findOne(learnerPaceQuery).then(function (data) {
 		if (data) {
