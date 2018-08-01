@@ -1,30 +1,38 @@
 var response = require('./../../helpers/response'),
-	apis = require('./../../helpers/apis');
+	apis = require('./../../helpers/apis'),
+	utils = require('./../../helpers/utils');
 
 exports.learnerPace = function (req, res) {
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
-		courseId = req.query.courseId ? parseInt(req.query.courseId): null,
-		attributes = ['aheadSchedule', 'behindSchedule', 'onTrack', 'haveNotStarted'],
-		learnerPaceOptions = {
-			req: req,
-			attributes: attributes,
-			endDate: true
-		},
-		learnerPaceQuery = apis.getQuery(learnerPaceOptions),
-		table = courseId ? 'courseWiseLearnerPace': 'allCoursesLearnerPace',
+		date = utils.getDates(req),
+		filters = apis.getFiltersForRawQuery(req, false),
+		query = '',
 		responseData = {};
-		
-	models[tenant+'_'+table].findOne(learnerPaceQuery).then(function (data) {
-		if (data) {
-			responseData.aheadSchedule = data.aheadSchedule ? parseFloat(data.aheadSchedule || 0) : 0;
-			responseData.onTrack = data.onTrack ? parseFloat(data.onTrack || 0) : 0;
-			responseData.behindSchedule = data.behindSchedule ? parseFloat(data.behindSchedule || 0) : 0;
-			responseData.haveNotStarted = data.haveNotStarted ? parseFloat(data.haveNotStarted || 0) : 0;
-		}
-		response.sendSuccessResponse(res, responseData);	
-	}).catch(function (err) {
-				response.customErrorMessage(res, err.message);
-	});
-	
 
+	query = `select avg(aheadschedule) as aheadSchedule, 
+					avg(behindschedule)	as behindSchedule, 
+					avg(ontrack) as onTrack,
+					avg(have_not_started) as haveNotStarted
+				from (select load_date, 
+							 sum(aheadschedule) as aheadschedule, 
+							 sum(behindschedule) as behindschedule, 
+							 sum(ontrack) as ontrack, 
+							 sum(have_not_started) as have_not_started
+						from muln_course_batch_wise_daily_learner_pace 
+				where load_date BETWEEN '${date.start}' AND '${date.end}'`+ filters +
+				` group by 1) pace`;
+	
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+		if (data.length > 0) {
+			if(data[0].aheadSchedule || data[0].onTrack || data[0].behindSchedule || data[0].haveNotStarted){
+				responseData.aheadSchedule = Math.round(data[0].aheadSchedule || 0);
+				responseData.onTrack = Math.round(data[0].onTrack || 0);
+				responseData.behindSchedule = Math.round(data[0].behindSchedule || 0);
+				responseData.haveNotStarted = Math.round(data[0].haveNotStarted || 0);
+			}
+		}
+		response.sendSuccessResponse(res, responseData);		
+	}).catch(function (err) {
+		response.customErrorMessage(res, err.message);
+	});	
 }
