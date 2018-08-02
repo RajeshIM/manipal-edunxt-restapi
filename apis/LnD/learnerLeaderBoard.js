@@ -4,13 +4,17 @@ var response = require('./../../helpers/response'),
 
 exports.learnerLeaderBoard = function (req, res) {
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		searchBy = req.query.searchBy ? req.query.searchBy : null,
+		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 		date = utils.getDates(req),
 		filters = apis.getFiltersForRawQuery(req, false),
 		monthlyFilters = apis.getFiltersForRawQuery(req, true),
 		query = '';
-	
+	if(searchBy && searchTerm){
+		monthlyFilters = monthlyFilters + ` AND df.person_name like '%${searchTerm}%'`;
+	}
    	query = `SELECT df.user_id, df.user_type, df.person_id, df.rollno AS learnerSerialNumber, 
 	   	     		df.person_name AS learnerName, ROUND(AVG(df.points_earned)) AS pointsEarned, 
 	   				ROUND(AVG(df.test_performance),2) AS testPerformance, 
