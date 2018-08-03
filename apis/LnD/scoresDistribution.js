@@ -12,15 +12,8 @@ exports.scoresDistribution = function (req, res) {
 		group = '',
 		query = '';
 
-	if (courseId) {
-		group = ' GROUP BY user_id,user_type,course_id,program_id';
-		table = ' muln_course_wise_scores';
-	}else {
-		group = ' GROUP BY user_id,user_type'
-		table = ' muln_all_courses_scores';
-	}
-
-	dateFilter = ` where load_date BETWEEN '${date.start}' AND '${date.end}'`;   
+	dateFilter = ` where load_date BETWEEN '${date.start}' AND '${date.end}'`;
+	group = ' GROUP BY scoreRanges';
   
     query = `SELECT CASE WHEN scores_avg BETWEEN 0 AND 20 THEN '0-20'
 						 WHEN scores_avg BETWEEN 21 AND 40 THEN '21-40'
