@@ -19,8 +19,8 @@ exports.contentConsumption = function (req, res) {
 		},
 		query = apis.getQuery(options),
 		table = 'contentConsumption';
-		
-	query.order = ['views','desc'];
+
+	query.order = [['views','desc']];
 
 	models[tenant+'_'+table].findAll(query).then(function (data) {
 		var result = apis.getPaginationObject(data, page, limit);

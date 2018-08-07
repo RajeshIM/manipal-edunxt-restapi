@@ -8,7 +8,7 @@ exports.scoresDistribution = function (req, res) {
 		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
 		date = utils.getDates(req),
 		filters = apis.getFiltersForRawQuery(req, false),
-		table = '',
+		table = courseId ? ' muln_course_wise_scores': ' muln_all_courses_scores',
 		group = '',
 		query = '';
 
@@ -22,7 +22,7 @@ exports.scoresDistribution = function (req, res) {
 						 WHEN scores_avg BETWEEN 81 AND 100 THEN '81-100'
 				END AS scoreRanges, COUNT(person_id) AS numberOfUsers
 				FROM `+ table + dateFilter + filters + group;
-				
+			
   	var result = [{
   		'scoreRanges': '0-20',
   		'numberOfUsers': 0
