@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
           performance: {
             type: DataTypes.DECIMAL(65,2),
             get: function() {
-              return parseFloat(this.getDataValue('performance') || 0);
+              var val = parseFloat(this.getDataValue('performance') || 0).toFixed(2);
+              return parseFloat(val);
             }
           },
           date: {

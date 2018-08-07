@@ -51,7 +51,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(9,2),
             field: 'avg_rating',
             get: function() {
-              return parseFloat(this.getDataValue('avgRating') || 0);
+              var val = parseFloat(this.getDataValue('avgRating') || 0);
+              return parseFloat(val);
             }
           },
           date: {

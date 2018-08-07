@@ -39,20 +39,21 @@ module.exports = (sequelize, DataTypes) => {
           views: {
             type: DataTypes.DECIMAL(9,2),
             get: function() {
-              return parseFloat(this.getDataValue('views') || 0);
+              return Math.round(this.getDataValue('views') || 0);
             }
           },
           avgRating: {
             type: DataTypes.DECIMAL(9,2),
             field: 'avg_rating',
             get: function() {
-              return parseFloat(this.getDataValue('avgRating') || 0);
+              var val = parseFloat(this.getDataValue('avgRating') || 0).toFixed(1);
+              return parseFloat(val);
             }
           },
           duration: {
             type: DataTypes.DECIMAL(9,2),
             get: function() {
-              return parseFloat(this.getDataValue('duration') || 0);
+              return Math.round(this.getDataValue('duration') || 0);
             }
           },
           date: {
