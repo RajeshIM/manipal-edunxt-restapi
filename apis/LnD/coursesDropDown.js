@@ -3,7 +3,7 @@ var response = require('./../../helpers/response'),
 
 exports.coursesDropDown = function (req, res) {	
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
-		userId = req.headers['lnduserid'] ? parseInt([req.headers['lnduserid']]) : null,
+		userId = parseInt([req.headers['user-id']] || 0),
 		filters = '';
 
 	if (userId) {

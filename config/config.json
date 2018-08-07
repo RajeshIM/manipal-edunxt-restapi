@@ -6,7 +6,8 @@
       "MAIT": "mait_analytics",
       "MAB": "mab_analytics",
       "HDFC": "hdfc_analytics",
-      "SMUDE": "smude_analytics"
+      "SMUDE": "smude_analytics",
+      "PROLEARN": "prolearn_analytics"
     },
     "host": "innominds-analytics.cmmtocbvzm4p.ap-southeast-1.rds.amazonaws.com",
     "dialect": "mysql"

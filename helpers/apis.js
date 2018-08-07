@@ -12,7 +12,7 @@ exports.getQuery = function (options) {
 	var req = options.req,
 		attributes = options.attributes,
 		group = options.group,
-		userId = parseInt(req.headers['lnduserid'] || 0),
+		userId = parseInt(req.headers['user-id'] || 0),
 		userType = req.headers['user-type'] || null,
 		courseId =  parseInt(req.query.courseId || 0),
 		programId =  parseInt(req.query.programId || 0),
@@ -119,7 +119,7 @@ exports.getPaginationObject = function (total, page, limit) {
 }
 
 exports.getFiltersForRawQuery = function(req, isJoin) {
-	var userId =  parseInt([req.headers['lnduserid']] || 0),
+	var userId =  parseInt([req.headers['user-id']] || 0),
 		userType = req.headers['user-type'] ? req.headers['user-type'] : null,
 		courseId =  parseInt(req.query.courseId || 0),
 		programId =  parseInt(req.query.programId || 0),
