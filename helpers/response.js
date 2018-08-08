@@ -24,6 +24,19 @@ exports.sendSuccessResponse = function (res, data, message, pagination) {
 };
 
 /**
+ * Function to send csv file in response
+ *
+ * @param {Object} res The response object
+ * @param {Object} data The result of the API
+ * @param {String} fileName The CSV file name
+ */
+exports.sendCSV = function (res, data, fileName) {
+  res.setHeader('Content-disposition', 'attachment; filename=' + fileName + '.csv');
+  res.set('Content-Type', 'text/csv');
+  res.status(200).send(data);
+};
+
+/**
  * Function to send custom error response
  *
  * @param {Object} res The response object

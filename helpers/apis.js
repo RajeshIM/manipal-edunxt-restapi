@@ -8,7 +8,7 @@ var utils = require('./utils'),
  * @return {Object} Returns an object
  */
 
-exports.getQuery = function (options) {
+function getQuery(options) {
 	var req = options.req,
 		attributes = options.attributes,
 		group = options.group,
@@ -195,7 +195,7 @@ exports.getFiltersForRawQuery = function(req, isJoin) {
  * @param {Object} attributes list of columns to be aggregated
  * @return {Array} Returns an Array
  */
-exports.getAttributes = function(tenant, attributes) {
+function getAttributes(tenant, attributes) {
 	var results = [],
 		sequelize = models.sequelize;
 	_.each(attributes, function (attr) {
@@ -205,3 +205,34 @@ exports.getAttributes = function(tenant, attributes) {
 	});
 	return results;
 }
+
+exports.getContentConsumptionData = function(req, next){
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		page = req.query.page ? parseInt(req.query.page) : 1,
+		limit = req.query.limit ? parseInt(req.query.limit) : 10,
+		fields = ['courseId', 'programId', 'courseName', 'contentName', 'contentType', 'author'],
+		aggFields = ['views:views:AVG', 'avgRating:avg_rating:AVG', 'duration:duration:AVG'],
+		aggData = getAttributes(tenant, aggFields),
+		attributes = _.union(fields, aggData),
+		group = fields,
+		options = {
+			req: req,
+			attributes: attributes,
+			startDate: true,
+			endDate: true,
+			group: group
+		},
+		query = getQuery(options),
+		table = 'contentConsumption';
+
+	query.order = [['views','desc']];
+
+	models[tenant+'_'+table].findAll(query).then(function (data) {
+		next(null, data);
+	}).catch(function (err) {
+	    next(err);
+	});
+}
+
+module.exports.getAttributes = getAttributes;
+module.exports.getQuery = getQuery;

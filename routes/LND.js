@@ -1,5 +1,6 @@
 var router = require('express').Router(),
-	apis = require('./../apis/LnD');
+	apis = require('./../apis/LnD'),
+	csv = require('./../apis/LnD/csvs');
 
 router.get('/active-users', apis.activeUsers);
 router.get('/learner-pace', apis.learnerPace);
@@ -21,5 +22,7 @@ router.post('/organization-popular-topics', apis.organizationPopularTopics);
 router.post('/organization-interests-details', apis.organizationInterestsDetails);
 router.get('/courses-dropdown', apis.coursesDropDown);
 router.get('/filters', apis.filters);
+
+router.get('/content-consumption/csv', csv.contentConsumption);
 
 module.exports = router;
