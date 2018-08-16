@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    var enrolledBatches = sequelize.define('muln_im_enrolled_batches', {
+    var enrolledCourses = sequelize.define('muln_im_enrolled_courses', {
           userId: {
             type: DataTypes.INTEGER(11),
             field: 'user_id',
@@ -21,18 +21,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER(11),
             field: 'course_id'
           },
-          courseName: {
-            type: DataTypes.STRING(255),
-            field: 'course_name'
-          },
-          batchId: {
-            type: DataTypes.INTEGER(11),
-            field: 'batch_id'
-          },
           name: {
             type: DataTypes.STRING(255),
-            field: 'batch_name'
+            field: 'course_name'
           }
         });
-    return enrolledBatches;
+    return enrolledCourses;
   };

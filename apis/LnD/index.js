@@ -17,7 +17,10 @@ var apis = ['activeUsers',
 			'learnerLeaderBoard',
 			'organizationInterests',
 			'organizationPopularTopics',
-			'organizationInterestsDetails'
+			'organizationInterestsDetails',
+			'programDropDown',
+			'batchesDropDown',
+			'sectionsDropDown'
 			];
 
 apis.forEach(function (api) {

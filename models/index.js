@@ -23,12 +23,15 @@ var userSchemas = ['activeUsers',
                   'courseWiseLearnerPerformance',
                   'courseWiseLearnerProgress',
                   'learnerPaceAndPerformanceDetails',
-                  'enrolledBatches',
                   'allCoursesScores',
                   'courseWiseScoresDistribution',
                   'contentConsumption',
                   'teamWiseOrganizationPerformance',
-                  'trainerWiseOrganizationPerformance'
+                  'trainerWiseOrganizationPerformance',
+                  'enrolledPrograms',
+                  'enrolledCourses',
+                  'enrolledBatches',
+                  'enrolledSections'
                 ];
 
 var options = {

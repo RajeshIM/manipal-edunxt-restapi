@@ -16,6 +16,8 @@ function getQuery(options) {
 		userType = req.headers['user-type'] || null,
 		courseId =  parseInt(req.query.courseId || 0),
 		programId =  parseInt(req.query.programId || 0),
+		batch =  parseInt(req.query.batch || 0),
+		sectionId =  parseInt(req.query.sectionId || 0),
 		type = req.query.type? req.query.type.toUpperCase(): '',
 		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
 		zoneId = req.body.zoneId ? _.flatten([req.body.zoneId]) : [],
@@ -41,6 +43,8 @@ function getQuery(options) {
 	if(userType) where.userType = userType;
 	if(courseId) where.courseId = courseId;
 	if(programId) where.programId = programId;
+	if(batch) where.batch = batch;
+	if(sectionId) where.sectionId = sectionId;
 	if(!_.isEmpty(batchId)) where.batchId = batchId;
 	if(!_.isEmpty(zoneId)) where.zoneId = zoneId;
 	if(!_.isEmpty(teamId)) where.teamId = teamId;
