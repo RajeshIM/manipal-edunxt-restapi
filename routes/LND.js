@@ -27,5 +27,11 @@ router.get('/sections-dropdown', apis.sectionsDropDown);
 router.get('/filters', apis.filters);
 
 router.get('/content-consumption/csv', csv.contentConsumption);
+router.get('/learner-pace-performance-details/csv', csv.learnerPaceAndPerformanceDetails);
+router.get('/scores-distribution-details/csv', csv.scoresDistributionDetails);
+router.get('/team-leaderboard/csv', csv.teamLeaderBoard);
+router.get('/trainer-leaderboard/csv', csv.trainerLeaderBoard);
+router.get('/learner-leaderboard/csv', csv.learnerLeaderBoard);
+router.get('/organization-interests-details/csv', csv.organizationInterestsDetails);
 
 module.exports = router;

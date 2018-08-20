@@ -122,7 +122,7 @@ exports.getPaginationObject = function (total, page, limit) {
 	return res;
 }
 
-exports.getFiltersForRawQuery = function(req, isJoin) {
+function getFiltersForRawQuery(req, isJoin) {
 	var userId =  parseInt([req.headers['user-id']] || 0),
 		userType = req.headers['user-type'] ? req.headers['user-type'] : null,
 		courseId =  parseInt(req.query.courseId || 0),
@@ -210,6 +210,206 @@ function getAttributes(tenant, attributes) {
 	return results;
 }
 
+exports.getlearnerPaceAndPerformanceData = function(req, next){
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		type = req.query.type ? req.query.type.toUpperCase() : '',
+		page = req.query.page ? parseInt(req.query.page) : 1,
+		limit = req.query.limit ? parseInt(req.query.limit) : 10,
+		learnerType = (type === 'PACE') ? 'paceType' : 'performanceType',
+		displayFor = req.query.displayFor ? req.query.displayFor: null,
+		loadDate = [models[tenant].fn('MAX',models[tenant].col('load_date')), 'date'],
+		attributes = ['learnerName', 'serialNumber', 'courseName', 'programName', 'teamName', 'batchName',
+					 'scoreInCourse', 'scoreAvg', 'highestScore', 'paceType', 'performanceType', loadDate],
+		group = ['learnerName', 'serialNumber', 'courseName', 'programName', 'batchName', 'teamName'],
+		options = {
+			req: req,
+			attributes: attributes,
+			group: group
+		},
+		query = getQuery(options),
+		table = 'learnerPaceAndPerformanceDetails';
+
+	if (!_.contains(['PACE', 'PERFORMANCE'], type)) {
+		displayFor = 'noData';
+	}
+	
+	if (displayFor) {
+		query.where[learnerType] = { [models.Op.like]: '%' + displayFor + '%' };
+	}
+ 
+ 
+	models[tenant+'_'+table].findAll(query).then(function (data) {
+		next(null, data);
+	}).catch(function (err) {
+	    next(err);
+	});
+}
+
+exports.getScoresDistributionDetails = function(req, next){
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		courseId =  parseInt(req.query.courseId || 0),
+		type = req.query.type ? req.query.type.toUpperCase() : '',
+		page = parseInt(req.query.page || 1),
+		limit = parseInt(req.query.limit || 10),
+	    fields = ['learnerName', 'serialNumber', 'team', 'batchName'],
+		aggFields = ['noOfAttempts:no_of_attempts:AVG', 'Progress:progress:AVG', 'scoreAvg:scores_avg:AVG'],
+		aggData = getAttributes(tenant, aggFields),
+		attributes = _.union(fields, aggData),
+		group = fields,
+		options = {
+			req: req,
+			attributes: attributes,
+			startDate: true,
+			endDate: true,
+			group: group
+		},
+		query = getQuery(options),
+		table = courseId ? 'courseWiseScoresDistribution': 'allCoursesScores';
+	if(type === 'QUIZ'){
+		query.where.questionPaperId = 5;
+	}else if(type === 'ASSIGNMENT'){
+		query.where.questionPaperId = 1;
+	}
+	
+	models[tenant+'_'+table].findAll(query).then(function (data) {
+		next(null, data);
+	}).catch(function (err) {
+	    next(err);
+	});
+}
+
+exports.getTeamLeaderBoard = function(req, next){
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		page = parseInt(req.query.page || 1),
+		limit = parseInt(req.query.limit || 10),
+	    fields = ['teamName'],
+		aggFields = ['completion:completion_percentage:AVG', 'completedProgram:completed_program:SUM', 'teamSize:team_size:SUM'],
+		aggData = getAttributes(tenant, aggFields),
+		attributes = _.union(fields, aggData),
+		group = fields,
+		options = {
+			req: req,
+			attributes: attributes,
+			startDate: true,
+			endDate: true,
+			group: group
+		},
+		query = getQuery(options),
+		table = 'teamWiseOrganizationPerformance';
+	
+	models[tenant+'_'+table].findAll(query).then(function (data) {
+		next(null, data);
+	}).catch(function (err) {
+	    next(err);
+	});
+}
+
+exports.getTrainerLeaderBoard = function(req, next){
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		page = parseInt(req.query.page || 1),
+		limit = parseInt(req.query.limit || 10),
+	    fields = ['trainerName'],
+		aggFields = ['trainingsConducted:trainings_conducted:SUM', 'peopleTrained:people_trained:SUM', 
+					 'avgRating:avg_rating:AVG'],
+		aggData = getAttributes(tenant, aggFields),
+		attributes = _.union(fields, aggData),
+		group = fields,
+		options = {
+			req: req,
+			attributes: attributes,
+			startDate: true,
+			endDate: true,
+			group: group
+		},
+		query = getQuery(options),
+		table = 'trainerWiseOrganizationPerformance';
+	
+	models[tenant+'_'+table].findAll(query).then(function (data) {
+		next(null, data);
+	}).catch(function (err) {
+	    next(err);
+	});
+}
+
+exports.getLearnerLeaderBoard = function(req, next){
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		searchBy = req.query.searchBy ? req.query.searchBy : null,
+		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
+		page = parseInt(req.query.page || 1),
+		limit = parseInt(req.query.limit || 10),
+		date = utils.getDates(req),
+		filters = getFiltersForRawQuery(req, false),
+		monthlyFilters = getFiltersForRawQuery(req, true),
+		query = '';
+	if(searchBy && searchTerm){
+		monthlyFilters = monthlyFilters + ` AND df.person_name like '%${searchTerm}%'`;
+	}
+   	query = `SELECT df.user_id, df.user_type, df.person_id, df.rollno AS learnerSerialNumber, 
+	   	     		df.person_name AS learnerName, ROUND(AVG(df.points_earned)) AS pointsEarned, 
+	   				ROUND(AVG(df.test_performance),2) AS testPerformance, 
+	   				ROUND(AVG(df.exam_score),2) AS examScore, 
+	   				ROUND(AVG(df.avg_test_performance),2) AS avgTestPerformance, 
+	   				op.last_month_points_earned AS pointsEarnedSinceLastMonth 
+	   				FROM muln_daily_lerner_organization_performance AS df
+			LEFT JOIN (SELECT user_id, user_type, person_id, rollno, person_name, 
+				   			   ROUND(AVG(points_earned)) AS last_month_points_earned 
+						FROM muln_monthly_lerner_organization_performance 
+	    				WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y') `
+	    				+ filters + `GROUP BY 1,2,3,4,5
+			) AS op
+			ON df.user_id=op.user_id AND 
+   			   df.user_type=op.user_type AND 
+   			   df.person_id=op.person_id 
+			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
+			`GROUP BY 1,2,3,4,5`;
+
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+		next(null, data);			
+	}).catch(function (err) {
+		next(err);
+	});
+}
+
+exports.getOrganizationInterestsDetails = function(req, next){
+	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+		page = parseInt(req.query.page || 1),
+		limit = parseInt(req.query.limit || 10),
+		date = utils.getDates(req),
+		filters = getFiltersForRawQuery(req, false),
+		monthlyFilters = getFiltersForRawQuery(req, true),
+		query = '';
+	
+   	query = `SELECT df.user_id, df.user_type, df.course_id as courseId, df.program_id AS programId, 
+	   	     	CONCAT(df.program_short_name,'-',df.course_name) AS courseName,
+	   	     	ROUND(AVG(df.hits)) as hits,
+	   	     	mo.monthly_hits as hitsSinceLastMonth,
+	   	     	ROUND(avg(df.followers)) as noOfFollowers,
+	   	     	mo.monthly_followers as followersSinceLastMonth,
+	   	     	ROUND(avg(df.video_tags)) as videoTags,
+	   	     	ROUND(avg(df.article_tags)) as articleTags,
+				ROUND(avg(df.avg_rating),2) as avgRating 
+				FROM muln_organization_interests AS df
+			LEFT JOIN (SELECT user_id, user_type, course_id, program_id, 
+							  ROUND(AVG(monthly_hits)) as monthly_hits,
+							  ROUND(AVG(monthly_followers)) as monthly_followers
+				 	  FROM muln_monthly_organization_interests 
+	    			  WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y') `
+	    				+ filters + `GROUP BY 1,2,3,4
+			) AS mo
+			ON df.user_id=mo.user_id AND 
+   			   df.user_type=mo.user_type AND 
+   			   df.course_id=mo.course_id AND
+   			   df.program_id=mo.program_id 
+			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
+			`GROUP BY 1,2,3,4`;
+
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+		next(null, data);			
+	}).catch(function (err) {
+		next(err);
+	});
+}
+
 exports.getContentConsumptionData = function(req, next){
 	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
 		page = req.query.page ? parseInt(req.query.page) : 1,
@@ -240,3 +440,4 @@ exports.getContentConsumptionData = function(req, next){
 
 module.exports.getAttributes = getAttributes;
 module.exports.getQuery = getQuery;
+module.exports.getFiltersForRawQuery = getFiltersForRawQuery;

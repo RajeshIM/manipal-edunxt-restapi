@@ -1,7 +1,13 @@
 /** This file contains all the CSV APIs and exporting each file as a module */
 
 var CSVs = [
-  'contentConsumption'
+  'contentConsumption',
+  'learnerPaceAndPerformanceDetails',
+  'scoresDistributionDetails',
+  'teamLeaderBoard',
+  'trainerLeaderBoard',
+  'learnerLeaderBoard',
+  'organizationInterestsDetails'
 ];
 
 CSVs.forEach(function (csv) {
