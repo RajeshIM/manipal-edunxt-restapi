@@ -20,7 +20,8 @@ var apis = ['activeUsers',
 			'organizationInterestsDetails',
 			'programDropDown',
 			'batchesDropDown',
-			'sectionsDropDown'
+			'sectionsDropDown',
+			'coursesAndProgramsDropDown'
 			];
 
 apis.forEach(function (api) {

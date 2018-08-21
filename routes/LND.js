@@ -24,6 +24,7 @@ router.get('/programs-dropdown', apis.programDropDown);
 router.get('/courses-dropdown', apis.coursesDropDown);
 router.get('/batches-dropdown', apis.batchesDropDown);
 router.get('/sections-dropdown', apis.sectionsDropDown);
+router.get('/courses-programs-dropdown', apis.coursesAndProgramsDropDown);
 router.get('/filters', apis.filters);
 
 router.get('/content-consumption/csv', csv.contentConsumption);
