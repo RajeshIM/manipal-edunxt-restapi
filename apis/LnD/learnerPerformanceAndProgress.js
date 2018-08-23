@@ -2,7 +2,7 @@ var response = require('./../../helpers/response'),
 	apis = require('./../../helpers/apis');
 
 exports.learnerPerformanceAndProgress = function (req, res) {
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		type = req.query.type ? req.query.type.toUpperCase() : null,
 		attributes = [[models[tenant].fn('CONCAT',models[tenant].col('program_name'),'-',models[tenant].col('course_name')), 'name'], 'courseName'],
 		performanceField = [[models[tenant].fn('AVG',models[tenant].col('performance')), 'performance']],

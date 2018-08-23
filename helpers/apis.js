@@ -12,8 +12,8 @@ function getQuery(options) {
 	var req = options.req,
 		attributes = options.attributes,
 		group = options.group,
-		userId = parseInt(req.headers['user-id'] || 0),
-		userType = req.headers['user-type'] || null,
+		userId = parseInt(req.headers['user_id'] || req.query['user_id']),
+		userType = req.headers['user_type'] || req.query['user_type'],
 		courseId =  parseInt(req.query.courseId || 0),
 		programId =  parseInt(req.query.programId || 0),
 		batch =  parseInt(req.query.batch || 0),
@@ -123,8 +123,8 @@ exports.getPaginationObject = function (total, page, limit) {
 }
 
 function getFiltersForRawQuery(req, isJoin) {
-	var userId =  parseInt([req.headers['user-id']] || 0),
-		userType = req.headers['user-type'] ? req.headers['user-type'] : null,
+	var userId =  parseInt([req.headers['user_id']] || req.query['user_id']),
+		userType = req.headers['user_type'] || req.query['user_type'],
 		courseId =  parseInt(req.query.courseId || 0),
 		programId =  parseInt(req.query.programId || 0),
 		batchId = req.body.batchId ?  _.flatten([req.body.batchId]) : [],
@@ -211,7 +211,7 @@ function getAttributes(tenant, attributes) {
 }
 
 exports.getlearnerPaceAndPerformanceData = function(req, next){
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		type = req.query.type ? req.query.type.toUpperCase() : '',
 		page = req.query.page ? parseInt(req.query.page) : 1,
 		limit = req.query.limit ? parseInt(req.query.limit) : 10,
@@ -246,7 +246,7 @@ exports.getlearnerPaceAndPerformanceData = function(req, next){
 }
 
 exports.getScoresDistributionDetails = function(req, next){
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		courseId =  parseInt(req.query.courseId || 0),
 		type = req.query.type ? req.query.type.toUpperCase() : '',
 		page = parseInt(req.query.page || 1),
@@ -279,7 +279,7 @@ exports.getScoresDistributionDetails = function(req, next){
 }
 
 exports.getTeamLeaderBoard = function(req, next){
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 	    fields = ['teamName'],
@@ -305,7 +305,7 @@ exports.getTeamLeaderBoard = function(req, next){
 }
 
 exports.getTrainerLeaderBoard = function(req, next){
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 	    fields = ['trainerName'],
@@ -332,7 +332,7 @@ exports.getTrainerLeaderBoard = function(req, next){
 }
 
 exports.getLearnerLeaderBoard = function(req, next){
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		searchBy = req.query.searchBy ? req.query.searchBy : null,
 		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
 		page = parseInt(req.query.page || 1),
@@ -371,7 +371,7 @@ exports.getLearnerLeaderBoard = function(req, next){
 }
 
 exports.getOrganizationInterestsDetails = function(req, next){
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 		date = utils.getDates(req),
@@ -411,7 +411,7 @@ exports.getOrganizationInterestsDetails = function(req, next){
 }
 
 exports.getContentConsumptionData = function(req, next){
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		page = req.query.page ? parseInt(req.query.page) : 1,
 		limit = req.query.limit ? parseInt(req.query.limit) : 10,
 		fields = ['courseId', 'programId', 'courseName', 'contentName', 'contentType', 'author'],

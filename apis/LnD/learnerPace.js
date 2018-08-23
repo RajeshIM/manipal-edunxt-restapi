@@ -3,7 +3,7 @@ var response = require('./../../helpers/response'),
 	utils = require('./../../helpers/utils');
 
 exports.learnerPace = function (req, res) {
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		date = utils.getDates(req),
 		filters = apis.getFiltersForRawQuery(req, false),
 		query = '',

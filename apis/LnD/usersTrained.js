@@ -5,7 +5,7 @@ var response = require('./../../helpers/response'),
 	moment = require('moment');
 
 exports.usersTrained = function (req, res) {
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		courseId =  parseInt(req.query.courseId || 0),
 		table = courseId ? 'courseWisePersonsTrained': 'allCoursesPersonsTrained',
 		attributes = ['trainedPercentage', 'completedTraining', 'totalLearners'],

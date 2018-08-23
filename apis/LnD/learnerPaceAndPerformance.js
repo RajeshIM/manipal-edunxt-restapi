@@ -4,7 +4,7 @@ var response = require('./../../helpers/response'),
 	async = require('async');
 
 exports.learnerPaceAndPerformance = function (req, res) {
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		date = utils.getDates(req),
 		filters = apis.getFiltersForRawQuery(req, false),
 		learnerPaceQuery = '',

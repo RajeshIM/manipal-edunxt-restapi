@@ -3,7 +3,7 @@ var response = require('./../../helpers/response'),
 	utils = require('./../../helpers/utils');
 
 exports.organizationPopularTopics = function (req, res) {
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 		date = utils.getDates(req),

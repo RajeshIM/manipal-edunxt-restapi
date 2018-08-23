@@ -3,7 +3,7 @@ var response = require('./../../helpers/response'),
 	utils = require('./../../helpers/utils');
 
 exports.scoresDistribution = function (req, res) {
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		courseId = parseInt(req.query.courseId || 0),
 		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
 		date = utils.getDates(req),

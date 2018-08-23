@@ -3,7 +3,7 @@ var response = require('./../../helpers/response'),
 	async = require('async');
 
 exports.filters = function (req, res) {
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		types = req.query.type ? req.query.type.split(',') : '',
 		scoresTable = 'courseWiseScoresDistribution',
 		contentTypeTable = 'contentConsumption',

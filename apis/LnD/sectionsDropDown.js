@@ -2,7 +2,7 @@ var response = require('./../../helpers/response'),
 	apis = require('./../../helpers/apis');
 
 exports.sectionsDropDown = function (req, res) {	
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		table = 'enrolledSections',
 		attributes = [[models[tenant].fn('DISTINCT',models[tenant].col('courseinstance_id')), 'id'],'name'],
 		options = {

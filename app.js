@@ -109,8 +109,8 @@ app.get('/login',
 app.post('/login/callback',
    passport.authenticate('saml', { failureRedirect: '/login/fail' }),
   function(req, res) {
-    res.cookie('LnDUserId', req.user.uid);
-    res.cookie('userName', req.user.name);
+    res.cookie('user_id', req.user.uid);
+    res.cookie('user_name', req.user.name);
     res.redirect('/');
   }
 );
@@ -128,10 +128,10 @@ app.get('/EduNxt.sso/Metadata',
   }
 );
 
-// app.use('/', ensureAuthenticated);
+//app.use('/', ensureAuthenticated);
 
-// Point static path to dist
-// app.use('/', express.static(path.join(__dirname, '/dist/EduNxt-MaGE')));
+//Point static path to dist
+//app.use('/', express.static(path.join(__dirname, '/dist/EduNxt-MaGE')));
 
 app.use(routes);
 

@@ -2,8 +2,8 @@ var response = require('./../../helpers/response'),
 	apis = require('./../../helpers/apis');
 
 exports.coursesAndProgramsDropDown = function (req, res) {	
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
-		userId = parseInt([req.headers['user-id']] || 0),
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
+		userId = parseInt([req.headers['user_id']] || 0),
 		filters = '';
 
 	if (userId) {

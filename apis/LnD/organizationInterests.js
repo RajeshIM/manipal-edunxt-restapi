@@ -3,7 +3,7 @@ var response = require('./../../helpers/response'),
 	utils = require('./../../helpers/utils');
 
 exports.organizationInterests = function (req, res) {
-	var tenant = req.headers['tenant-name'] ? req.headers['tenant-name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		searchBy = req.query.searchBy ? req.query.searchBy : null,
 		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
 		page = parseInt(req.query.page || 1),
