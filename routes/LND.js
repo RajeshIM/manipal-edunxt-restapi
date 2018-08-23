@@ -8,6 +8,8 @@ router.get('/learner-engagement', apis.learnerEngagement);
 router.get('/feedback', apis.feedback);
 router.get('/time-spent', apis.timeSpent);
 router.get('/users-trained', apis.usersTrained);
+router.get('/active-users-line-graph', apis.activeUsersLineGraph);
+router.get('/active-users-by-location', apis.activeUsersByLocation);
 router.get('/learner-performance-progress', apis.learnerPerformanceAndProgress);
 router.post('/scores-distribution', apis.scoresDistribution);
 router.post('/scores-distribution-details', apis.scoresDistributionDetails);

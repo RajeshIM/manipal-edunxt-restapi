@@ -21,7 +21,9 @@ var apis = ['activeUsers',
 			'programDropDown',
 			'batchesDropDown',
 			'sectionsDropDown',
-			'coursesAndProgramsDropDown'
+			'coursesAndProgramsDropDown',
+			'activeUsersLineGraph',
+			'activeUsersByLocation'
 			];
 
 apis.forEach(function (api) {

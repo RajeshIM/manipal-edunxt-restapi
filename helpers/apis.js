@@ -19,12 +19,13 @@ function getQuery(options) {
 		batch =  parseInt(req.query.batch || 0),
 		sectionId =  parseInt(req.query.sectionId || 0),
 		type = req.query.type? req.query.type.toUpperCase(): '',
-		batchId = req.body.batchId ? _.flatten([req.body.batchId]) : [],
-		zoneId = req.body.zoneId ? _.flatten([req.body.zoneId]) : [],
-		teamId = req.body.teamId ? _.flatten([req.body.teamId]) : [],
-		contentType = req.body.contentType ? _.flatten([req.body.contentType]) : [],
-		quizName = req.body.quizName ? _.flatten([req.body.quizName]) : [],
-		assignmentName = req.body.assignmentName ? _.flatten([req.body.assignmentName]) : [],
+		bodyParams = getBodyParams(req),
+		batchId = bodyParams.batch,
+		zoneId = bodyParams.zone,
+		teamId = bodyParams.team,
+		contentType = bodyParams.contenttype,
+		quizName = bodyParams.quiz,
+		assignmentName = bodyParams.assignment,
 		//displayFor = req.query.displayFor ? req.query.displayFor: [],
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit | 10),
@@ -59,7 +60,7 @@ function getQuery(options) {
 			[Op.gte]: dateInfo.start,
 			[Op.lt]: dateInfo.end
 		};
-	} else if (options.endDate) {
+	}else if (options.endDate) {
 		where.date = moment(dateInfo.end, __('YMD')).subtract(1, 'days').format(__('YMD'));
 	} 
 	if(options.lastMonth) {
@@ -95,6 +96,31 @@ function getQuery(options) {
 	return query;
 }
 
+function getBodyParams(req){
+	var body = req.body,
+		filters = {
+			batch: [],
+	    	quiz: [],
+	    	assignment: [],
+	    	location: [],
+	    	team: [],
+	    	zone: [],
+	    	contenttype: []
+		};
+	if(body.length > 0){
+		body.forEach(function(obj){
+			switch(obj.type.toUpperCase()){
+				case 'BATCH': filters.batch.push(obj.id);
+				case 'QUIZ':  filters.quiz.push(obj.id);
+				case 'ASSIGNMENT': filters.assignment.push(obj.id);
+				case 'ZONE': filters.zone.push(obj.id);
+				case 'TEAM': filters.team.push(obj.id);
+				case 'CONTENTTYPE': filters.contenttype.push(obj.id);
+			}
+		})
+	}
+    return filters;
+}
 /** Function to get the pagination data
  *
  * @param {Array} total data received from DB
@@ -127,10 +153,11 @@ function getFiltersForRawQuery(req, isJoin) {
 		userType = req.headers['user_type'] || req.query['user_type'],
 		courseId =  parseInt(req.query.courseId || 0),
 		programId =  parseInt(req.query.programId || 0),
-		batchId = req.body.batchId ?  _.flatten([req.body.batchId]) : [],
+		bodyParams = getBodyParams(req),
+		batchId = bodyParams.batch,
 		scoreType = req.query.type ? req.query.type.toUpperCase() : null,
-		quizName = req.body.quizName ?_.flatten([req.body.quizName]): [],
-		assignmentName = req.body.assignmentName ? _.flatten([req.body.assignmentName]): [],
+		quizName = bodyParams.quiz,
+		assignmentName = bodyParams.assignment,
 		userIdFilter = '',
 		userTypeFilter = '',
 		courseIdFilter = '',
@@ -211,7 +238,7 @@ function getAttributes(tenant, attributes) {
 }
 
 exports.getlearnerPaceAndPerformanceData = function(req, next){
-	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		type = req.query.type ? req.query.type.toUpperCase() : '',
 		page = req.query.page ? parseInt(req.query.page) : 1,
 		limit = req.query.limit ? parseInt(req.query.limit) : 10,
@@ -246,7 +273,7 @@ exports.getlearnerPaceAndPerformanceData = function(req, next){
 }
 
 exports.getScoresDistributionDetails = function(req, next){
-	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		courseId =  parseInt(req.query.courseId || 0),
 		type = req.query.type ? req.query.type.toUpperCase() : '',
 		page = parseInt(req.query.page || 1),
@@ -279,7 +306,7 @@ exports.getScoresDistributionDetails = function(req, next){
 }
 
 exports.getTeamLeaderBoard = function(req, next){
-	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 	    fields = ['teamName'],
@@ -305,7 +332,7 @@ exports.getTeamLeaderBoard = function(req, next){
 }
 
 exports.getTrainerLeaderBoard = function(req, next){
-	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 	    fields = ['trainerName'],
@@ -332,7 +359,7 @@ exports.getTrainerLeaderBoard = function(req, next){
 }
 
 exports.getLearnerLeaderBoard = function(req, next){
-	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		searchBy = req.query.searchBy ? req.query.searchBy : null,
 		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
 		page = parseInt(req.query.page || 1),
@@ -371,7 +398,7 @@ exports.getLearnerLeaderBoard = function(req, next){
 }
 
 exports.getOrganizationInterestsDetails = function(req, next){
-	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 		date = utils.getDates(req),
@@ -411,7 +438,7 @@ exports.getOrganizationInterestsDetails = function(req, next){
 }
 
 exports.getContentConsumptionData = function(req, next){
-	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		page = req.query.page ? parseInt(req.query.page) : 1,
 		limit = req.query.limit ? parseInt(req.query.limit) : 10,
 		fields = ['courseId', 'programId', 'courseName', 'contentName', 'contentType', 'author'],

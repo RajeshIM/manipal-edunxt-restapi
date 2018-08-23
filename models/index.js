@@ -31,7 +31,8 @@ var userSchemas = ['activeUsers',
                   'enrolledPrograms',
                   'enrolledCourses',
                   'enrolledBatches',
-                  'enrolledSections'
+                  'enrolledSections',
+                  'locationWiseDailyActiveUsers'
                 ];
 
 var options = {
