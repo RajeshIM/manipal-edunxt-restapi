@@ -103,10 +103,10 @@ exports.filters = function (req, res) {
 				assignments = result.scores.assignments,
 				contentType = result.contentType;
 
-			if(isBatch) responseData.push({type: 'batch',data: batches});
-			if(isQuiz) responseData.push({type: 'quiz',data: quizes});
-			if(isAssignment) responseData.push({type: 'assignment',data: assignments});
-			if(isContentType) responseData.push({type: 'contentType',data: contentType});
+			if(isBatch && batches.length > 0) responseData.push({type: 'batch',data: batches});
+			if(isQuiz && quizes.length > 0) responseData.push({type: 'quiz',data: quizes});
+			if(isAssignment && assignments.length > 0) responseData.push({type: 'assignment',data: assignments});
+			if(isContentType && contentType.length > 0) responseData.push({type: 'contentType',data: contentType});
 
 			response.sendSuccessResponse(res, responseData);
 		}
