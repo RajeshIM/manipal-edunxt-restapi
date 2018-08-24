@@ -29,12 +29,19 @@ router.get('/sections-dropdown', apis.sectionsDropDown);
 router.get('/courses-programs-dropdown', apis.coursesAndProgramsDropDown);
 router.get('/filters', apis.filters);
 
+router.post('/content-consumption/csv', csv.fileUrl);
 router.get('/content-consumption/csv', csv.contentConsumption);
+router.post('/learner-pace-performance-details/csv', csv.fileUrl);
 router.get('/learner-pace-performance-details/csv', csv.learnerPaceAndPerformanceDetails);
+router.post('/scores-distribution-details/csv', csv.fileUrl);
 router.get('/scores-distribution-details/csv', csv.scoresDistributionDetails);
+router.post('/team-leaderboard/csv', csv.fileUrl);
 router.get('/team-leaderboard/csv', csv.teamLeaderBoard);
+router.post('/trainer-leaderboard/csv', csv.fileUrl);
 router.get('/trainer-leaderboard/csv', csv.trainerLeaderBoard);
+router.post('/learner-leaderboard/csv', csv.fileUrl);
 router.get('/learner-leaderboard/csv', csv.learnerLeaderBoard);
+router.post('/organization-interests-details/csv', csv.fileUrl);
 router.get('/organization-interests-details/csv', csv.organizationInterestsDetails);
 
 module.exports = router;

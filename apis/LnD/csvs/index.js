@@ -7,7 +7,8 @@ var CSVs = [
   'teamLeaderBoard',
   'trainerLeaderBoard',
   'learnerLeaderBoard',
-  'organizationInterestsDetails'
+  'organizationInterestsDetails',
+  'fileUrl'
 ];
 
 CSVs.forEach(function (csv) {

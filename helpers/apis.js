@@ -251,6 +251,8 @@ exports.getlearnerPaceAndPerformanceData = function(req, next){
 		options = {
 			req: req,
 			attributes: attributes,
+			startDate: true,
+			endDate: true,
 			group: group
 		},
 		query = getQuery(options),
@@ -263,8 +265,7 @@ exports.getlearnerPaceAndPerformanceData = function(req, next){
 	if (displayFor) {
 		query.where[learnerType] = { [models.Op.like]: '%' + displayFor + '%' };
 	}
- 
- 
+
 	models[tenant+'_'+table].findAll(query).then(function (data) {
 		next(null, data);
 	}).catch(function (err) {
