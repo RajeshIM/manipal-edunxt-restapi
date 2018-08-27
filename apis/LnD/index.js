@@ -23,7 +23,8 @@ var apis = ['activeUsers',
 			'sectionsDropDown',
 			'coursesAndProgramsDropDown',
 			'activeUsersLineGraph',
-			'activeUsersByLocation'
+			'activeUsersByLocation',
+			'modeOfDelivery'
 			];
 
 apis.forEach(function (api) {
