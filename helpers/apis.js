@@ -400,12 +400,18 @@ exports.getLearnerLeaderBoard = function(req, next){
 
 exports.getOrganizationInterestsDetails = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
+		searchBy = req.query.searchBy ? req.query.searchBy : null,
+		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 		date = utils.getDates(req),
 		filters = getFiltersForRawQuery(req, false),
 		monthlyFilters = getFiltersForRawQuery(req, true),
 		query = '';
+	
+	if(searchBy && searchTerm){
+		monthlyFilters = monthlyFilters + ` AND df.program_short_name like '%${searchTerm}%'`;
+	}
 	
    	query = `SELECT df.user_id, df.user_type, df.course_id as courseId, df.program_id AS programId, 
 	   	     	CONCAT(df.program_short_name,'-',df.course_name) AS courseName,
