@@ -24,7 +24,8 @@ var apis = ['activeUsers',
 			'coursesAndProgramsDropDown',
 			'activeUsersLineGraph',
 			'activeUsersByLocation',
-			'modeOfDelivery'
+			'modeOfDelivery',
+			'sendMail'
 			];
 
 apis.forEach(function (api) {

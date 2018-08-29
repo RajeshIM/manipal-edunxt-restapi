@@ -45,4 +45,6 @@ router.get('/learner-leaderboard/csv', csv.learnerLeaderBoard);
 router.post('/organization-interests-details/csv', csv.fileUrl);
 router.get('/organization-interests-details/csv', csv.organizationInterestsDetails);
 
+router.post('/email', apis.sendMail);
+
 module.exports = router;
