@@ -336,7 +336,7 @@ exports.getTrainerLeaderBoard = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
-	    fields = ['trainerName'],
+	    fields = ['trainerId', 'trainerName'],
 		aggFields = ['trainingsConducted:trainings_conducted:SUM', 'peopleTrained:people_trained:SUM', 
 					 'avgRating:avg_rating:AVG'],
 		aggData = getAttributes(tenant, aggFields),

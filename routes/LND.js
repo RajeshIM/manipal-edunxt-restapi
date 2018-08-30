@@ -29,6 +29,7 @@ router.get('/batches-dropdown', apis.batchesDropDown);
 router.get('/sections-dropdown', apis.sectionsDropDown);
 router.get('/courses-programs-dropdown', apis.coursesAndProgramsDropDown);
 router.get('/filters', apis.filters);
+router.get('/get-person-email', apis.personData);
 
 router.post('/content-consumption/csv', csv.fileUrl);
 router.get('/content-consumption/csv', csv.contentConsumption);
