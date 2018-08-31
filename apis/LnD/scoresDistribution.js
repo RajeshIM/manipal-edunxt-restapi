@@ -21,7 +21,7 @@ exports.scoresDistribution = function (req, res) {
 						 WHEN scores_avg BETWEEN 61 AND 80 THEN '61-80'
 						 WHEN scores_avg BETWEEN 81 AND 100 THEN '81-100'
 				END AS scoreRanges, COUNT(person_id) AS numberOfUsers
-				FROM `+ table + dateFilter + filters + group;
+				FROM  (SELECT person_id, AVG(scores_avg) AS scores_avg FROM `+ table + dateFilter + filters + `)sub `+ group;
 			
   	var result = [{
   		'scoreRanges': '0-20',
