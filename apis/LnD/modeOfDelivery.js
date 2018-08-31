@@ -9,10 +9,10 @@ exports.modeOfDelivery = function (req, res) {
 		monthlyFilters = apis.getFiltersForRawQuery(req, true),
 		query = '';
 	
-   	query = `SELECT df.load_date as date,SUM(df.learner_count) AS onlineCount, 
+   	query = `SELECT df.load_date as date,AVG(df.learner_count) AS onlineCount, 
 	   				op.offline_learners_count AS offlineCount 
 	   				FROM muln_location_wise_daily_active_learners_faculties AS df
-			LEFT JOIN (SELECT  load_date,SUM(offline_learners_count) AS offline_learners_count
+			LEFT JOIN (SELECT  load_date,AVG(offline_learners_count) AS offline_learners_count
 							   FROM muln_location_wise_daily_offline_learners_count 
 	    				WHERE load_date BETWEEN '${date.start}' AND '${date.end}' `
 	    				+ filters + `GROUP BY 1
