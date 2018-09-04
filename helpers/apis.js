@@ -452,7 +452,7 @@ exports.getContentConsumptionData = function(req, next){
 		aggFields = ['views:views:AVG', 'avgRating:avg_rating:AVG', 'duration:duration:AVG'],
 		aggData = getAttributes(tenant, aggFields),
 		attributes = _.union(fields, aggData),
-		group = fields,
+		group = ['courseId', 'programId', 'courseName', 'contentId', 'contentType', 'author'],
 		options = {
 			req: req,
 			attributes: attributes,

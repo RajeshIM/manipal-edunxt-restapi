@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
           },
           contentId: {
             type: DataTypes.INTEGER(11),
-            field: 'course_id'
+            field: 'content_id'
           },
           contentName: {
             type: DataTypes.STRING(50),

@@ -44,6 +44,12 @@ var options = {
     define: {
       freezeTableName: true,
       timestamps: false
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 300000,
+      idle: 10000
     }
   };
   databases = config.databases,
