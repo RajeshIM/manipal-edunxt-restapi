@@ -17,7 +17,7 @@ exports.organizationInterests = function (req, res) {
 		responseData = {};
 	
 	if(searchBy && searchTerm){
-		monthlyFilters = monthlyFilters + ` AND df.program_name like '%${searchTerm}%'`;
+		monthlyFilters = monthlyFilters + ` AND df.entity_name like '%${searchTerm}%'`;
 	}
    	query = `SELECT df.user_id, df.user_type, df.course_id as courseId, df.program_id AS programId,
    				df.entity_id as entityId,df.entity_name AS courseName,
