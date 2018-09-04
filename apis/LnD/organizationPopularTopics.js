@@ -12,7 +12,7 @@ exports.organizationPopularTopics = function (req, res) {
 		query = '';
 
    	query = `SELECT user_id, user_type, course_id as courseId, program_id AS programId, 
-   					entity_id as entityId,df.entity_name AS courseName,
+   					entity_id as entityId,entity_name AS courseName,
 	   	     	ROUND(avg(followers)) as noOfFollowers
 				FROM muln_organization_interests 
 			WHERE  load_date BETWEEN '${date.start}' AND '${date.end}' `+ filters + 
