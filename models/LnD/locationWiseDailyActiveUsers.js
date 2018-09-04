@@ -23,11 +23,19 @@ module.exports = (sequelize, DataTypes) => {
           },
           facultyCount: {
               type: DataTypes.BIGINT(21),
-              field: 'faculty_count'
+              field: 'faculty_count',
+              get: function() {
+                var val = parseInt(this.getDataValue('facultyCount') || 0);
+                return parseFloat(val);
+              }
           },
           learnerCount: {
             type: DataTypes.BIGINT(21),
-            field: 'learner_count'
+            field: 'learner_count',
+            get: function() {
+                var val = parseInt(this.getDataValue('learnerCount') || 0);
+                return parseFloat(val);
+            }
           },
           date: {
             type: DataTypes.DATEONLY,

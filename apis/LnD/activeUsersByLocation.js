@@ -9,13 +9,13 @@ exports.activeUsersByLocation = function (req, res) {
 		monthlyFilters = apis.getFiltersForRawQuery(req, true),
 		query = '';
 	
-   	query = `SELECT df.location,AVG(df.faculty_count) AS facultyCount, 
-	   				AVG(df.learner_count) AS learnerCount, 
+   	query = `SELECT df.location,ROUND(AVG(df.faculty_count), 0) AS facultyCount, 
+	   				ROUND(AVG(df.learner_count), 0) AS learnerCount, 
 	   				op.monthly_faculty_count AS monthlyFacultyCount, 
 	   				op.monthly_learner_count AS monthlyLearnerCount
 	   				FROM muln_location_wise_daily_active_learners_faculties AS df
-			LEFT JOIN (SELECT  location,AVG(faculty_count) AS monthly_faculty_count,
-							   AVG(learner_count) AS monthly_learner_count 
+			LEFT JOIN (SELECT  location,ROUND(AVG(faculty_count), 0) AS monthly_faculty_count,
+							   ROUND(AVG(learner_count), 0) AS monthly_learner_count 
 							   FROM muln_location_wise_monthly_active_learners_faculties 
 	    				WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y') `
 	    				+ filters + `GROUP BY 1

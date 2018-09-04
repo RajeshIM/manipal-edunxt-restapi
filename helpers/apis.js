@@ -243,7 +243,7 @@ exports.getlearnerPaceAndPerformanceData = function(req, next){
 		page = req.query.page ? parseInt(req.query.page) : 1,
 		limit = req.query.limit ? parseInt(req.query.limit) : 10,
 		learnerType = (type === 'PACE') ? 'paceType' : 'performanceType',
-		displayFor = req.query.displayFor ? req.query.displayFor: null,
+		displayFor = req.query.displayFor ? req.query.displayFor.replace('%20', ' ').replace('%20', ' '): null,
 		loadDate = [models[tenant].fn('MAX',models[tenant].col('load_date')), 'date'],
 		attributes = ['learnerName', 'serialNumber', 'courseName', 'programName', 'teamName', 'batchName',
 					 'scoreInCourse', 'scoreAvg', 'highestScore', 'paceType', 'performanceType', loadDate],
