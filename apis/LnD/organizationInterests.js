@@ -19,23 +19,31 @@ exports.organizationInterests = function (req, res) {
 	if(searchBy && searchTerm){
 		monthlyFilters = monthlyFilters + ` AND df.entity_name like '%${searchTerm}%'`;
 	}
-   	query = `SELECT df.user_id, df.user_type, df.course_id as courseId, df.program_id AS programId,
-   				df.entity_id as entityId,df.entity_name AS courseName,
-	   	     	ROUND(AVG(df.viewcount)) as hits,
-	   	     	mo.monthly_hits as hitsSinceLastMonth
+   	query = `SELECT dc.user_id, dc.user_type, dc.courseId, 
+				dc.programId,dc.entityId, dc.entity_type,dc.courseName,
+				ROUND(AVG(dc.hits)) AS hits,
+				mc.monthly_hits AS hitsSinceLastMonth
+				FROM
+				(SELECT df.user_id, df.user_type, df.course_id AS courseId, df.program_id AS programId, df.entity_id AS entityId,
+				entity_name AS courseName,entity_type,
+				ROUND(AVG(df.viewcount)) AS hits
 				FROM muln_organization_interests AS df
-			LEFT JOIN (SELECT user_id, user_type, course_id, program_id, entity_id,
-							  ROUND(AVG(monthly_hits)) as monthly_hits
-				 	  FROM muln_monthly_organization_interests 
-	    			  WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y') `
-	    				+ filters + ` GROUP BY 1,2,3,4,5
-			) AS mo
-			ON df.user_id=mo.user_id AND 
-   			   df.user_type=mo.user_type AND 
-   			   df.course_id=mo.course_id AND
-   			   df.program_id=mo.program_id 
-			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
-			` GROUP BY 1,2,3,4,5 ORDER BY df.hits DESC LIMIT 3`;
+				WHERE df.load_date BETWEEN '${date.start}' AND '${date.end}' ` + 
+				monthlyFilters + `GROUP BY 1,2,3,4,5 ORDER BY df.viewcount DESC LIMIT 3) dc
+				INNER JOIN 
+				(
+				SELECT user_id, user_type, course_id, program_id, entity_id,
+				ROUND(AVG(monthly_hits)) AS monthly_hits
+				FROM muln_monthly_organization_interests 
+				WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y') ` + 
+				filters + `GROUP BY 1,2,3,4,5
+				) mc
+				ON dc.user_id=mc.user_id
+				AND dc.user_type=mc.user_type
+				AND dc.programId=mc.program_id
+				AND dc.courseId=mc.course_id
+				AND dc.entityId=mc.entity_id
+				GROUP BY 1,2,3,4,5`;
 	
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 	    response.sendSuccessResponse(res, data);			

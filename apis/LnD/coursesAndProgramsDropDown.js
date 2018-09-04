@@ -10,7 +10,7 @@ exports.coursesAndProgramsDropDown = function (req, res) {
 		filters = ' where user_id='+userId;	
 	}
 
-	var query = `select distinct program_id as programId, course_id as courseId,CONCAT(program_name, '-',course_name) as courseName from muln_enrolled_persons`;
+	var query = `select program_id as programId, course_id as courseId,CONCAT(program_name, '-',course_name) as courseName from muln_enrolled_persons group by 1,2,3`;
 	query = query + filters;
 	
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
