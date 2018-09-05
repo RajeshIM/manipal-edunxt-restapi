@@ -30,7 +30,7 @@ exports.organizationInterests = function (req, res) {
 				FROM muln_organization_interests AS df
 				WHERE df.load_date BETWEEN '${date.start}' AND '${date.end}' ` + 
 				monthlyFilters + `GROUP BY 1,2,3,4,5 ORDER BY df.viewcount DESC LIMIT 3) dc
-				INNER JOIN 
+				LEFT JOIN 
 				(
 				SELECT user_id, user_type, course_id, program_id, entity_id,
 				ROUND(AVG(monthly_hits)) AS monthly_hits
