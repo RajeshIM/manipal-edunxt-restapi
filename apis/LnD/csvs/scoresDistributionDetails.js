@@ -33,7 +33,7 @@ exports.scoresDistributionDetails = function (req, res) {
 			}else{
 				csvData = json2csv({fields: fields});
 			}
-			response.sendCSV(res, csvData, 'scoresDistribution');
+			response.sendCSV(res, csvData, fileName);
 		}
 	});
 }
