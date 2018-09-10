@@ -246,7 +246,7 @@ exports.getlearnerPaceAndPerformanceData = function(req, next){
 		displayFor = req.query.displayFor ? req.query.displayFor.replace('%20', ' ').replace('%20', ' '): null,
 		loadDate = [models[tenant].fn('MAX',models[tenant].col('load_date')), 'date'],
 		attributes = ['learnerName', 'serialNumber', 'courseName', 'programName', 'teamName', 'batchName',
-					 'scoreInCourse', 'scoreAvg', 'highestScore', 'paceType', 'performanceType', loadDate],
+					 'scoreInCourse', 'scoreAvg', 'highestScore', 'scorePercentage', 'paceType', 'performanceType', loadDate],
 		group = ['learnerName', 'serialNumber', 'courseName', 'programName', 'batchName', 'teamName'],
 		options = {
 			req: req,

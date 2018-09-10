@@ -65,6 +65,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(9,0),
             field: 'score_avg'
           },
+          scorePercentage: {
+            type: DataTypes.DECIMAL(37,0),
+            field: 'score_percentage'
+          },
           paceType: {
             type: DataTypes.STRING(50),
             field: 'pacetype'
