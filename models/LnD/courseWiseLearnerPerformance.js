@@ -17,13 +17,21 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER(11),
             field: 'program_id'
           },
+          sectionId: {
+            type: DataTypes.INTEGER(11),
+            field: 'section_id'
+          },
           courseName: {
-              type: DataTypes.STRING(500),
+              type: DataTypes.STRING(255),
               field: 'course_name'
           },
           programName: {
-            type: DataTypes.STRING(500),
+            type: DataTypes.STRING(255),
             field: 'program_name'
+          },
+          sectionName: {
+            type: DataTypes.STRING(255),
+            field: 'section_name'
           },
           performance: {
             type: DataTypes.DECIMAL(65,2),
