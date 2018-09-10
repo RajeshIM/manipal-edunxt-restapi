@@ -42,8 +42,8 @@ function getQuery(options) {
 	
 	if(userId) where.userId = userId;
 	if(userType) where.userType = userType;
-	if(courseId) where.courseId = courseId;
 	if(programId) where.programId = programId;
+	if(courseId) where.courseId = courseId;
 	if(batch) where.batch = batch;
 	if(sectionId) where.sectionId = sectionId;
 	if(!_.isEmpty(batchId)) where.batchId = batchId;
@@ -176,11 +176,11 @@ function getFiltersForRawQuery(req, isJoin) {
 	if (userType) {
 		userTypeFilter = isJoin ? ` df.user_type = '${userType}'`: ` user_type = '${userType}'`;
 	}
-	if (courseId){
-		courseIdFilter = isJoin ?  ` df.course_id = ${courseId}`: ` course_id = ${courseId}`;
-	}
 	if (programId){
 		programIdFilter = isJoin ? ` df.program_id = ${programId}`: ` program_id = ${programId}`;
+	}
+	if (courseId){
+		courseIdFilter = isJoin ?  ` df.course_id = ${courseId}`: ` course_id = ${courseId}`;
 	}
 	if (scoreType === 'QUIZ') {
 		examTypeFilter = ` questionpapertype_id = 5`;
@@ -461,10 +461,12 @@ exports.getContentConsumptionData = function(req, next){
 			group: group
 		},
 		query = getQuery(options),
-		table = 'contentConsumption';
+		table = 'contentConsumption',
+		Op = Sequelize.Op;
 
 	query.order = [['views','desc']];
-
+    query.where.contentName = {[Op.notIn]: ["",'']};
+    
 	models[tenant+'_'+table].findAll(query).then(function (data) {
 		next(null, data);
 	}).catch(function (err) {

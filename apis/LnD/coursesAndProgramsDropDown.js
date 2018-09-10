@@ -4,7 +4,7 @@ var response = require('./../../helpers/response'),
 exports.coursesAndProgramsDropDown = function (req, res) {	
 	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		userId = parseInt([req.headers['user_id']] || 0),
-		group = ' group by 1,2'
+		group = ' group by 1,2',
 		filters = '';
 
 	if (userId) {
