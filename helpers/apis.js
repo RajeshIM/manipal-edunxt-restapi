@@ -246,7 +246,8 @@ exports.getlearnerPaceAndPerformanceData = function(req, next){
 		displayFor = req.query.displayFor ? req.query.displayFor.replace('%20', ' ').replace('%20', ' '): null,
 		loadDate = [models[tenant].fn('MAX',models[tenant].col('load_date')), 'date'],
 		attributes = ['learnerName', 'serialNumber', 'courseName', 'programName', 'teamName', 'batchName',
-					 'scoreInCourse', 'scoreAvg', 'highestScore', 'scorePercentage', 'paceType', 'performanceType', loadDate],
+					  'scoreInCourse', 'scoreAvg', 'highestScore', 'scorePercentage', 'examAccessed', 
+					  'examPassed', 'paceType', 'performanceType', loadDate],
 		group = ['learnerName', 'serialNumber', 'courseName', 'programName', 'batchName', 'teamName'],
 		options = {
 			req: req,
@@ -363,15 +364,23 @@ exports.getLearnerLeaderBoard = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		searchBy = req.query.searchBy ? req.query.searchBy : null,
 		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
+		sortBy = req.query.sortBy ? req.query.sortBy : null,
+		order = req.query.order ? req.query.order : null,
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 		date = utils.getDates(req),
 		filters = getFiltersForRawQuery(req, false),
 		monthlyFilters = getFiltersForRawQuery(req, true),
+		sortQuery = null,
 		query = '';
+
 	if(searchBy && searchTerm){
 		monthlyFilters = monthlyFilters + ` AND df.person_name like '%${searchTerm}%'`;
 	}
+	if(sortBy && order){
+		sortQuery = ` order by  ${sortBy} ${order} `;
+	}
+
    	query = `SELECT df.user_id, df.user_type, df.person_id, df.rollno AS learnerSerialNumber, 
 	   	     		df.person_name AS learnerName, ROUND(AVG(df.points_earned)) AS pointsEarned, 
 	   				ROUND(AVG(df.test_performance),2) AS testPerformance, 
@@ -390,6 +399,7 @@ exports.getLearnerLeaderBoard = function(req, next){
    			   df.person_id=op.person_id 
 			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
 			`GROUP BY 1,2,3,4,5`;
+	query = sortQuery ? (query+sortQuery) : query;
 
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		next(null, data);			
@@ -402,15 +412,21 @@ exports.getOrganizationInterestsDetails = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		searchBy = req.query.searchBy ? req.query.searchBy : null,
 		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
+		sortBy = req.query.sortBy ? req.query.sortBy : null,
+		order = req.query.order ? req.query.order : null,
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 		date = utils.getDates(req),
 		filters = getFiltersForRawQuery(req, false),
 		monthlyFilters = getFiltersForRawQuery(req, true),
+		sortQuery = null,
 		query = '';
 	
 	if(searchBy && searchTerm){
 		monthlyFilters = monthlyFilters + ` AND df.entity_name like '%${searchTerm}%'`;
+	}
+	if(sortBy && order){
+		sortQuery = ` order by  ${sortBy} ${order} `;
 	}
 	
    	query = `SELECT df.user_id, df.user_type, df.course_id as courseId, df.program_id AS programId, 
@@ -436,6 +452,7 @@ exports.getOrganizationInterestsDetails = function(req, next){
    			   df.program_id=mo.program_id 
 			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
 			`GROUP BY 1,2,3,4,5`;
+	query = sortQuery ? (query+sortQuery) : query;
 
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		next(null, data);			

@@ -69,6 +69,22 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(37,0),
             field: 'score_percentage'
           },
+          examAccessed: {
+            type: DataTypes.DECIMAL(9,2),
+            field: 'exam_accessed',
+            get: function() {
+                var val = parseInt(this.getDataValue('examAccessed') || 0);
+                return val;
+            }
+          },
+          examPassed: {
+            type: DataTypes.DECIMAL(9,2),
+            field: 'exam_passed',
+            get: function() {
+                var val = parseInt(this.getDataValue('examPassed') || 0);
+                return val;
+            }
+          },
           paceType: {
             type: DataTypes.STRING(50),
             field: 'pacetype'
