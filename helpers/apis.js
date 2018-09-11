@@ -237,7 +237,7 @@ function getAttributes(tenant, attributes) {
 	return results;
 }
 
-exports.getlearnerPaceAndPerformanceData = function(req, next){
+exports.getLearnerPaceData = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		type = req.query.type ? req.query.type.toUpperCase() : '',
 		page = req.query.page ? parseInt(req.query.page) : 1,
@@ -271,6 +271,59 @@ exports.getlearnerPaceAndPerformanceData = function(req, next){
 		next(null, data);
 	}).catch(function (err) {
 	    next(err);
+	});
+}
+
+exports.getLearnerPerformanceData = function(req, next){
+	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
+		searchBy = req.query.searchBy ? req.query.searchBy : null,
+		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
+		sortBy = req.query.sortBy ? req.query.sortBy : null,
+		order = req.query.order ? req.query.order : null,
+		displayFor = req.query.displayFor ? req.query.displayFor.replace('%20', ' ').replace('%20', ' '): null,
+		page = parseInt(req.query.page || 1),
+		limit = parseInt(req.query.limit || 10),
+		date = utils.getDates(req),
+		monthlyFilters = getFiltersForRawQuery(req, true),
+		sortQuery = null,
+		query = '';
+
+	if(displayFor){
+		monthlyFilters = monthlyFilters + `AND df.performance_type like '%${displayFor}%' `;
+	}
+	if(searchBy && searchTerm){
+		monthlyFilters = monthlyFilters + ` AND df.person_name like '%${searchTerm}%' `;
+	}
+	if(sortBy && order){
+		sortQuery = ` order by  ${sortBy} ${order} `;
+	}
+
+   	query = `SELECT person_name AS learnerName, rollno AS serialNumber, course_name AS courseName,
+			   program_name AS programName, courseinstancename AS teamName, batch_name AS batchName, 
+			   score AS scoreInCourse, score_avg AS scoreAvg, higest_score AS highestScore, 
+			   score_percentage AS scorePercentage, exam_accessed AS examAccessed, exam_passed AS examPassed,
+			   pacetype AS paceType, performance_type AS performanceType, MAX(load_date) AS DATE 
+			FROM muln_daily_learner_track_details df
+			INNER JOIN (
+				SELECT section_id, person_id, AVG(score_avg) AS scoreAvg, 
+				   		MAX(higest_score) AS highestScore, 
+				   		AVG(score_percentage) AS scorePercentage,
+				   		SUM(exam_accessed) AS examAccessed,
+				   		SUM(exam_passed) AS examPassed
+				FROM muln_scoredistribution_personexams_count
+			 	 WHERE load_date BETWEEN '${date.start}' AND '${date.end}' 
+				GROUP BY 1,2
+			) led
+		ON df.courseinstance_id=led.section_id
+		AND df.person_id=led.person_id
+		WHERE df.load_date BETWEEN '${date.start}' AND '${date.end}' ` + monthlyFilters + 
+		`GROUP BY person_name, rollno, course_name, program_name, batch_name, courseinstancename `;
+	query = sortQuery ? (query+sortQuery) : query;
+
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+		next(null, data);			
+	}).catch(function (err) {
+		next(err);
 	});
 }
 

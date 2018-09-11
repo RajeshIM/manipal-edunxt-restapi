@@ -3,10 +3,12 @@ var response = require('./../../helpers/response'),
 	utils = require('./../../helpers/utils');
 
 exports.learnerPaceAndPerformanceDetails = function (req, res) {
-	var page = req.query.page ? parseInt(req.query.page) : 1,
+	var type = req.query.type ? req.query.type.toUpperCase() : '',
+		fn = (type==='PERFORMANCE') ? 'getLearnerPerformanceData': 'getLearnerPaceData',
+		page = req.query.page ? parseInt(req.query.page) : 1,
 		limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-	apis.getlearnerPaceAndPerformanceData(req, function(err, data){
+	apis[fn](req, function(err, data){
 		if(err){
 			response.customErrorMessage(res, err.message);
 		}else{
