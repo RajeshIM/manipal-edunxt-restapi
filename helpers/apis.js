@@ -478,11 +478,9 @@ exports.getContentConsumptionData = function(req, next){
 			group: group
 		},
 		query = getQuery(options),
-		table = 'contentConsumption',
-		Op = Sequelize.Op;
+		table = 'contentConsumption';
 
 	query.order = [['views','desc']];
-    query.where.contentName = {[Op.notIn]: ["",'']};
     
 	models[tenant+'_'+table].findAll(query).then(function (data) {
 		next(null, data);
