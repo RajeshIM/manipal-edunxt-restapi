@@ -77,6 +77,20 @@ module.exports = (sequelize, DataTypes) => {
             get: function() {
               return Math.round(this.getDataValue('scoreAvg') || 0);
             }
+          },
+          examsAttempted: {
+            type: DataTypes.INTEGER(11),
+            field: 'number_of_exams_attempted',
+            get: function() {
+              return Math.round(this.getDataValue('examsAttempted') || 0);
+            }
+          },
+          totalExamsCount: {
+            type: DataTypes.INTEGER(11),
+            field: 'total_exams_count',
+            get: function() {
+              return Math.round(this.getDataValue('totalExamsCount') || 0);
+            }
           }
         });
     return courseWiseScoresDistribution;

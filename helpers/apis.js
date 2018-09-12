@@ -337,7 +337,8 @@ exports.getScoresDistributionDetails = function(req, next){
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
 	    fields = ['learnerName', 'serialNumber', 'team', 'batchName'],
-		aggFields = ['noOfAttempts:no_of_attempts:AVG', 'Progress:progress:AVG', 'scoreAvg:scores_avg:AVG'],
+		aggFields = ['noOfAttempts:no_of_attempts:AVG', 'Progress:progress:AVG', 'scoreAvg:scores_avg:AVG', 
+					 'examsAttempted:number_of_exams_attempted:AVG', 'totalExamsCount:total_exams_count:AVG'],
 		aggData = getAttributes(tenant, aggFields),
 		attributes = _.union(fields, aggData),
 		group = fields,
@@ -349,13 +350,17 @@ exports.getScoresDistributionDetails = function(req, next){
 			group: group
 		},
 		query = getQuery(options),
+		Op = Sequelize.Op;
 		table = courseId ? 'courseWiseScoresDistribution': 'allCoursesScores';
+		
 	if(type === 'QUIZ'){
 		query.where.questionPaperId = 5;
 	}else if(type === 'ASSIGNMENT'){
 		query.where.questionPaperId = 1;
 	}
 	
+	query.where['scoreAvg'] = {Op.ne: null};
+
 	models[tenant+'_'+table].findAll(query).then(function (data) {
 		next(null, data);
 	}).catch(function (err) {
