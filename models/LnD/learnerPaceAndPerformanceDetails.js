@@ -55,19 +55,35 @@ module.exports = (sequelize, DataTypes) => {
           },
           scoreInCourse: {
             type: DataTypes.INTEGER(11),
-            field: 'score'
+            field: 'score',
+            get: function() {
+                var val = parseInt(this.getDataValue('scoreInCourse') || 0);
+                return val;
+            }
           },
           highestScore: {
             type: DataTypes.INTEGER(11),
-            field: 'higest_score'
+            field: 'higest_score',
+            get: function() {
+                var val = parseInt(this.getDataValue('highestScore') || 0);
+                return val;
+            }
           },
           scoreAvg: {
             type: DataTypes.DECIMAL(9,0),
-            field: 'score_avg'
+            field: 'score_avg',
+            get: function() {
+                var val = parseFloat(this.getDataValue('scoreAvg') || 0).toFixed(2);
+                return val;
+            }
           },
           scorePercentage: {
             type: DataTypes.DECIMAL(37,0),
-            field: 'score_percentage'
+            field: 'score_percentage',
+            get: function() {
+                var val = parseFloat(this.getDataValue('scorePercentage') || 0).toFixed(2);
+                return val;
+            }
           },
           examAccessed: {
             type: DataTypes.DECIMAL(9,2),

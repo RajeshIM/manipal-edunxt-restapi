@@ -4,8 +4,8 @@ var response = require('./../../helpers/response'),
 exports.activeUsersLineGraph = function (req, res) {	
 	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		table = 'locationWiseDailyActiveUsers',
-		attributes = [[models[tenant].fn('AVG',models[tenant].col('faculty_count')), 'facultyCount'],
-					  [models[tenant].fn('AVG',models[tenant].col('learner_count')), 'learnerCount'],'date'],
+		attributes = [[models[tenant].fn('SUM',models[tenant].col('faculty_count')), 'facultyCount'],
+					  [models[tenant].fn('SUM',models[tenant].col('learner_count')), 'learnerCount'],'date'],
 		options = {
 					req:req,
 					attributes: attributes,

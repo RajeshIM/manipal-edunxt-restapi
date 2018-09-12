@@ -245,9 +245,12 @@ exports.getLearnerPaceData = function(req, next){
 		learnerType = (type === 'PACE') ? 'paceType' : 'performanceType',
 		displayFor = req.query.displayFor ? req.query.displayFor.replace('%20', ' ').replace('%20', ' '): null,
 		loadDate = [models[tenant].fn('MAX',models[tenant].col('load_date')), 'date'],
-		attributes = ['learnerName', 'serialNumber', 'courseName', 'programName', 'teamName', 'batchName',
-					  'scoreInCourse', 'scoreAvg', 'highestScore', 'scorePercentage', 'examAccessed', 
-					  'examPassed', 'paceType', 'performanceType', loadDate],
+		fields = ['learnerName', 'serialNumber', 'courseName', 'programName', 'teamName', 'batchName',
+				  'paceType', 'performanceType', loadDate],
+		aggFields = ['scoreInCourse:score:AVG', 'scoreAvg:score_avg:AVG', 'highestScore:higest_score:AVG', 
+					 'scorePercentage:score_percentage:AVG', 'examAccessed:exam_accessed:AVG', 'examPassed:exam_passed:AVG'],
+		aggData = getAttributes(tenant, aggFields),
+		attributes = _.union(fields, aggData),
 		group = ['learnerName', 'serialNumber', 'courseName', 'programName', 'batchName', 'teamName'],
 		options = {
 			req: req,
@@ -304,7 +307,7 @@ exports.getLearnerPerformanceData = function(req, next){
 			   score_percentage AS scorePercentage, exam_accessed AS examAccessed, exam_passed AS examPassed,
 			   pacetype AS paceType, performance_type AS performanceType, MAX(load_date) AS DATE 
 			FROM muln_daily_learner_track_details df
-			INNER JOIN (
+			LEFT JOIN (
 				SELECT section_id, person_id, AVG(score_avg) AS scoreAvg, 
 				   		MAX(higest_score) AS highestScore, 
 				   		AVG(score_percentage) AS scorePercentage,
@@ -532,8 +535,6 @@ exports.getContentConsumptionData = function(req, next){
 		},
 		query = getQuery(options),
 		table = 'contentConsumption';
-
-	query.order = [['views','desc']];
     
 	models[tenant+'_'+table].findAll(query).then(function (data) {
 		next(null, data);

@@ -7,16 +7,21 @@ exports.filters = function (req, res) {
 		types = req.query.type ? req.query.type.split(',') : '',
 		scoresTable = 'courseWiseScoresDistribution',
 		contentTypeTable = 'contentConsumption',
-		batchAttributes = [[models[tenant].fn('DISTINCT',models[tenant].col('batch_id')), 'id'],['batch_name','name']],
+		batchAttributes = [['batch_id', 'id'],['batch_name','name']],
 		scoreAttributes = [[models[tenant].fn('DISTINCT',models[tenant].col('module_name')), 'filterName'],'questionPaperId'],
 		contentTypeAttributes = [[models[tenant].fn('DISTINCT',models[tenant].col('content_type')), 'id'],['content_type','name']],
 		batchOptions = {
 			req: req,
-			attributes: batchAttributes
+			attributes: batchAttributes,
+			startDate: true,
+			endDate: true,
+			group: ['id']
 		},
 		scoresOptions = {
 			req: req,
-			attributes: scoreAttributes
+			attributes: scoreAttributes,
+			startDate: true,
+			endDate: true
 		},
 		contentTypeOptions = {
 			req: req,
