@@ -4,18 +4,12 @@ var response = require('./../../../helpers/response'),
 	json2csv = require('json2csv');
 
 exports.scoresDistributionDetails = function (req, res) {
-	var type = req.query.type ? req.query.type.toUpperCase() : '',
+	var type = '',
 		fileName = 'testScores',
 		filters = {},
 		headers = {}, 
 		fields = ['noOfAttempts', 'Progress', 'scoreAvg', 'learnerName', 'serialNumber', 'team', 'batchName'],
 		csvData = [];
-
-	if(type === 'QUIZ'){
-		fileName = 'quiz';
-	}else if(type === 'ASSIGNMENT'){
-		fileName = 'assignment';
-	}
 
 	filters.query = req.query.q ? JSON.parse(base64.decode(req.query.q)) : {};
 	filters.body = req.query.b ? JSON.parse(base64.decode(req.query.b)) : [];
@@ -23,6 +17,14 @@ exports.scoresDistributionDetails = function (req, res) {
 	headers['user_id'] = req.query['user_id'];
 	headers['user_type'] = req.query['user_type'];
 	filters.headers = headers;
+
+	type = filters.query.type ? filters.query.type.toUpperCase() : '';
+	
+	if(type === 'QUIZ'){
+		fileName = 'quiz';
+	}else if(type === 'ASSIGNMENT'){
+		fileName = 'assignment';
+	}
 
 	apis.getScoresDistributionDetails(filters, function(err, data){
 		if(err){
