@@ -2,7 +2,7 @@
 
 ### To run application without demon mode
     
-    node ./bin/www
+    node app
     
 ### To run application in demon mode
 
