@@ -352,14 +352,14 @@ exports.getScoresDistributionDetails = function(req, next){
 		query = getQuery(options),
 		Op = Sequelize.Op;
 		table = courseId ? 'courseWiseScoresDistribution': 'allCoursesScores';
-		
+
 	if(type === 'QUIZ'){
 		query.where.questionPaperId = 5;
 	}else if(type === 'ASSIGNMENT'){
 		query.where.questionPaperId = 1;
 	}
 	
-	query.where['scoreAvg'] = {Op.ne: null};
+	query.where['scoreAvg'] = {[Op.ne]: null};
 
 	models[tenant+'_'+table].findAll(query).then(function (data) {
 		next(null, data);
