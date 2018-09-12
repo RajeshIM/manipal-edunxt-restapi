@@ -22,7 +22,7 @@ exports.activeUsersByLocation = function (req, res) {
 			) AS op
 			ON df.location=op.location
 			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
-			`GROUP BY 1`;
+			`GROUP BY 1 order by learnerCount desc`;
 			
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		response.sendSuccessResponse(res, data);			
