@@ -17,7 +17,10 @@ exports.learnerPerformanceAndProgress = function (req, res) {
 			attributes: attributes,
 			group: group
 		},
+		Op = models.Sequelize.Op,
 		query = apis.getQuery(options);
+
+	query.where['sectionName'] = {[Op.ne]: null};
 
 	models[tenant+'_'+table].findAll(query).then(function (data) {
 	    response.sendSuccessResponse(res, data);

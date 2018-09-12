@@ -31,11 +31,7 @@ module.exports = (sequelize, DataTypes) => {
           },
           sectionName: {
             type: DataTypes.STRING(255),
-            field: 'section_name',
-            get: function() {
-                var val = this.getDataValue('sectionName') || '';
-                return val;
-            }
+            field: 'section_name'
           },
           performance: {
             type: DataTypes.DECIMAL(65,2),
