@@ -15,13 +15,14 @@ exports.scoresDistribution = function (req, res) {
 	dateFilter = ` where load_date BETWEEN '${date.start}' AND '${date.end}'`;
 	group = ' GROUP BY scoreRanges';
   
-    query = `SELECT CASE WHEN scores_avg BETWEEN 0 AND 20 THEN '0-20'
-						 WHEN scores_avg BETWEEN 21 AND 40 THEN '21-40'
-						 WHEN scores_avg BETWEEN 41 AND 60 THEN '41-60'
-						 WHEN scores_avg BETWEEN 61 AND 80 THEN '61-80'
-						 WHEN scores_avg BETWEEN 81 AND 100 THEN '81-100'
+    query = `SELECT CASE WHEN progress BETWEEN 0 AND 20 THEN '0-20'
+						 WHEN progress BETWEEN 21 AND 40 THEN '21-40'
+						 WHEN progress BETWEEN 41 AND 60 THEN '41-60'
+						 WHEN progress BETWEEN 61 AND 80 THEN '61-80'
+						 WHEN progress BETWEEN 81 AND 100 THEN '81-100'
 				END AS scoreRanges, COUNT(person_id) AS numberOfUsers
-				FROM  (SELECT person_id, AVG(scores_avg) AS scores_avg FROM `+ table + dateFilter + filters + ` Group by 1)sub `+ group;
+				FROM  (SELECT person_id, AVG(progress) AS progress FROM `+ table + dateFilter + filters + ` 
+				AND scores_avg IS NOT NULL Group By 1)sub `+ group;
 			
   	var result = [{
   		'scoreRanges': '0-20',
