@@ -368,56 +368,126 @@ exports.getScoresDistributionDetails = function(req, next){
 	});
 }
 
+// exports.getTeamLeaderBoard = function(req, next){
+// 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
+// 		page = parseInt(req.query.page || 1),
+// 		limit = parseInt(req.query.limit || 10),
+// 	    fields = ['teamName'],
+// 		aggFields = ['completion:completion_percentage:AVG', 'completedProgram:completed_program:SUM', 'teamSize:team_size:SUM'],
+// 		aggData = getAttributes(tenant, aggFields),
+// 		attributes = _.union(fields, aggData),
+// 		group = fields,
+// 		options = {
+// 			req: req,
+// 			attributes: attributes,
+// 			startDate: true,
+// 			endDate: true,
+// 			group: group
+// 		},
+// 		query = getQuery(options),
+// 		table = 'teamWiseOrganizationPerformance';
+	
+// 	models[tenant+'_'+table].findAll(query).then(function (data) {
+// 		next(null, data);
+// 	}).catch(function (err) {
+// 	    next(err);
+// 	});
+// }
+
 exports.getTeamLeaderBoard = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
+		searchBy = req.query.searchBy ? req.query.searchBy : null,
+		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
+		sortBy = req.query.sortBy ? req.query.sortBy : null,
+		order = req.query.order ? req.query.order : null,
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
-	    fields = ['teamName'],
-		aggFields = ['completion:completion_percentage:AVG', 'completedProgram:completed_program:SUM', 'teamSize:team_size:SUM'],
-		aggData = getAttributes(tenant, aggFields),
-		attributes = _.union(fields, aggData),
-		group = fields,
-		options = {
-			req: req,
-			attributes: attributes,
-			startDate: true,
-			endDate: true,
-			group: group
-		},
-		query = getQuery(options),
-		table = 'teamWiseOrganizationPerformance';
+		date = utils.getDates(req),
+		filters = getFiltersForRawQuery(req, false),
+		sortQuery = null,
+		query = '';
+
+	if(searchBy && searchTerm){
+		filters = filters + ` AND team_name like '%${searchTerm}%'`;
+	}
+	if(sortBy && order){
+		sortQuery = ` order by  ${sortBy} ${order} `;
+	}
+
+   	query = ` select team_name as teamName, ROUND(AVG(completion_percentage),2) as completion, 
+	   		         SUM(completed_program) AS completedProgram, SUM(team_size) as teamSize 
+			  from muln_daily_team_organization_performance 
+	 		       where load_date between '${date.start}' and '${date.end}' `+ filters + 
+	 			   ` group by 1 ` ;
+	query = sortQuery ? (query+sortQuery) : query;
 	
-	models[tenant+'_'+table].findAll(query).then(function (data) {
-		next(null, data);
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+		next(null, data);			
 	}).catch(function (err) {
-	    next(err);
+		next(err);
 	});
 }
 
+// exports.getTrainerLeaderBoard = function(req, next){
+// 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
+// 		page = parseInt(req.query.page || 1),
+// 		limit = parseInt(req.query.limit || 10),
+// 	    fields = ['trainerId', 'trainerName'],
+// 		aggFields = ['trainingsConducted:trainings_conducted:SUM', 'peopleTrained:people_trained:SUM', 
+// 					 'avgRating:avg_rating:AVG'],
+// 		aggData = getAttributes(tenant, aggFields),
+// 		attributes = _.union(fields, aggData),
+// 		group = fields,
+// 		options = {
+// 			req: req,
+// 			attributes: attributes,
+// 			startDate: true,
+// 			endDate: true,
+// 			group: group
+// 		},
+// 		query = getQuery(options),
+// 		table = 'trainerWiseOrganizationPerformance';
+	
+// 	models[tenant+'_'+table].findAll(query).then(function (data) {
+// 		next(null, data);
+// 	}).catch(function (err) {
+// 	    next(err);
+// 	});
+// }
+
 exports.getTrainerLeaderBoard = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
+		searchBy = req.query.searchBy ? req.query.searchBy : null,
+		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
+		sortBy = req.query.sortBy ? req.query.sortBy : null,
+		order = req.query.order ? req.query.order : null,
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
-	    fields = ['trainerId', 'trainerName'],
-		aggFields = ['trainingsConducted:trainings_conducted:SUM', 'peopleTrained:people_trained:SUM', 
-					 'avgRating:avg_rating:AVG'],
-		aggData = getAttributes(tenant, aggFields),
-		attributes = _.union(fields, aggData),
-		group = fields,
-		options = {
-			req: req,
-			attributes: attributes,
-			startDate: true,
-			endDate: true,
-			group: group
-		},
-		query = getQuery(options),
-		table = 'trainerWiseOrganizationPerformance';
+		date = utils.getDates(req),
+		filters = getFiltersForRawQuery(req, false),
+		sortQuery = null,
+		query = '';
+
+	if(searchBy && searchTerm){
+		filters = filters + ` AND trainer_name like '%${searchTerm}%'`;
+	}
+	if(sortBy && order){
+		sortQuery = ` order by  ${sortBy} ${order} `;
+	}
+
+   	query = ` select trainer_id as trainerId, trainer_name as trainerName, 
+   					 SUM(trainings_conducted) as trainingsConducted, 
+	   		         SUM(people_trained) AS peopleTrained, 
+	   		         ROUND(AVG(avg_rating),2) as avgRating 
+			  from muln_daily_trainer_organization_performance 
+	 		       where load_date between '${date.start}' and '${date.end}' `+ filters + 
+	 			   ` group by 1,2 ` ;
+	query = sortQuery ? (query+sortQuery) : query;
 	
-	models[tenant+'_'+table].findAll(query).then(function (data) {
-		next(null, data);
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+		next(null, data);			
 	}).catch(function (err) {
-	    next(err);
+		next(err);
 	});
 }
 
