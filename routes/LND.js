@@ -3,6 +3,7 @@ var router = require('express').Router(),
 	csv = require('./../apis/LnD/csvs');
 
 router.get('/active-users', apis.activeUsers);
+router.get('/auth-user', apis.authLnDUser);
 router.get('/learner-pace', apis.learnerPace);
 router.get('/learner-engagement', apis.learnerEngagement);
 router.get('/feedback', apis.feedback);

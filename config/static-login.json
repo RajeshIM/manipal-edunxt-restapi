@@ -1,0 +1,23 @@
+{
+    "data": {
+        "72f07ca3b6000ed2187b0e2e686bb8d8": {
+            "username": "Vinay K",
+            "loginName": "57142_Vinay K",
+            "personId": "57142",
+            "tenantName": "MAIT"
+
+        },
+        "321ec419972a7ece1ba42f6ce7af9851": {
+            "username": "26642_Chetana B S",
+            "loginName":"26642_Chetana B S",
+            "personId": "26642",
+            "tenantName": "MAB"
+        },
+        "65126137f528ad61a0025348574f6614": {
+            "username": "95901_Krishna Swami",
+            "loginName":"95901_Krishna Swami",
+            "personId": "95901",
+            "tenantName": "PROLEARN"
+        }
+    }
+}

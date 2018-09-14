@@ -26,7 +26,8 @@ var apis = ['activeUsers',
 			'activeUsersByLocation',
 			'modeOfDelivery',
 			'sendMail',
-			'personData'
+			'personData',
+			'authLnDUser'
 			];
 
 apis.forEach(function (api) {
