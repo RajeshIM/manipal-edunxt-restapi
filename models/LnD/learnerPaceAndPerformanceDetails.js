@@ -74,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'score_avg',
             get: function() {
                 var val = parseFloat(this.getDataValue('scoreAvg') || 0).toFixed(2);
-                return val;
+                return parseFloat(val).toFixed(2);
             }
           },
           scorePercentage: {
@@ -82,7 +82,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'score_percentage',
             get: function() {
                 var val = parseFloat(this.getDataValue('scorePercentage') || 0).toFixed(2);
-                return val;
+                return parseFloat(val).toFixed(2);
             }
           },
           examAccessed: {

@@ -308,9 +308,9 @@ exports.getLearnerPerformanceData = function(req, next){
 			   pacetype AS paceType, performance_type AS performanceType, MAX(load_date) AS DATE 
 			FROM muln_daily_learner_track_details df
 			LEFT JOIN (
-				SELECT section_id, person_id, AVG(score_avg) AS scoreAvg, 
+				SELECT section_id, person_id, ROUND(AVG(score_avg),2) AS scoreAvg, 
 				   		MAX(higest_score) AS highestScore, 
-				   		AVG(score_percentage) AS scorePercentage,
+				   		ROUND(AVG(score_percentage),2) AS scorePercentage,
 				   		SUM(exam_accessed) AS examAccessed,
 				   		SUM(exam_passed) AS examPassed
 				FROM muln_scoredistribution_personexams_count

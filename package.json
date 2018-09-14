@@ -6,7 +6,7 @@
   "author": "Rajesh",
   "private": true,
   "scripts": {
-    "start": "node app",
+    "start": "node app &",
     "stop": "forever stopall",
     "test": "nyc --reporter=html --reporter=text mocha ./test/apis/*.js",
     "coverage": "NODE_ENV=test nyc check-coverage --lines 90 --functions 90 --branches 85 --statements 90"
