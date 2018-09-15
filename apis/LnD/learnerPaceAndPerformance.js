@@ -10,36 +10,30 @@ exports.learnerPaceAndPerformance = function (req, res) {
 		learnerPaceQuery = '',
 		learnerPerformanceQuery = '',
 		query = '',
-		paceData = {},
-		performanceData = {},
+		paceData = {
+			aheadSchedule: 0,
+			behindSchedule: 0,
+			onTrack: 0,
+			haveNotStarted: 0	
+		},
+		performanceData = {
+			excelling: 0,
+			passing: 0,
+			struggling: 0,
+			haveNotStarted: 0
+		},
 		responseData = {};
 
-   	learnerPaceQuery = `select 	avg(aheadschedule) as aheadSchedule, 
-								avg(behindschedule)	as behindSchedule, 
-								avg(ontrack) as onTrack,
-								avg(have_not_started) 	as haveNotStarted
-						from (
-							select load_date, 
-								sum(aheadschedule) as aheadschedule, 
-							    sum(behindschedule) as behindschedule, 
-								sum(ontrack) as ontrack, 
-								sum(have_not_started) 	as have_not_started
-							from muln_course_batch_wise_daily_learner_pace 
-							where load_date BETWEEN '${date.start}' AND '${date.end}'`+filters+
-							` group by 1)pace`;
-	learnerPerformanceQuery = `select avg(excelling) as excelling, 
-								avg(passing)	as passing, 
-								avg(struggling) as struggling,
-								avg(have_not_started) 	as haveNotStarted
-						from (
-							select load_date, 
-								sum(excelling) as excelling, 
-							    sum(passing) as passing, 
-								sum(struggling) as struggling, 
-								sum(have_not_started) 	as have_not_started
-							from muln_learner_performance_type_counts 
-							where load_date BETWEEN '${date.start}' AND '${date.end}'`+filters+
-							` group by 1)performance`;
+   	learnerPaceQuery = `select pacetype, AVG(pacetype_count) AS pacetype_count
+						from (SELECT pacetype,load_date, COUNT( person_id) as pacetype_count 
+								FROM muln_daily_learner_track_details 
+								where pacetype IS NOT NULL  and load_date BETWEEN '${date.start}' AND '${date.end}'`+ filters +
+							 ` group by 1,2) pace group by 1`;
+	learnerPerformanceQuery = `select performance_type, AVG(performance_type_count) AS performance_type_count
+								from (SELECT performance_type,load_date, COUNT( person_id) as performance_type_count 
+										FROM muln_daily_learner_track_details 
+								where performance_type IS NOT NULL and load_date BETWEEN '${date.start}' AND '${date.end}'`+ filters +
+								` group by 1,2) pace group by 1`;
 							
 	async.parallel({
 		paceData: function(next){
@@ -63,21 +57,39 @@ exports.learnerPaceAndPerformance = function (req, res) {
 			var paceInfo = result.paceData,
 				performanceInfo = result.performanceData;
 
-			if (paceInfo.length > 0) {
-				if(paceInfo[0].aheadSchedule || paceInfo[0].onTrack || paceInfo[0].behindSchedule || paceInfo[0].haveNotStarted){
-					paceData.aheadSchedule = Math.round(paceInfo[0].aheadSchedule || 0);
-					paceData.onTrack = Math.round(paceInfo[0].onTrack || 0);
-					paceData.behindSchedule = Math.round(paceInfo[0].behindSchedule || 0);
-					paceData.haveNotStarted = Math.round(paceInfo[0].haveNotStarted || 0);
-				}
+			if (paceInfo.length > 0 && paceInfo[0].pacetype) {
+				paceInfo.forEach(function(obj){
+					if(obj.pacetype){
+						switch(obj.pacetype.toUpperCase()){
+							case 'AHEADSCHEDULE': paceData.aheadSchedule = Math.round(obj.pacetype_count || 0);
+												  break;
+							case 'BEHINDSCHEDULE': paceData.behindSchedule = Math.round(obj.pacetype_count || 0);
+												   break;
+							case 'ONTRACK': paceData.onTrack = Math.round(obj.pacetype_count || 0);
+											break;
+							case 'HAVE NOT STARTED': paceData.haveNotStarted = Math.round(obj.pacetype_count || 0);
+						}
+					}
+				})
+			}else{
+				paceData = {};
 			}
-			if (performanceInfo.length > 0) {
-				if(performanceInfo[0].excelling || performanceInfo[0].passing || performanceInfo[0].struggling || performanceInfo[0].haveNotStarted){
-					performanceData.excelling = Math.round(performanceInfo[0].excelling || 0);
-					performanceData.passing = Math.round(performanceInfo[0].passing || 0);
-					performanceData.struggling = Math.round(performanceInfo[0].struggling || 0);
-					performanceData.haveNotStarted = Math.round(performanceInfo[0].haveNotStarted || 0);
-				}
+			if (performanceInfo.length > 0 && performanceInfo[0].performance_type) {
+				performanceInfo.forEach(function(obj){
+					if(obj.performance_type){
+						switch(obj.performance_type.toUpperCase()){
+							case 'EXCELLING': performanceData.excelling = Math.round(obj.performance_type_count || 0);
+												  break;
+							case 'PASSING': performanceData.passing = Math.round(obj.performance_type_count || 0);
+												   break;
+							case 'STRUGGLING': performanceData.struggling = Math.round(obj.performance_type_count || 0);
+											break;
+							case 'HAVE NOT STARTED': performanceData.haveNotStarted = Math.round(obj.performance_type_count || 0);
+						}
+					}
+				})
+			}else{
+				performanceData = {};
 			}
 
 			responseData.paceData = paceData;
