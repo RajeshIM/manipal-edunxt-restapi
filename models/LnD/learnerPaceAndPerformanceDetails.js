@@ -73,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(9,0),
             field: 'score_avg',
             get: function() {
-                var val = parseFloat(this.getDataValue('scoreAvg') || 0).toFixed(2);
+                var val = parseFloat(this.getDataValue('scoreAvg') || 0).toFixed(0);
                 return parseFloat(val).toFixed(2);
             }
           },
@@ -81,8 +81,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(37,0),
             field: 'score_percentage',
             get: function() {
-                var val = parseFloat(this.getDataValue('scorePercentage') || 0).toFixed(2);
-                return parseFloat(val).toFixed(2);
+                var val = parseFloat(this.getDataValue('scorePercentage') || 0).toFixed(0);
+                return parseFloat(val).toFixed(0);
             }
           },
           examAccessed: {

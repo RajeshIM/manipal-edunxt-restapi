@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'completion_percentage',
             get: function() {
               var val = parseFloat(this.getDataValue('completion') || 0);
-              return parseFloat(val);
+              return parseFloat(val).toFixed(0);
             }
           },
           date: {

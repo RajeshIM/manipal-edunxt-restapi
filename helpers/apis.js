@@ -308,9 +308,9 @@ exports.getLearnerPerformanceData = function(req, next){
 			   pacetype AS paceType, performance_type AS performanceType, MAX(load_date) AS DATE 
 			FROM muln_daily_learner_track_details df
 			LEFT JOIN (
-				SELECT section_id, person_id, ROUND(AVG(score_avg),2) AS scoreAvg, 
+				SELECT section_id, person_id, ROUND(AVG(score_avg),0) AS scoreAvg, 
 				   		MAX(higest_score) AS highestScore, 
-				   		ROUND(AVG(score_percentage),2) AS scorePercentage,
+				   		ROUND(AVG(score_percentage),0) AS scorePercentage,
 				   		SUM(exam_accessed) AS examAccessed,
 				   		SUM(exam_passed) AS examPassed
 				FROM muln_scoredistribution_personexams_count
@@ -330,41 +330,79 @@ exports.getLearnerPerformanceData = function(req, next){
 	});
 }
 
+// exports.getScoresDistributionDetails = function(req, next){
+// 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
+// 		courseId =  parseInt(req.query.courseId || 0),
+// 		type = req.query.type ? req.query.type.toUpperCase() : '',
+// 		page = parseInt(req.query.page || 1),
+// 		limit = parseInt(req.query.limit || 10),
+// 	    fields = ['learnerName', 'serialNumber', 'team', 'batchName'],
+// 		aggFields = ['noOfAttempts:no_of_attempts:AVG', 'Progress:progress:AVG', 'scoreAvg:scores_avg:AVG', 
+// 					 'examsAttempted:number_of_exams_attempted:AVG', 'totalExamsCount:total_exams_count:AVG'],
+// 		aggData = getAttributes(tenant, aggFields),
+// 		attributes = _.union(fields, aggData),
+// 		group = fields,
+// 		options = {
+// 			req: req,
+// 			attributes: attributes,
+// 			startDate: true,
+// 			endDate: true,
+// 			group: group
+// 		},
+// 		query = getQuery(options),
+// 		Op = Sequelize.Op;
+// 		table = courseId ? 'courseWiseScoresDistribution': 'allCoursesScores';
+
+// 	if(type === 'QUIZ'){
+// 		query.where.questionPaperId = 5;
+// 	}else if(type === 'ASSIGNMENT'){
+// 		query.where.questionPaperId = 1;
+// 	}
+	
+// 	query.where['scoreAvg'] = {[Op.ne]: null};
+
+// 	models[tenant+'_'+table].findAll(query).then(function (data) {
+// 		next(null, data);
+// 	}).catch(function (err) {
+// 	    next(err);
+// 	});
+// }
+
 exports.getScoresDistributionDetails = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		courseId =  parseInt(req.query.courseId || 0),
-		type = req.query.type ? req.query.type.toUpperCase() : '',
+		searchBy = req.query.searchBy ? req.query.searchBy : null,
+		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
+		sortBy = req.query.sortBy ? req.query.sortBy : null,
+		order = req.query.order ? req.query.order : null,
 		page = parseInt(req.query.page || 1),
 		limit = parseInt(req.query.limit || 10),
-	    fields = ['learnerName', 'serialNumber', 'team', 'batchName'],
-		aggFields = ['noOfAttempts:no_of_attempts:AVG', 'Progress:progress:AVG', 'scoreAvg:scores_avg:AVG', 
-					 'examsAttempted:number_of_exams_attempted:AVG', 'totalExamsCount:total_exams_count:AVG'],
-		aggData = getAttributes(tenant, aggFields),
-		attributes = _.union(fields, aggData),
-		group = fields,
-		options = {
-			req: req,
-			attributes: attributes,
-			startDate: true,
-			endDate: true,
-			group: group
-		},
-		query = getQuery(options),
-		Op = Sequelize.Op;
-		table = courseId ? 'courseWiseScoresDistribution': 'allCoursesScores';
+		date = utils.getDates(req),
+		filters = getFiltersForRawQuery(req, false),
+		sortQuery = null,
+		table = courseId ? 'muln_course_wise_scores': 'muln_all_courses_scores'
+		query = '';
 
-	if(type === 'QUIZ'){
-		query.where.questionPaperId = 5;
-	}else if(type === 'ASSIGNMENT'){
-		query.where.questionPaperId = 1;
+	if(searchBy && searchTerm){
+		filters = filters + ` AND learner_name like '%${searchTerm}%'`;
 	}
-	
-	query.where['scoreAvg'] = {[Op.ne]: null};
+	if(sortBy && order){
+		sortQuery = ` order by  ${sortBy} ${order} `;
+	}
 
-	models[tenant+'_'+table].findAll(query).then(function (data) {
-		next(null, data);
+   	query = ` select learner_name as learnerName,serial_no as serialNumber, team_name as team,
+   				batch_name as batchName,ROUND(AVG(no_of_attempts),0) AS noOfAttempts, 
+   				ROUND(AVG(progress),0) AS Progress, ROUND(AVG(scores_avg),0) AS scoreAvg, 
+   				ROUND(AVG(number_of_exams_attempted),0) AS examsAttempted, 
+   				ROUND(AVG(total_exams_count), 0) AS totalExamsCount 
+   				FROM `+ table + ` where load_date between '${date.start}' and '${date.end}' `
+   				+ filters +  ` group by 1,2,3,4 ` ;
+	query = sortQuery ? (query+sortQuery) : query;
+
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+		next(null, data);			
 	}).catch(function (err) {
-	    next(err);
+		next(err);
 	});
 }
 
@@ -414,7 +452,7 @@ exports.getTeamLeaderBoard = function(req, next){
 		sortQuery = ` order by  ${sortBy} ${order} `;
 	}
 
-   	query = ` select team_name as teamName, ROUND(AVG(completion_percentage),2) as completion, 
+   	query = ` select team_name as teamName, ROUND(AVG(completion_percentage),0) as completion, 
 	   		         SUM(completed_program) AS completedProgram, SUM(team_size) as teamSize 
 			  from muln_daily_team_organization_performance 
 	 		       where load_date between '${date.start}' and '${date.end}' `+ filters + 
@@ -478,7 +516,7 @@ exports.getTrainerLeaderBoard = function(req, next){
    	query = ` select trainer_id as trainerId, trainer_name as trainerName, 
    					 SUM(trainings_conducted) as trainingsConducted, 
 	   		         SUM(people_trained) AS peopleTrained, 
-	   		         ROUND(AVG(avg_rating),2) as avgRating 
+	   		         ROUND(AVG(avg_rating),0) as avgRating 
 			  from muln_daily_trainer_organization_performance 
 	 		       where load_date between '${date.start}' and '${date.end}' `+ filters + 
 	 			   ` group by 1,2 ` ;
@@ -513,14 +551,14 @@ exports.getLearnerLeaderBoard = function(req, next){
 	}
 
    	query = `SELECT df.user_id, df.user_type, df.person_id, df.rollno AS learnerSerialNumber, 
-	   	     		df.person_name AS learnerName, ROUND(AVG(df.points_earned)) AS pointsEarned, 
-	   				ROUND(AVG(df.test_performance),2) AS testPerformance, 
-	   				ROUND(AVG(df.exam_score),2) AS examScore, 
-	   				ROUND(AVG(df.avg_test_performance),2) AS avgTestPerformance, 
+	   	     		df.person_name AS learnerName, ROUND(AVG(df.points_earned),0) AS pointsEarned, 
+	   				ROUND(AVG(df.test_performance),0) AS testPerformance, 
+	   				ROUND(AVG(df.exam_score),0) AS examScore, 
+	   				ROUND(AVG(df.avg_test_performance),0) AS avgTestPerformance, 
 	   				op.last_month_points_earned AS pointsEarnedSinceLastMonth 
 	   				FROM muln_daily_lerner_organization_performance AS df
 			LEFT JOIN (SELECT user_id, user_type, person_id, rollno, person_name, 
-				   			   ROUND(AVG(points_earned)) AS last_month_points_earned 
+				   			   ROUND(AVG(points_earned),0) AS last_month_points_earned 
 						FROM muln_monthly_lerner_organization_performance 
 	    				WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y') `
 	    				+ filters + `GROUP BY 1,2,3,4,5
@@ -562,17 +600,17 @@ exports.getOrganizationInterestsDetails = function(req, next){
 	
    	query = `SELECT df.user_id, df.user_type, df.course_id as courseId, df.program_id AS programId, 
    				df.entity_id as entityId, df.entity_name AS courseName,
-	   	     	ROUND(AVG(df.hits)) as hits,
+	   	     	ROUND(AVG(df.hits),0) as hits,
 	   	     	mo.monthly_hits as hitsSinceLastMonth,
-	   	     	ROUND(avg(df.followers)) as noOfFollowers,
+	   	     	ROUND(avg(df.followers),0) as noOfFollowers,
 	   	     	mo.monthly_followers as followersSinceLastMonth,
-	   	     	ROUND(avg(df.video_tags)) as videoTags,
-	   	     	ROUND(avg(df.article_tags)) as articleTags,
-				ROUND(avg(df.avg_rating),2) as avgRating 
+	   	     	ROUND(avg(df.video_tags),0) as videoTags,
+	   	     	ROUND(avg(df.article_tags),0) as articleTags,
+				ROUND(avg(df.avg_rating),0) as avgRating 
 				FROM muln_organization_interests AS df
 			LEFT JOIN (SELECT user_id, user_type, course_id, program_id, 
 							  entity_id,ROUND(AVG(monthly_hits)) as monthly_hits,
-							  ROUND(AVG(monthly_followers)) as monthly_followers
+							  ROUND(AVG(monthly_followers),0) as monthly_followers
 				 	  FROM muln_monthly_organization_interests 
 	    			  WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y') `
 	    				+ filters + `GROUP BY 1,2,3,4,5
@@ -615,6 +653,82 @@ exports.getContentConsumptionData = function(req, next){
 		next(null, data);
 	}).catch(function (err) {
 	    next(err);
+	});
+}
+
+exports.getActiveUsersLineGraphData = function(req, next){
+	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
+		table = 'locationWiseDailyActiveUsers',
+		attributes = [[models[tenant].fn('SUM',models[tenant].col('faculty_count')), 'facultyCount'],
+					  [models[tenant].fn('SUM',models[tenant].col('learner_count')), 'learnerCount'],'date'],
+		options = {
+					req:req,
+					attributes: attributes,
+					startDate: true,
+					endDate: true,
+					group: ['date']
+				  },
+		query = getQuery(options);
+
+	models[tenant+'_'+table].findAll(query).then(function (data) {
+	    next(null, data);
+	}).catch(function (err) {
+	    next(err);
+	});
+}
+
+exports.getModeOfDeliveryData = function(req, next){
+	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
+		date = utils.getDates(req),
+		filters = getFiltersForRawQuery(req, false),
+		monthlyFilters = getFiltersForRawQuery(req, true),
+		query = '';
+	
+   	query = `SELECT df.load_date as date,ROUND(AVG(df.learner_count), 0) AS onlineCount, 
+	   				op.offline_learners_count AS offlineCount 
+	   				FROM muln_location_wise_daily_active_learners_faculties AS df
+			LEFT JOIN (SELECT  load_date,ROUND(AVG(offline_learners_count), 0) AS offline_learners_count
+							   FROM muln_location_wise_daily_offline_learners_count 
+	    				WHERE load_date BETWEEN '${date.start}' AND '${date.end}' `
+	    				+ filters + `GROUP BY 1
+			) AS op
+			ON df.load_date = op.load_date
+			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
+			`GROUP BY 1`;
+			
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+		next(null, data);			
+	}).catch(function (err) {
+		next(err);
+	});
+}
+
+exports.getActiveUsersByLocationData = function(req, next){
+	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
+		date = utils.getDates(req),
+		filters = getFiltersForRawQuery(req, false),
+		monthlyFilters = getFiltersForRawQuery(req, true),
+		query = '';
+	
+   		query = `SELECT df.location,ROUND(AVG(df.faculty_count), 0) AS facultyCount, 
+	   				ROUND(AVG(df.learner_count), 0) AS learnerCount, 
+	   				op.monthly_faculty_count AS monthlyFacultyCount, 
+	   				op.monthly_learner_count AS monthlyLearnerCount
+	   				FROM muln_location_wise_daily_active_learners_faculties AS df
+			LEFT JOIN (SELECT  location,ROUND(AVG(faculty_count), 0) AS monthly_faculty_count,
+							   ROUND(AVG(learner_count), 0) AS monthly_learner_count 
+							   FROM muln_location_wise_monthly_active_learners_faculties 
+	    				WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y') `
+	    				+ filters + `GROUP BY 1
+			) AS op
+			ON df.location=op.location
+			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
+			`GROUP BY 1 order by learnerCount desc`;
+			
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+		next(null, data);			
+	}).catch(function (err) {
+		next(err);
 	});
 }
 

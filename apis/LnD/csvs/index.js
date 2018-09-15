@@ -8,7 +8,10 @@ var CSVs = [
   'trainerLeaderBoard',
   'learnerLeaderBoard',
   'organizationInterestsDetails',
-  'fileUrl'
+  'fileUrl',
+  'activeUsersLineGraph',
+  'modeOfDelivery',
+  'activeUsersByLocation'
 ];
 
 CSVs.forEach(function (csv) {

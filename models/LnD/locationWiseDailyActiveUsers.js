@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
               field: 'faculty_count',
               get: function() {
                 var val = parseInt(this.getDataValue('facultyCount') || 0);
-                return parseFloat(val);
+                return parseFloat(val).toFixed(0);
               }
           },
           learnerCount: {
@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'learner_count',
             get: function() {
                 var val = parseInt(this.getDataValue('learnerCount') || 0);
-                return parseFloat(val);
+                return parseFloat(val).toFixed(0);
             }
           },
           date: {

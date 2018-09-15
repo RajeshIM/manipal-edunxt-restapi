@@ -46,6 +46,9 @@ router.post('/learner-leaderboard/csv', csv.fileUrl);
 router.get('/learner-leaderboard/csv', csv.learnerLeaderBoard);
 router.post('/organization-interests-details/csv', csv.fileUrl);
 router.get('/organization-interests-details/csv', csv.organizationInterestsDetails);
+router.get('/active-users-line-graph/csv', csv.activeUsersLineGraph);
+router.get('/active-users-by-location/csv', csv.activeUsersByLocation);
+router.get('/mode-of-delivery/csv', csv.modeOfDelivery);
 
 router.post('/email', apis.sendMail);
 

@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'avg_rating',
             get: function() {
               var val = parseFloat(this.getDataValue('avgRating') || 0);
-              return parseFloat(val);
+              return parseFloat(val).toFixed(0);
             }
           },
           date: {
