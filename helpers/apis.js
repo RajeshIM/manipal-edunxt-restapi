@@ -658,22 +658,19 @@ exports.getContentConsumptionData = function(req, next){
 
 exports.getActiveUsersLineGraphData = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
-		table = 'locationWiseDailyActiveUsers',
-		attributes = [[models[tenant].fn('SUM',models[tenant].col('faculty_count')), 'facultyCount'],
-					  [models[tenant].fn('SUM',models[tenant].col('learner_count')), 'learnerCount'],'date'],
-		options = {
-					req:req,
-					attributes: attributes,
-					startDate: true,
-					endDate: true,
-					group: ['date']
-				  },
-		query = getQuery(options);
-
-	models[tenant+'_'+table].findAll(query).then(function (data) {
-	    next(null, data);
+		date = utils.getDates(req),
+		filters = getFiltersForRawQuery(req, false),
+		query = '';
+	
+   	query = `SELECT ROUND(SUM(faculty_count)/COUNT(DISTINCT course_id),0) AS facultyCount,
+					ROUND(SUM(learner_count)/COUNT(DISTINCT course_id),0) AS learnerCount,
+					load_date as date FROM muln_location_wise_daily_active_learners_faculties 
+					where load_date between '${date.start}' and '${date.end}' `+ filters + ` Group by 3`;
+			
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+		next(null, data);			
 	}).catch(function (err) {
-	    next(err);
+		next(err);
 	});
 }
 
