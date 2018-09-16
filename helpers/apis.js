@@ -239,41 +239,44 @@ function getAttributes(tenant, attributes) {
 
 exports.getLearnerPaceData = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
-		type = req.query.type ? req.query.type.toUpperCase() : '',
-		page = req.query.page ? parseInt(req.query.page) : 1,
-		limit = req.query.limit ? parseInt(req.query.limit) : 10,
-		learnerType = (type === 'PACE') ? 'paceType' : 'performanceType',
+		searchBy = req.query.searchBy ? req.query.searchBy : null,
+		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
+		sortBy = req.query.sortBy ? req.query.sortBy : null,
+		order = req.query.order ? req.query.order : null,
 		displayFor = req.query.displayFor ? req.query.displayFor.replace('%20', ' ').replace('%20', ' '): null,
-		loadDate = [models[tenant].fn('MAX',models[tenant].col('load_date')), 'date'],
-		fields = ['learnerName', 'serialNumber', 'courseName', 'programName', 'teamName', 'batchName',
-				  'paceType', 'performanceType', loadDate],
-		aggFields = ['scoreInCourse:score:AVG', 'scoreAvg:score_avg:AVG', 'highestScore:higest_score:AVG', 
-					 'scorePercentage:score_percentage:AVG', 'examAccessed:exam_accessed:AVG', 'examPassed:exam_passed:AVG'],
-		aggData = getAttributes(tenant, aggFields),
-		attributes = _.union(fields, aggData),
-		group = ['learnerName', 'serialNumber', 'courseName', 'programName', 'batchName', 'teamName'],
-		options = {
-			req: req,
-			attributes: attributes,
-			startDate: true,
-			endDate: true,
-			group: group
-		},
-		query = getQuery(options),
-		table = 'learnerPaceAndPerformanceDetails';
+		page = parseInt(req.query.page || 1),
+		limit = parseInt(req.query.limit || 10),
+		date = utils.getDates(req),
+		filters = getFiltersForRawQuery(req, false),
+		sortQuery = null,
+		query = '';
 
-	if (!_.contains(['PACE', 'PERFORMANCE'], type)) {
-		displayFor = 'noData';
+	if(displayFor){
+		filters = filters + `AND pacetype like '%${displayFor}%' `;
 	}
-	
-	if (displayFor) {
-		query.where[learnerType] = { [models.Op.like]: '%' + displayFor + '%' };
+	if(searchBy && searchTerm){
+		filters = filters + ` AND person_name like '%${searchTerm}%' `;
+	}
+	if(sortBy && order){
+		sortQuery = ` order by  ${sortBy} ${order} `;
 	}
 
-	models[tenant+'_'+table].findAll(query).then(function (data) {
-		next(null, data);
+   	query = `SELECT person_name AS learnerName, rollno AS serialNumber, course_name AS courseName,
+			   program_name AS programName, courseinstancename AS teamName, batch_name AS batchName, 
+			   ROUND(AVG(score),0) AS scoreInCourse, ROUND(AVG(score_avg),0) AS scoreAvg, 
+			   ROUND(AVG(higest_score),0) AS highestScore, 
+			   ROUND(AVG(score_percentage),0) AS scorePercentage, 
+			   ROUND(AVG(exam_accessed),0) AS examAccessed, ROUND(AVG(exam_passed),0) AS examPassed,
+			   pacetype AS paceType, performance_type AS performanceType, MAX(load_date) AS DATE 
+			FROM muln_daily_learner_track_details 
+			WHERE df.load_date BETWEEN '${date.start}' AND '${date.end}' ` + filters + 
+		`GROUP BY person_name, rollno, course_name, program_name, batch_name, courseinstancename `;
+	query = sortQuery ? (query+sortQuery) : query;
+
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+		next(null, data);			
 	}).catch(function (err) {
-	    next(err);
+		next(err);
 	});
 }
 
