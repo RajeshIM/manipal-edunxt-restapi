@@ -406,8 +406,8 @@ exports.getScoresDistributionDetails = function(req, next){
 				ROUND(AVG(progress),0) AS Progress, ROUND(AVG(scores_avg),0) AS scoreAvg, 
 				ROUND(AVG(number_of_exams_attempted),0) AS examsAttempted, 
 				ROUND(AVG(total_exams_count), 0) AS totalExamsCount 
-				FROM `+ table + ` WHERE load_date BETWEEN '${date.start}' AND '${date.start}' `+ filters + 
-				` GROUP BY 1,2,3,4,5 ` + sortQuery +  `) sub` ;
+				FROM `+ table + ` WHERE load_date BETWEEN '${date.start}' AND '${date.end}' `+ filters + 
+				` GROUP BY 1,2,3,4,5 ) sub Group by 1,2,3,4 ` + sortQuery;
 
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		next(null, data);			
