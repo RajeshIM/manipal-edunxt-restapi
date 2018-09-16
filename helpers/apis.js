@@ -265,7 +265,7 @@ exports.getLearnerPaceData = function(req, next){
 			   program_name AS programName, courseinstancename AS teamName, batch_name AS batchName, 
 			   ROUND(AVG(score),0) AS scoreInCourse, ROUND(AVG(score_avg),0) AS scoreAvg, 
 			   ROUND(AVG(higest_score),0) AS highestScore, 
-			   ROUND(AVG(score_percentage),0) AS scorePercentage, 
+			   ROUND(AVG(if(score_percentage > 100, 100, 0),0)) AS scorePercentage, 
 			   ROUND(AVG(exam_accessed),0) AS examAccessed, ROUND(AVG(exam_passed),0) AS examPassed,
 			   pacetype AS paceType, performance_type AS performanceType, MAX(load_date) AS DATE 
 			FROM muln_daily_learner_track_details 
@@ -313,7 +313,7 @@ exports.getLearnerPerformanceData = function(req, next){
 			LEFT JOIN (
 				SELECT section_id, person_id, ROUND(AVG(score_avg),0) AS scoreAvg, 
 				   		MAX(higest_score) AS highestScore, 
-				   		ROUND(AVG(score_percentage),0) AS scorePercentage,
+				   		ROUND(AVG(if(score_percentage > 100, 100, 0),0)) AS scorePercentage,
 				   		SUM(exam_accessed) AS examAccessed,
 				   		SUM(exam_passed) AS examPassed
 				FROM muln_scoredistribution_personexams_count
