@@ -269,7 +269,7 @@ exports.getLearnerPaceData = function(req, next){
 			   ROUND(AVG(exam_accessed),0) AS examAccessed, ROUND(AVG(exam_passed),0) AS examPassed,
 			   pacetype AS paceType, performance_type AS performanceType, MAX(load_date) AS DATE 
 			FROM muln_daily_learner_track_details 
-			WHERE df.load_date BETWEEN '${date.start}' AND '${date.end}' ` + filters + 
+			WHERE load_date BETWEEN '${date.start}' AND '${date.end}' ` + filters + 
 		`GROUP BY person_name, rollno, course_name, program_name, batch_name, courseinstancename `;
 	query = sortQuery ? (query+sortQuery) : query;
 
