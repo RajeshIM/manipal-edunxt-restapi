@@ -395,7 +395,7 @@ exports.getScoresDistributionDetails = function(req, next){
 
    	query = ` select learner_name as learnerName,serial_no as serialNumber, team_name as team,
    				batch_name as batchName,ROUND(AVG(no_of_attempts),0) AS noOfAttempts, 
-   				ROUND(AVG(progress),0) AS Progress, ROUND(AVG(scores_avg),0) AS scoreAvg, 
+   				ROUND(AVG(progress),0) AS Progress, ROUND(AVG(progress),0) AS scoreAvg, 
    				ROUND(AVG(number_of_exams_attempted),0) AS examsAttempted, 
    				ROUND(AVG(total_exams_count), 0) AS totalExamsCount 
    				FROM `+ table + ` where load_date between '${date.start}' and '${date.end}' `
