@@ -396,14 +396,14 @@ exports.getScoresDistributionDetails = function(req, next){
 	}
 
    	query = ` SELECT learnerName,serialNumber, team,
-				batchName,ROUND(AVG(noOfAttempts),0) AS noOfAttempts, 
+				batchName,ROUND(SUM(noOfAttempts),0) AS noOfAttempts, 
 				ROUND(AVG(progress),0) AS Progress, ROUND(AVG(scoreAvg),0) AS scoreAvg, 
 				ROUND(SUM(examsAttempted),0) AS examsAttempted, 
 				ROUND(AVG(totalExamsCount), 0) AS totalExamsCount FROM 
 				(
 				SELECT learner_name AS learnerName,serial_no AS serialNumber, team_name AS team,
 				batch_name AS batchName, questionpapertype_id, ROUND(AVG(no_of_attempts),0) AS noOfAttempts, 
-				ROUND(AVG(progress),0) AS Progress, ROUND(AVG(scores_avg),0) AS scoreAvg, 
+				ROUND(AVG(progress),0) AS Progress, ROUND(AVG(if(scores_avg > 100, 100, scores_avg)),0) AS scoreAvg, 
 				ROUND(AVG(number_of_exams_attempted),0) AS examsAttempted, 
 				ROUND(AVG(total_exams_count), 0) AS totalExamsCount 
 				FROM `+ table + ` WHERE load_date BETWEEN '${date.start}' AND '${date.end}' `+ filters + 
