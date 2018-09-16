@@ -391,16 +391,23 @@ exports.getScoresDistributionDetails = function(req, next){
 	}
 	if(sortBy && order){
 		sortQuery = ` order by  ${sortBy} ${order} `;
+	}else{
+		sortQuery = ` order by learnerName desc `;
 	}
 
-   	query = ` select learner_name as learnerName,serial_no as serialNumber, team_name as team,
-   				batch_name as batchName,ROUND(AVG(no_of_attempts),0) AS noOfAttempts, 
-   				ROUND(AVG(progress),0) AS Progress, ROUND(AVG(progress),0) AS scoreAvg, 
-   				ROUND(AVG(number_of_exams_attempted),0) AS examsAttempted, 
-   				ROUND(AVG(total_exams_count), 0) AS totalExamsCount 
-   				FROM `+ table + ` where load_date between '${date.start}' and '${date.end}' `
-   				+ filters +  ` group by 1,2,3,4 ` ;
-	query = sortQuery ? (query+sortQuery) : query;
+   	query = ` SELECT learnerName,serialNumber, team,
+				batchName,ROUND(AVG(noOfAttempts),0) AS noOfAttempts, 
+				ROUND(AVG(progress),0) AS Progress, ROUND(AVG(scoreAvg),0) AS scoreAvg, 
+				ROUND(SUM(examsAttempted),0) AS examsAttempted, 
+				ROUND(AVG(totalExamsCount), 0) AS totalExamsCount FROM 
+				(
+				SELECT learner_name AS learnerName,serial_no AS serialNumber, team_name AS team,
+				batch_name AS batchName, questionpapertype_id, ROUND(AVG(no_of_attempts),0) AS noOfAttempts, 
+				ROUND(AVG(progress),0) AS Progress, ROUND(AVG(scores_avg),0) AS scoreAvg, 
+				ROUND(AVG(number_of_exams_attempted),0) AS examsAttempted, 
+				ROUND(AVG(total_exams_count), 0) AS totalExamsCount 
+				FROM `+ table + ` WHERE load_date BETWEEN '${date.start}' AND '${date.start}' `+ filters + 
+				` GROUP BY 1,2,3,4,5 ` + sortQuery +  `) sub` ;
 
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		next(null, data);			
