@@ -25,12 +25,12 @@ exports.learnerPaceAndPerformance = function (req, res) {
 		responseData = {};
 
    	learnerPaceQuery = `select pacetype, AVG(pacetype_count) AS pacetype_count
-						from (SELECT pacetype,load_date, COUNT( person_id) as pacetype_count 
+						from (SELECT pacetype,load_date, COUNT(distinct person_id) as pacetype_count 
 								FROM muln_daily_learner_track_details 
 								where pacetype IS NOT NULL  and load_date BETWEEN '${date.start}' AND '${date.end}'`+ filters +
 							 ` group by 1,2) pace group by 1`;
 	learnerPerformanceQuery = `select performance_type, AVG(performance_type_count) AS performance_type_count
-								from (SELECT performance_type,load_date, COUNT( person_id) as performance_type_count 
+								from (SELECT performance_type,load_date, COUNT(distinct person_id) as performance_type_count 
 										FROM muln_daily_learner_track_details 
 								where performance_type IS NOT NULL and load_date BETWEEN '${date.start}' AND '${date.end}'`+ filters +
 								` group by 1,2) pace group by 1`;
