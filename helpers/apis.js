@@ -561,7 +561,7 @@ exports.getLearnerLeaderBoard = function(req, next){
 	}
 
    	query = `SELECT df.user_id, df.user_type, df.person_id, df.rollno AS learnerSerialNumber, 
-	   	     		df.person_name AS learnerName, ROUND(AVG(df.points_earned),0) AS pointsEarned, 
+	   	     		LTRIM(df.person_name) AS learnerName, ROUND(AVG(df.points_earned),0) AS pointsEarned, 
 	   				ROUND(AVG(df.test_performance),0) AS testPerformance, 
 	   				ROUND(AVG(df.exam_score),0) AS examScore, 
 	   				ROUND(AVG(df.avg_test_performance),0) AS avgTestPerformance, 
