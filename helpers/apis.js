@@ -618,7 +618,7 @@ exports.getOrganizationInterestsDetails = function(req, next){
 	if(sortBy && order){
 		sortQuery = ` order by  ${sortBy} ${order} `;
 	}else{
-		sortQuery = ` order by  interest asc `;
+		sortQuery = ` order by  totalHits desc `;
 	}
 	
    	query = `SELECT df.user_id, df.user_type, df.course_id as courseId, df.program_id AS programId, 
