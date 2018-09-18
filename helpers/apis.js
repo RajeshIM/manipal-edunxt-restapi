@@ -680,7 +680,8 @@ exports.getContentConsumptionData = function(req, next){
 			content_name as contentName, content_type as contentType, author as author, 
 			ROUND(avg(views),0) as views, 
 			ROUND(avg(avg_rating),1) as avgRating, 
-			ROUND(avg(duration),0) as duration 
+			ROUND(avg(duration),0) as duration,
+			ROUND(avg(avg_duration),0) as avgDuration 
 			from muln_content_consumption 
 			where load_date between '${date.start}' and '${date.end}' `+ filters + 
 			` group by courseId,programId,contentId,contentType,author`;
