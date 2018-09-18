@@ -21,8 +21,8 @@ exports.scoresDistribution = function (req, res) {
 						 WHEN progress BETWEEN 61 AND 80 THEN '61-80'
 						 WHEN progress BETWEEN 81 AND 100 THEN '81-100'
 				END AS scoreRanges, COUNT(person_id) AS numberOfUsers
-				FROM  (SELECT person_id, AVG(IFNULL(progress, 0)) AS progress FROM `+ table + dateFilter + filters + ` 
-				AND scores_avg IS NOT NULL Group By 1)sub `+ group;
+				FROM  (SELECT person_id, AVG(IFNULL(progress, 0)) AS progress FROM `+ table + dateFilter + filters + 
+				` Group By 1)sub `+ group;
 			
   	var result = [{
   		'scoreRanges': '0-20',
