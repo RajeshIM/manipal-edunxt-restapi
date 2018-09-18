@@ -149,7 +149,7 @@ exports.getPaginationObject = function (total, page, limit) {
 }
 
 function getFiltersForRawQuery(req, isJoin) {
-	var userId =  parseInt([req.headers['user_id']] || req.query['user_id']),
+	var userId =  parseInt(req.headers['user_id'] || req.query['user_id']),
 		userType = req.headers['user_type'] || req.query['user_type'],
 		courseId =  parseInt(req.query.courseId || 0),
 		programId =  parseInt(req.query.programId || 0),
@@ -259,20 +259,22 @@ exports.getLearnerPaceData = function(req, next){
 	}
 	if(sortBy && order){
 		sortQuery = ` order by  ${sortBy} ${order} `;
+	}else{
+		sortQuery = ` order by  progressPercentage desc `;
 	}
 
    	query = `SELECT person_name AS learnerName, rollno AS serialNumber, course_name AS courseName,
-			   program_name AS programName, courseinstancename AS teamName, batch_name AS batchName, 
+			   program_name AS programName, courseinstancename AS sectionName, batch_name AS batchName, 
 			   ROUND(AVG(score),0) AS scoreInCourse, ROUND(AVG(score_avg),0) AS scoreAvg, 
 			   ROUND(AVG(higest_score),0) AS highestScore, 
-			   ROUND(AVG(if(score_percentage > 100, 100, score_percentage)),2) AS scorePercentage, 
+			   ROUND(AVG(if(score_percentage > 100, 100, score_percentage)),2) AS progressPercentage, 
 			   ROUND(AVG(exam_accessed),0) AS examAccessed, ROUND(AVG(exam_passed),0) AS examPassed,
 			   pacetype AS paceType, performance_type AS performanceType, MAX(load_date) AS DATE 
 			FROM muln_daily_learner_track_details 
 			WHERE load_date BETWEEN '${date.start}' AND '${date.end}' ` + filters + 
 		`GROUP BY person_name, rollno, course_name, program_name, batch_name, courseinstancename `;
 	query = sortQuery ? (query+sortQuery) : query;
-
+   
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		next(null, data);			
 	}).catch(function (err) {
@@ -302,10 +304,12 @@ exports.getLearnerPerformanceData = function(req, next){
 	}
 	if(sortBy && order){
 		sortQuery = ` order by  ${sortBy} ${order} `;
+	}else{
+		sortQuery = ` order by scoreAvg desc `;
 	}
 
    	query = `SELECT person_name AS learnerName, rollno AS serialNumber, course_name AS courseName,
-			   program_name AS programName, courseinstancename AS teamName, batch_name AS batchName, 
+			   program_name AS programName, courseinstancename AS sectionName, batch_name AS batchName, 
 			   score AS scoreInCourse, score_avg AS scoreAvg, higest_score AS highestScore, 
 			   score_percentage AS scorePercentage, exam_accessed AS examAccessed, exam_passed AS examPassed,
 			   pacetype AS paceType, performance_type AS performanceType, MAX(load_date) AS DATE 
@@ -392,14 +396,14 @@ exports.getScoresDistributionDetails = function(req, next){
 	if(sortBy && order){
 		sortQuery = ` order by  ${sortBy} ${order} `;
 	}else{
-		sortQuery = ` order by learnerName desc `;
+		sortQuery = ` order by scoreAvg desc `;
 	}
 
    	query = ` SELECT learnerName,serialNumber, team,
-				batchName,ROUND(SUM(noOfAttempts),0) AS noOfAttempts, 
+				batchName,ROUND(SUM(noOfAttempts),0) AS totalAttempts, 
 				ROUND(AVG(progress),0) AS Progress, ROUND(AVG(scoreAvg),0) AS scoreAvg, 
 				ROUND(SUM(examsAttempted),0) AS examsAttempted, 
-				ROUND(AVG(totalExamsCount), 0) AS totalExamsCount FROM 
+				ROUND(AVG(totalExamsCount), 0) AS totalExams FROM 
 				(
 				SELECT learner_name AS learnerName,serial_no AS serialNumber, team_name AS team,
 				batch_name AS batchName, questionpapertype_id, ROUND(AVG(no_of_attempts),0) AS noOfAttempts, 
@@ -460,6 +464,8 @@ exports.getTeamLeaderBoard = function(req, next){
 	}
 	if(sortBy && order){
 		sortQuery = ` order by  ${sortBy} ${order} `;
+	}else{
+		sortQuery = ` order by  teamName desc `;
 	}
 
    	query = ` select team_name as teamName, ROUND(AVG(completion_percentage),0) as completion, 
@@ -519,8 +525,11 @@ exports.getTrainerLeaderBoard = function(req, next){
 	if(searchBy && searchTerm){
 		filters = filters + ` AND trainer_name like '%${searchTerm}%'`;
 	}
+
 	if(sortBy && order){
 		sortQuery = ` order by  ${sortBy} ${order} `;
+	}else{
+		sortQuery = ` order by  trainerName desc `;
 	}
 
    	query = ` select trainer_id as trainerId, trainer_name as trainerName, 
@@ -558,9 +567,11 @@ exports.getLearnerLeaderBoard = function(req, next){
 	}
 	if(sortBy && order){
 		sortQuery = ` order by  ${sortBy} ${order} `;
+	}else{
+		sortQuery = ` order by  avgTestPerformance desc `;
 	}
 
-   	query = `SELECT df.user_id, df.user_type, df.person_id, df.rollno AS learnerSerialNumber, 
+   	query = `SELECT df.user_id, df.user_type, df.person_id, df.rollno AS serialNumber, 
 	   	     		LTRIM(df.person_name) AS learnerName, ROUND(AVG(df.points_earned),0) AS pointsEarned, 
 	   				ROUND(AVG(df.test_performance),0) AS testPerformance, 
 	   				ROUND(AVG(df.exam_score),0) AS examScore, 
@@ -606,11 +617,13 @@ exports.getOrganizationInterestsDetails = function(req, next){
 	}
 	if(sortBy && order){
 		sortQuery = ` order by  ${sortBy} ${order} `;
+	}else{
+		sortQuery = ` order by  interest asc `;
 	}
 	
    	query = `SELECT df.user_id, df.user_type, df.course_id as courseId, df.program_id AS programId, 
-   				df.entity_id as entityId, df.entity_name AS courseName,
-	   	     	ROUND(AVG(df.hits),0) as hits,
+   				df.entity_id as entityId, df.entity_name AS interest,
+	   	     	ROUND(AVG(df.hits),0) as totalHits,
 	   	     	mo.monthly_hits as hitsSinceLastMonth,
 	   	     	ROUND(avg(df.followers),0) as noOfFollowers,
 	   	     	mo.monthly_followers as followersSinceLastMonth,
@@ -642,27 +655,41 @@ exports.getOrganizationInterestsDetails = function(req, next){
 
 exports.getContentConsumptionData = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
-		page = req.query.page ? parseInt(req.query.page) : 1,
-		limit = req.query.limit ? parseInt(req.query.limit) : 10,
-		fields = ['courseId', 'programId', 'courseName', 'contentId', 'contentName', 'contentType', 'author'],
-		aggFields = ['views:views:AVG', 'avgRating:avg_rating:AVG', 'duration:duration:AVG'],
-		aggData = getAttributes(tenant, aggFields),
-		attributes = _.union(fields, aggData),
-		group = ['courseId', 'programId', 'courseName', 'contentId', 'contentType', 'author'],
-		options = {
-			req: req,
-			attributes: attributes,
-			startDate: true,
-			endDate: true,
-			group: group
-		},
-		query = getQuery(options),
-		table = 'contentConsumption';
-    
-	models[tenant+'_'+table].findAll(query).then(function (data) {
-		next(null, data);
+		searchBy = req.query.searchBy ? req.query.searchBy : null,
+		searchTerm = req.query.searchTerm ? req.query.searchTerm : null,
+		sortBy = req.query.sortBy ? req.query.sortBy : null,
+		order = req.query.order ? req.query.order : null,
+		page = parseInt(req.query.page || 1),
+		limit = parseInt(req.query.limit || 10),
+		date = utils.getDates(req),
+		filters = getFiltersForRawQuery(req, false),
+		sortQuery = null,
+		query = '';
+
+	if(searchBy && searchTerm){
+		filters = filters + ` AND content_name like '%${searchTerm}%' `;
+	}
+
+	if(sortBy && order){
+		sortQuery = ` order by  ${sortBy} ${order} `;
+	}else{
+		sortQuery = ` order by  duration desc `;
+	}
+
+   	query = `select course_id as courseId, program_id as programId, course_name as courseName, content_id as contentId, 
+			content_name as contentName, content_type as contentType, author as author, 
+			ROUND(avg(views),0) as views, 
+			ROUND(avg(avg_rating),1) as avgRating, 
+			ROUND(avg(duration),0) as duration 
+			from muln_content_consumption 
+			where load_date between '${date.start}' and '${date.end}' `+ filters + 
+			` group by courseId,programId,contentId,contentType,author`;
+	query = sortQuery ? (query+sortQuery) : query;
+	
+	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
+		next(null, data);			
 	}).catch(function (err) {
-	    next(err);
+		next(err);
 	});
 }
 
@@ -676,7 +703,7 @@ exports.getActiveUsersLineGraphData = function(req, next){
 					ROUND(SUM(learner_count)/COUNT(DISTINCT course_id),0) AS learnerCount,
 					load_date as date FROM muln_location_wise_daily_active_learners_faculties 
 					where load_date between '${date.start}' and '${date.end}' `+ filters + ` Group by 3`;
-			
+		
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		next(null, data);			
 	}).catch(function (err) {

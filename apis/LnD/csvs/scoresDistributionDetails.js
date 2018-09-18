@@ -8,7 +8,7 @@ exports.scoresDistributionDetails = function (req, res) {
 		fileName = 'testScores',
 		filters = {},
 		headers = {}, 
-		fields = ['noOfAttempts', 'Progress', 'scoreAvg', 'learnerName', 'serialNumber', 'team', 'batchName'],
+		fields = ['learnerName', 'serialNumber', 'team', 'batchName', 'scoreAvg', 'totalAttempts', 'examsAttempted', 'totalExams'],
 		csvData = [];
 
 	filters.query = req.query.q ? JSON.parse(base64.decode(req.query.q)) : {};

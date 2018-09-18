@@ -6,7 +6,7 @@ var response = require('./../../../helpers/response'),
 exports.teamLeaderBoard = function (req, res) {
 	var filters = {},
 		headers = {}, 
-		fields = ['completion', 'completedProgram', 'teamSize', 'teamName'],
+		fields = ['teamName', 'completion', 'completedProgram', 'teamSize'],
 		csvData = [];
 
 	filters.query = req.query.q ? JSON.parse(base64.decode(req.query.q)) : {};

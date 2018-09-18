@@ -5,19 +5,28 @@ var response = require('./../../../helpers/response'),
 
 exports.learnerPaceAndPerformanceDetails = function (req, res) {
 	var filters = {},
-		headers = {}, 
-		type = req.query.type ? req.query.type.toUpperCase() : '',
-		fn = (type==='PERFORMANCE') ? 'getLearnerPerformanceData': 'getLearnerPaceData',
-		fields = ['learnerName', 'serialNumber', 'courseName', 'programName', 'teamName', 'batchName',
-				  'scoreInCourse', 'scoreAvg', 'highestScore', 'scorePercentage', 'examAccessed', 
-				  'examPassed', 'paceType', 'performanceType', 'date'],
+		headers = {},
+		type = '',
+		fn = '',
+		paceFields = [],
+		performanceFields = [],
+	    fields = [],
 		csvData = [];
+		
 	filters.query = req.query.q ? JSON.parse(base64.decode(req.query.q)) : {};
 	filters.body = req.query.b ? JSON.parse(base64.decode(req.query.b)) : [];
 	headers['tenant_name'] = req.query['tenant_name'];
 	headers['user_id'] = req.query['user_id'];
 	headers['user_type'] = req.query['user_type'];
 	filters.headers = headers;
+
+	type = filters.query.type ? filters.query.type.toUpperCase() : '',
+	fn = (type==='PERFORMANCE') ? 'getLearnerPerformanceData': 'getLearnerPaceData',
+	paceFields = ['learnerName', 'serialNumber', 'courseName', 'sectionName', 'batchName',
+		 		  'examAccessed', 'examPassed', 'progressPercentage'],
+	performanceFields = ['learnerName', 'serialNumber', 'courseName', 'sectionName', 'batchName',
+				  			 'scoreInCourse', 'scoreAvg'],
+	fields = (type==='PERFORMANCE') ? performanceFields: paceFields,
 
 	apis[fn](filters, function(err, data){
 		if(err){

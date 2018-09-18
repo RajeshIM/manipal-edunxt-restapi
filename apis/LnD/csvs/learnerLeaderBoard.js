@@ -6,8 +6,8 @@ var response = require('./../../../helpers/response'),
 exports.learnerLeaderBoard = function (req, res) {
 	var	filters = {},
 		headers = {}, 
-		fields = ['user_id','user_type','person_id','learnerSerialNumber','learnerName','pointsEarned','testPerformance',
-				  'examScore','avgTestPerformance','pointsEarnedSinceLastMonth'],
+		fields = ['learnerName', 'serialNumber', 'pointsEarned','pointsEarnedSinceLastMonth', 
+				  'avgTestPerformance', 'examScore'],
 		csvData = [];
     filters.query = req.query.q ? JSON.parse(base64.decode(req.query.q)) : {};
 	filters.body = req.query.b ? JSON.parse(base64.decode(req.query.b)) : [];

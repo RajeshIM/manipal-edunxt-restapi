@@ -20,20 +20,24 @@ exports.organizationInterests = function (req, res) {
 		monthlyFilters = monthlyFilters + ` AND df.entity_name like '%${searchTerm}%'`;
 	}
    	query = `SELECT dc.user_id, dc.user_type, dc.courseId, 
-				dc.programId,dc.entityId, dc.entity_type,dc.courseName,
-				ROUND(AVG(dc.hits)) AS hits,
-				mc.monthly_hits AS hitsSinceLastMonth
-				FROM
+				dc.programId,dc.entityId, dc.entity_type,dc.courseName as interest,
+				ROUND(AVG(dc.hits)) AS totalHits,
+				mc.monthly_hits AS hitsSinceLastMonth,
+				ROUND(avg(dc.followers),0) as noOfFollowers,
+	   	     	mc.monthly_followers as followersSinceLastMonth 
+	   	     	FROM
 				(SELECT df.user_id, df.user_type, df.course_id AS courseId, df.program_id AS programId, df.entity_id AS entityId,
 				entity_name AS courseName,entity_type,
-				ROUND(AVG(df.viewcount)) AS hits
+				ROUND(AVG(df.viewcount)) AS hits,
+				ROUND(avg(df.followers),0) as followers
 				FROM muln_organization_interests AS df
 				WHERE df.load_date BETWEEN '${date.start}' AND '${date.end}' ` + 
 				monthlyFilters + `GROUP BY 1,2,3,4,5 ORDER BY df.viewcount DESC LIMIT 3) dc
 				LEFT JOIN 
 				(
 				SELECT user_id, user_type, course_id, program_id, entity_id,
-				ROUND(AVG(monthly_hits)) AS monthly_hits
+				ROUND(AVG(monthly_hits)) AS monthly_hits,
+				ROUND(AVG(monthly_followers),0) as monthly_followers 
 				FROM muln_monthly_organization_interests 
 				WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y') ` + 
 				filters + `GROUP BY 1,2,3,4,5

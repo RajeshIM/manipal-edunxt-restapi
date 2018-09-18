@@ -7,15 +7,13 @@ exports.contentConsumption = function (req, res) {
 	var filters = {},
 		headers = {},
 		fields = [
+			'contentName',
+            'contentType',
+            'courseName',
+            'author',
 			'views',
             'avgRating',
-            'duration',
-            'courseId',
-            'programId',
-            'courseName',
-            'contentName',
-            'contentType',
-            'author'
+            'duration'
 		],
 		csvData = [];
 
