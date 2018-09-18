@@ -24,7 +24,7 @@ exports.learnerPaceAndPerformanceDetails = function (req, res) {
 
 	type = filters.query.type ? filters.query.type.toUpperCase() : '';
 	fn = (type==='PERFORMANCE') ? 'getLearnerPerformanceData': 'getLearnerPaceData';
-	paceFields = ['learnerName', 'serialNumber', 'courseName', 'sectionName', 'batchName'
+	paceFields = ['learnerName', 'serialNumber', 'courseName', 'sectionName', 'batchName',
 		 		  'examAccessed', 'examPassed', 'progress'];
 	performanceFields = ['learnerName', 'serialNumber', 'courseName', 'sectionName', 'batchName',
 				  			 'scoreInCourse', 'scoreAvg'];
