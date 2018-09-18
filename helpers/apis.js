@@ -260,7 +260,7 @@ exports.getLearnerPaceData = function(req, next){
 	if(sortBy && order){
 		sortQuery = ` order by  ${sortBy} ${order} `;
 	}else{
-		sortQuery = ` order by  progressPercentage desc `;
+		sortQuery = ` order by  progress desc `;
 	}
 
    	query = `SELECT person_name AS learnerName, rollno AS serialNumber, course_name AS courseName,
