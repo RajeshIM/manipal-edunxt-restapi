@@ -41,7 +41,7 @@ exports.learnerPaceAndPerformanceDetails = function (req, res) {
 			}else{
 				csvData = json2csv({fields: fields});
 			}
-			response.sendCSV(res, csvData, 'learnersOnTrack');
+			response.sendCSV(res, csvData, fileName);
 		}
 	});
 }
