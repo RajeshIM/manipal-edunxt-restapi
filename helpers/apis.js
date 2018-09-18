@@ -738,7 +738,7 @@ exports.getModeOfDeliveryData = function(req, next){
 }
 
 exports.getActiveUsersByLocationData = function(req, next){
-	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
+	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
 		date = utils.getDates(req),
 		filters = getFiltersForRawQuery(req, false),
 		monthlyFilters = getFiltersForRawQuery(req, true),
