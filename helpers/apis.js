@@ -673,7 +673,7 @@ exports.getContentConsumptionData = function(req, next){
 	if(sortBy && order){
 		sortQuery = ` order by  ${sortBy} ${order} `;
 	}else{
-		sortQuery = ` order by  duration desc `;
+		sortQuery = ` order by  views desc `;
 	}
 
    	query = `select course_id as courseId, program_id as programId, course_name as courseName, content_id as contentId, 
