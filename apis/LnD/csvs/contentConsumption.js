@@ -13,7 +13,8 @@ exports.contentConsumption = function (req, res) {
             'author',
 			'views',
             'avgRating',
-            'duration'
+            'duration',
+            'avgDuration'
 		],
 		csvData = [];
 

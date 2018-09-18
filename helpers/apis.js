@@ -267,7 +267,7 @@ exports.getLearnerPaceData = function(req, next){
 			   program_name AS programName, courseinstancename AS sectionName, batch_name AS batchName, 
 			   ROUND(AVG(score),0) AS scoreInCourse, ROUND(AVG(score_avg),0) AS scoreAvg, 
 			   ROUND(AVG(higest_score),0) AS highestScore, 
-			   ROUND(AVG(if(score_percentage > 100, 100, score_percentage)),2) AS progressPercentage, 
+			   ROUND(AVG(if(score_percentage > 100, 100, score_percentage)),2) AS progress, 
 			   ROUND(AVG(exam_accessed),0) AS examAccessed, ROUND(AVG(exam_passed),0) AS examPassed,
 			   pacetype AS paceType, performance_type AS performanceType, MAX(load_date) AS DATE 
 			FROM muln_daily_learner_track_details 
