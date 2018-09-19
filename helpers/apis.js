@@ -719,7 +719,7 @@ exports.getModeOfDeliveryData = function(req, next){
 		monthlyFilters = getFiltersForRawQuery(req, true),
 		query = '';
 	
-   	query = `SELECT df.load_date as date,ROUND(AVG(df.learner_count), 0) AS onlineCount, 
+   	query = `SELECT df.load_date as date,ROUND(SUM(df.learner_count)/COUNT(DISTINCT df.course_id),0) AS onlineCount, 
 	   				op.offline_learners_count AS offlineCount 
 	   				FROM muln_location_wise_daily_active_learners_faculties AS df
 			LEFT JOIN (SELECT  load_date,ROUND(AVG(offline_learners_count), 0) AS offline_learners_count
