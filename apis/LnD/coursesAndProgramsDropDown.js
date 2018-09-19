@@ -17,7 +17,7 @@ exports.coursesAndProgramsDropDown = function (req, res) {
 	}
 
 	var query = `select program_id as programId, course_id as courseId,CONCAT(program_name, '-',course_name) as courseName from muln_enrolled_persons 
-				  where load_date between '${date.start}' and '${date.end}' `;
+				  where load_date>='${date.start}' `;
 	query = query + filters + group;
 	
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
