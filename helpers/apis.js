@@ -165,7 +165,6 @@ function getFiltersForRawQuery(req, isJoin) {
 		programIdFilter = '',
 		examTypeFilter = '',
 		batches = '',
-		contents = '',
 		contentFilter = '',
 		batchFilter = '',
 		moduleNameFilter = '',
@@ -196,9 +195,14 @@ function getFiltersForRawQuery(req, isJoin) {
 		batches = '(' + batchId.toString() + ')';
 		batchFilter = ` batch_id IN ` + batches;
 	}
-	if (!_.isEmpty(contentType)) {
-		contents = '(' + contentType.toString() + ')';
-		contentFilter = ` content_type IN ` + contents;
+
+	if(contentType.length>0){
+		contentType.forEach(function(val){
+			var c = `'${val}'`;
+			str = str.length>0 ? (str+','+c) : c;
+		})
+		str = str.length>0 ? ('('+str+')') : str;
+		contentFilter = ` content_type IN `+ str;
 	}
 	
 	if(scoreData.length>0){
