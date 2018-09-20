@@ -158,12 +158,15 @@ function getFiltersForRawQuery(req, isJoin) {
 		scoreType = req.query.type ? req.query.type.toUpperCase() : null,
 		quizName = bodyParams.quiz,
 		assignmentName = bodyParams.assignment,
+		contentType = bodyParams.contenttype,
 		userIdFilter = '',
 		userTypeFilter = '',
 		courseIdFilter = '',
 		programIdFilter = '',
 		examTypeFilter = '',
 		batches = '',
+		contents = '',
+		contentFilter = '',
 		batchFilter = '',
 		moduleNameFilter = '',
 		scoreData = [],
@@ -193,6 +196,10 @@ function getFiltersForRawQuery(req, isJoin) {
 		batches = '(' + batchId.toString() + ')';
 		batchFilter = ` batch_id IN ` + batches;
 	}
+	if (!_.isEmpty(contentType)) {
+		contents = '(' + contentType.toString() + ')';
+		contentFilter = ` content_type IN ` + contents;
+	}
 	
 	if(scoreData.length>0){
 		scoreData.forEach(function(val){
@@ -214,6 +221,8 @@ function getFiltersForRawQuery(req, isJoin) {
    	   		(examTypeFilter.length > 0 ? examTypeFilter : filters);
    	filters = (filters.length > 0 && batchId.length > 0) ? (filters + ' AND' + batchFilter) : 
    	   		(batchId.length > 0 ? batchFilter : filters);
+   	filters = (filters.length > 0 && contentType.length > 0) ? (filters + ' AND' + contentFilter) : 
+   	   		(contentType.length > 0 ? contentFilter : filters);
     filters = (filters.length > 0 && moduleNameFilter.length > 0) ? (filters + ' AND' + moduleNameFilter) : 
    	   		(moduleNameFilter.length > 0 ? moduleNameFilter : filters);
 	filters = (filters.length > 0) ? (' AND ' + filters) : '';
