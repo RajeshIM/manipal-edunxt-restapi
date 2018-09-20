@@ -111,10 +111,15 @@ function getBodyParams(req){
 		body.forEach(function(obj){
 			switch(obj.type.toUpperCase()){
 				case 'BATCH': filters.batch.push(obj.id);
+							  break;
 				case 'QUIZ':  filters.quiz.push(obj.id);
+							  break;
 				case 'ASSIGNMENT': filters.assignment.push(obj.id);
+								   break;
 				case 'ZONE': filters.zone.push(obj.id);
+							 break;
 				case 'TEAM': filters.team.push(obj.id);
+							 break;
 				case 'CONTENTTYPE': filters.contenttype.push(obj.id);
 			}
 		})
