@@ -421,7 +421,7 @@ exports.getScoresDistributionDetails = function(req, next){
 				batchName,ROUND(SUM(noOfAttempts),0) AS totalAttempts, 
 				ROUND(AVG(progress),0) AS Progress, ROUND(AVG(scoreAvg),0) AS scoreAvg, 
 				ROUND(SUM(examsAttempted),0) AS examsAttempted, 
-				ROUND(AVG(totalExamsCount), 0) AS totalExams FROM 
+				ROUND(SUM(totalExamsCount), 0) AS totalExams FROM 
 				(
 				SELECT learner_name AS learnerName,serial_no AS serialNumber, team_name AS team,
 				batch_name AS batchName, questionpapertype_id, ROUND(AVG(no_of_attempts),0) AS noOfAttempts, 
