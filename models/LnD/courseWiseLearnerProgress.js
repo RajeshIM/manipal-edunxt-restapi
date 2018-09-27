@@ -35,15 +35,17 @@ module.exports = (sequelize, DataTypes) => {
           },
           actualProgress: {
             type: DataTypes.DECIMAL(65,2),
+            field: 'progress',
             get: function() {
-              var val = parseFloat(this.getDataValue('progress') || 0).toFixed(2);
+              var val = parseFloat(this.getDataValue('actualProgress') || 0).toFixed(2);
               return parseFloat(val);
             }
           },
           expectedProgress: {
             type: DataTypes.DECIMAL(9,2),
+            field: 'expected_progress',
             get: function() {
-              var val = parseFloat(this.getDataValue('expected_progress') || 0).toFixed(2);
+              var val = parseFloat(this.getDataValue('expectedProgress') || 0).toFixed(2);
               return parseFloat(val);
             }
           },

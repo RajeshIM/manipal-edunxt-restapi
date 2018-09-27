@@ -35,15 +35,17 @@ module.exports = (sequelize, DataTypes) => {
           },
           actualPerformance: {
             type: DataTypes.DECIMAL(65,2),
+            field: 'performance',
             get: function() {
-              var val = parseFloat(this.getDataValue('performance') || 0).toFixed(2);
+              var val = parseFloat(this.getDataValue('actualPerformance') || 0).toFixed(2);
               return parseFloat(val);
             }
           },
           expectedPerformance: {
             type: DataTypes.INTEGER(11),
+            field: 'expected_performance',
             get: function() {
-              var val = parseFloat(this.getDataValue('expected_performance') || 0).toFixed(2);
+              var val = parseFloat(this.getDataValue('expectedPerformance') || 0).toFixed(2);
               return parseFloat(val);
             }
           },
