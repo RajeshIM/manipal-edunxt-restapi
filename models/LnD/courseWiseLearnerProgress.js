@@ -33,10 +33,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(255),
             field: 'section_name'
           },
-          progress: {
+          actualProgress: {
             type: DataTypes.DECIMAL(65,2),
             get: function() {
               var val = parseFloat(this.getDataValue('progress') || 0).toFixed(2);
+              return parseFloat(val);
+            }
+          },
+          expectedProgress: {
+            type: DataTypes.DECIMAL(9,2),
+            get: function() {
+              var val = parseFloat(this.getDataValue('expected_progress') || 0).toFixed(2);
               return parseFloat(val);
             }
           },

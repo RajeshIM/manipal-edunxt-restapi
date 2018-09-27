@@ -5,8 +5,10 @@ exports.learnerPerformanceAndProgress = function (req, res) {
 	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		type = req.query.type ? req.query.type.toUpperCase() : null,
 		attributes = ['sectionId', 'sectionName'],
-		performanceField = [[models[tenant].fn('AVG',models[tenant].col('performance')), 'performance']],
-		progressField = [[models[tenant].fn('AVG',models[tenant].col('progress')), 'progress']];
+		performanceField = [[models[tenant].fn('AVG',models[tenant].col('performance')), 'actualPerformance'],
+							[models[tenant].fn('AVG',models[tenant].col('expected_performance')), 'expectedPerformance']],
+		progressField = [[models[tenant].fn('AVG',models[tenant].col('progress')), 'actualProgress'],
+						 [models[tenant].fn('AVG',models[tenant].col('expected_progress')), 'expectedProgress']];
 		attributes = (type==='PROGRESS') ? _.union(attributes, progressField) : _.union(attributes, performanceField),
 	    table = (type==='PROGRESS') ? 'courseWiseLearnerProgress': 'courseWiseLearnerPerformance',
 		group = ['sectionId'],

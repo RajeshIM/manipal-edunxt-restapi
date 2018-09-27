@@ -33,10 +33,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(255),
             field: 'section_name'
           },
-          performance: {
+          actualPerformance: {
             type: DataTypes.DECIMAL(65,2),
             get: function() {
               var val = parseFloat(this.getDataValue('performance') || 0).toFixed(2);
+              return parseFloat(val);
+            }
+          },
+          expectedPerformance: {
+            type: DataTypes.INTEGER(11),
+            get: function() {
+              var val = parseFloat(this.getDataValue('expected_performance') || 0).toFixed(2);
               return parseFloat(val);
             }
           },
