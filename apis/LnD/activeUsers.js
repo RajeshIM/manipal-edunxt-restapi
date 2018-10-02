@@ -8,12 +8,11 @@ exports.activeUsers = function (req, res) {
 	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		courseId = req.query.courseId ? parseInt(req.query.courseId) : null,
 		date = utils.getDates(req),
-		activeUserField = date.currentStatus ? 'personId' : 'activeUsers',
-		activeUserAgg = date.currentStatus ? 'count' : 'avg',
-		activeUserTable = date.currentStatus ? 'activeUsers' : 'dailyActiveUsers',
-		userDate = date.currentStatus ? { date: { [models.Op.gte]: date.lastHalfAnHour } } : { date: { [models.Op.between]: [date.start, date.end] } },
+		activeUserTable = 'activeUsers',
+		userDate = {date: { [models.Op.gte]: date.lastHalfAnHour } },
 		userOptions = {
-			where: userDate
+			where: userDate,
+			distinct: true
 		},
 		activeUsersSinceLastMonthQuery = {
 			attribute: ['montlyActiveUsers'],
@@ -36,11 +35,9 @@ exports.activeUsers = function (req, res) {
 		enrolledUserSinceLastMonthTable = courseId ? 'courseWiseMonthlyEnrolledPersons' : 'allCoursesMonthlyEnrolledPersons',
 		responseData = {};
 
-	if (date.currentStatus) userOptions.distinct = true;
-
 	async.parallel({
 		activeUsers: function (next) {
-			models[tenant + '_' + activeUserTable].aggregate(activeUserField, activeUserAgg, userOptions).then(function (count) {
+			models[tenant + '_' + activeUserTable].aggregate('personId', 'count', userOptions).then(function (count) {
 				count = count ? Math.round(count || 0) : 0;
 				next(null, count);
 			}).catch(function (err) {
