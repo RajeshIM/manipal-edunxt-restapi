@@ -3,7 +3,8 @@ var Sequelize = require('sequelize'),
     config    = require('../config/config.json')[env],
     db        = {};
 
-var userSchemas = ['activeUsers',
+var userSchemas = ['activeUsersCount',
+                  'activeUsers',
                   'dailyActiveUsers',
                   'monthlyActiveUsers',
                   'allCoursesEnrolledPersons',

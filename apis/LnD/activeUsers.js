@@ -8,11 +8,9 @@ exports.activeUsers = function (req, res) {
 	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		courseId = req.query.courseId ? parseInt(req.query.courseId) : null,
 		date = utils.getDates(req),
-		activeUserTable = 'activeUsers',
-		userDate = {date: { [models.Op.gte]: date.lastHalfAnHour } },
-		userOptions = {
-			where: userDate,
-			distinct: true
+		activeUserTable = 'activeUsersCount',
+		activeUsersQuery = {
+			attribute: ['activeUsers']
 		},
 		activeUsersSinceLastMonthQuery = {
 			attribute: ['montlyActiveUsers'],
@@ -37,9 +35,9 @@ exports.activeUsers = function (req, res) {
 
 	async.parallel({
 		activeUsers: function (next) {
-			models[tenant + '_' + activeUserTable].aggregate('personId', 'count', userOptions).then(function (count) {
-				count = count ? Math.round(count || 0) : 0;
-				next(null, count);
+			models[tenant + '_' + 'activeUsersCount'].findOne(activeUsersQuery).then(function (data) {
+				data = data ? Math.round(data.activeUsers || 0) : 0;
+				next(null, data);
 			}).catch(function (err) {
 				next(err);
 			});
