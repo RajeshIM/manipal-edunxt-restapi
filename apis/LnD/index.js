@@ -27,7 +27,8 @@ var apis = ['activeUsers',
 			'modeOfDelivery',
 			'sendMail',
 			'personData',
-			'authLnDUser'
+			'authLnDUser',
+			'getReportGeneratedTime'
 			];
 
 apis.forEach(function (api) {
