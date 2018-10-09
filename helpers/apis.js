@@ -701,7 +701,7 @@ exports.getContentConsumptionData = function(req, next){
 			ROUND(avg(duration),0) as duration,
 			ROUND(avg(avg_duration),0) as avgDuration 
 			from muln_content_consumption 
-			where load_date between '${date.start}' and '${date.end}' `+ filters + 
+			where load_date between '${date.start}' and '${date.end}' and content_id!=0`+ filters + 
 			` group by courseId,programId,contentId,contentType,author`;
 	query = sortQuery ? (query+sortQuery) : query;
 	
@@ -763,7 +763,7 @@ exports.getActiveUsersByLocationData = function(req, next){
 		monthlyFilters = getFiltersForRawQuery(req, true),
 		query = '';
 	
-   		query = `SELECT df.location,ROUND(AVG(df.faculty_count), 0) AS facultyCount, 
+   		query = `SELECT  IF(df.location='', 'N/A', df.location) as location,ROUND(AVG(df.faculty_count), 0) AS facultyCount, 
 	   				ROUND(AVG(df.learner_count), 0) AS learnerCount, 
 	   				op.monthly_faculty_count AS monthlyFacultyCount, 
 	   				op.monthly_learner_count AS monthlyLearnerCount
