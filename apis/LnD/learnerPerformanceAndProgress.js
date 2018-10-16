@@ -23,7 +23,8 @@ exports.learnerPerformanceAndProgress = function (req, res) {
 		query = apis.getQuery(options);
 
 	query.where['sectionName'] = {[Op.ne]: null};
-
+	if(type==='PROGRESS') query.where['expectedProgress'] = {[Op.ne]: 0};
+	
 	models[tenant+'_'+table].findAll(query).then(function (data) {
 	    response.sendSuccessResponse(res, data);
 	}).catch(function (err) {
