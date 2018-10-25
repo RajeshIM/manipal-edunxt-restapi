@@ -714,14 +714,22 @@ exports.getContentConsumptionData = function(req, next){
 
 exports.getActiveUsersLineGraphData = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
+		courseId =  parseInt(req.query.courseId || 0),
 		date = utils.getDates(req),
 		filters = getFiltersForRawQuery(req, false),
 		query = '';
 	
-   	query = `SELECT ROUND(SUM(faculty_count)/COUNT(DISTINCT course_id),0) AS facultyCount,
-					ROUND(SUM(learner_count)/COUNT(DISTINCT course_id),0) AS learnerCount,
+	if(courseId){
+		query = `SELECT ROUND(SUM(faculty_count),0) AS facultyCount,
+					ROUND(SUM(learner_count),0) AS learnerCount,
 					load_date as date FROM muln_location_wise_daily_active_learners_faculties 
 					where load_date between '${date.start}' and '${date.end}' `+ filters + ` Group by 3`;
+	}else{
+		query = `SELECT ROUND(SUM(faculty_count),0) AS facultyCount,
+					ROUND(SUM(learner_count),0) AS learnerCount,
+					load_date as date FROM muln_all_courses_location_wise_daily_active_learners_faculties 
+					where load_date between '${date.start}' and '${date.end}' `+ filters + ` Group by 3`;
+	}
 		
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		next(null, data);			
@@ -758,12 +766,14 @@ exports.getModeOfDeliveryData = function(req, next){
 
 exports.getActiveUsersByLocationData = function(req, next){
 	var tenant = req.headers['tenant_name'] || req.query['tenant_name'],
+		courseId =  parseInt(req.query.courseId || 0),
 		date = utils.getDates(req),
 		filters = getFiltersForRawQuery(req, false),
 		monthlyFilters = getFiltersForRawQuery(req, true),
 		query = '';
-	
-   		query = `SELECT  IF(df.location='', 'N/A', df.location) as location,ROUND(AVG(df.faculty_count), 0) AS facultyCount, 
+		
+		if(courseId){
+			query = `SELECT  IF(df.location='', 'N/A', df.location) as location,ROUND(AVG(df.faculty_count), 0) AS facultyCount, 
 	   				ROUND(AVG(df.learner_count), 0) AS learnerCount, 
 	   				op.monthly_faculty_count AS monthlyFacultyCount, 
 	   				op.monthly_learner_count AS monthlyLearnerCount
@@ -777,6 +787,22 @@ exports.getActiveUsersByLocationData = function(req, next){
 			ON df.location=op.location
 			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
 			`GROUP BY 1 order by learnerCount desc`;
+		}else{
+			query = `SELECT  IF(df.location='', 'N/A', df.location) as location,ROUND(AVG(df.faculty_count), 0) AS facultyCount, 
+	   				ROUND(AVG(df.learner_count), 0) AS learnerCount, 
+	   				op.monthly_faculty_count AS monthlyFacultyCount, 
+	   				op.monthly_learner_count AS monthlyLearnerCount
+	   				FROM muln_all_courses_location_wise_daily_active_learners_faculties AS df
+			LEFT JOIN (SELECT  location,ROUND(AVG(faculty_count), 0) AS monthly_faculty_count,
+							   ROUND(AVG(learner_count), 0) AS monthly_learner_count 
+							   FROM muln_location_wise_monthly_active_learners_faculties 
+	    				WHERE load_date=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%M-%Y') `
+	    				+ filters + `GROUP BY 1
+			) AS op
+			ON df.location=op.location
+			WHERE  df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters + 
+			`GROUP BY 1 order by learnerCount desc`;
+		}
 			
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		next(null, data);			
