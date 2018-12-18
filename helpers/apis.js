@@ -349,7 +349,7 @@ exports.getLearnerPerformanceData = function(req, next){
 		WHERE df.load_date BETWEEN '${date.start}' AND '${date.end}' ` + monthlyFilters + 
 		` GROUP BY person_name, rollno, course_name, program_name, batch_name, courseinstancename ` + sortQuery +` ) abc `;
 	query = performanceTypeFilter ? (query+performanceTypeFilter) : query;
-
+	console.log(query);
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		next(null, data);			
 	}).catch(function (err) {

@@ -7,6 +7,7 @@ exports.learnerPaceAndPerformance = function (req, res) {
 	var tenant = req.headers['tenant_name'] ? req.headers['tenant_name'] : 'MAIT',
 		date = utils.getDates(req),
 		filters = apis.getFiltersForRawQuery(req, false),
+		monthlyFilters = apis.getFiltersForRawQuery(req, true),
 		learnerPaceQuery = '',
 		learnerPerformanceQuery = '',
 		query = '',
@@ -51,13 +52,12 @@ exports.learnerPaceAndPerformance = function (req, res) {
 									  program_name AS programName, courseinstancename AS sectionName, 
 									  batch_name AS batchName, pacetype AS paceType, performance_type AS performanceType, 
 									  MAX(load_date) AS DATE FROM muln_daily_learner_track_details df 
-									  LEFT JOIN ( SELECT section_id, person_id 
+									  LEFT JOIN ( SELECT section_id, person_id
 									  FROM muln_scoredistribution_personexams_count 
-									  WHERE load_date BETWEEN '2018-11-18' AND '2018-12-18' 
-									  GROUP BY 1,2) led
+									  WHERE load_date BETWEEN '${date.start}' AND '${date.end}' GROUP BY 1,2) led
 								ON df.courseinstance_id=led.section_id AND df.person_id=led.person_id 
-								WHERE df.load_date BETWEEN '2018-11-18' AND '2018-12-18' 
-								GROUP BY person_name, rollno, course_name, program_name, batch_name, courseinstancename )abc GROUP BY 1;`;
+								WHERE df.load_date BETWEEN '${date.start}' AND '${date.end}' `+ monthlyFilters +` GROUP BY person_name, rollno, course_name, program_name, batch_name, courseinstancename )abc GROUP BY 1`;
+	
 			
 	async.parallel({
 		paceData: function(next){
