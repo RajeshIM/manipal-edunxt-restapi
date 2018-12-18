@@ -266,11 +266,12 @@ exports.getLearnerPaceData = function(req, next){
 		limit = parseInt(req.query.limit || 10),
 		date = utils.getDates(req),
 		filters = getFiltersForRawQuery(req, false),
+		paceTypeFilter = null,
 		sortQuery = null,
 		query = '';
 
 	if(displayFor){
-		filters = filters + `AND pacetype like '%${displayFor}%' `;
+		paceTypeFilter = ` where pacetype like '%${displayFor}%' `;
 	}
 	if(searchBy && searchTerm){
 		filters = filters + ` AND person_name like '%${searchTerm}%' `;
@@ -281,7 +282,7 @@ exports.getLearnerPaceData = function(req, next){
 		sortQuery = ` order by  progress desc `;
 	}
 
-   	query = `SELECT person_name AS learnerName, rollno AS serialNumber, course_name AS courseName,
+   	query = `select * from (SELECT person_name AS learnerName, rollno AS serialNumber, course_name AS courseName,
 			   program_name AS programName, courseinstancename AS sectionName, batch_name AS batchName, 
 			   ROUND(AVG(score),0) AS scoreInCourse, ROUND(AVG(score_avg),0) AS scoreAvg, 
 			   ROUND(AVG(higest_score),0) AS highestScore, 
@@ -290,9 +291,9 @@ exports.getLearnerPaceData = function(req, next){
 			   pacetype AS paceType, performance_type AS performanceType, MAX(load_date) AS DATE 
 			FROM muln_daily_learner_track_details 
 			WHERE load_date BETWEEN '${date.start}' AND '${date.end}' ` + filters + 
-		`GROUP BY person_name, rollno, course_name, program_name, batch_name, courseinstancename `;
-	query = sortQuery ? (query+sortQuery) : query;
-   
+		` GROUP BY person_name, rollno, course_name, program_name, batch_name, courseinstancename `+ sortQuery +` ) abc ` ;
+	query = paceTypeFilter ? (query+paceTypeFilter) : query;
+
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		next(null, data);			
 	}).catch(function (err) {
@@ -311,11 +312,12 @@ exports.getLearnerPerformanceData = function(req, next){
 		limit = parseInt(req.query.limit || 10),
 		date = utils.getDates(req),
 		monthlyFilters = getFiltersForRawQuery(req, true),
+		performanceTypeFilter = null,
 		sortQuery = null,
 		query = '';
 
 	if(displayFor){
-		monthlyFilters = monthlyFilters + `AND df.performance_type like '%${displayFor}%' `;
+		performanceTypeFilter = ` where performanceType like '%${displayFor}%' `;
 	}
 	if(searchBy && searchTerm){
 		monthlyFilters = monthlyFilters + ` AND df.person_name like '%${searchTerm}%' `;
@@ -326,7 +328,7 @@ exports.getLearnerPerformanceData = function(req, next){
 		sortQuery = ` order by scoreAvg desc `;
 	}
 
-   	query = `SELECT person_name AS learnerName, rollno AS serialNumber, course_name AS courseName,
+   	query = `select * from (SELECT person_name AS learnerName, rollno AS serialNumber, course_name AS courseName,
 			   program_name AS programName, courseinstancename AS sectionName, batch_name AS batchName, 
 			   score AS scoreInCourse, score_avg AS scoreAvg, higest_score AS highestScore, 
 			   score_percentage AS scorePercentage, exam_accessed AS examAccessed, exam_passed AS examPassed,
@@ -345,8 +347,8 @@ exports.getLearnerPerformanceData = function(req, next){
 		ON df.courseinstance_id=led.section_id
 		AND df.person_id=led.person_id
 		WHERE df.load_date BETWEEN '${date.start}' AND '${date.end}' ` + monthlyFilters + 
-		`GROUP BY person_name, rollno, course_name, program_name, batch_name, courseinstancename `;
-	query = sortQuery ? (query+sortQuery) : query;
+		` GROUP BY person_name, rollno, course_name, program_name, batch_name, courseinstancename ` + sortQuery +` ) abc `;
+	query = performanceTypeFilter ? (query+performanceTypeFilter) : query;
 
 	models[tenant].query(query, {type: models[tenant].QueryTypes.SELECT}).then(function (data) {
 		next(null, data);			
