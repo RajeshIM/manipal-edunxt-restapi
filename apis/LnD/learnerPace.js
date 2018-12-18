@@ -20,14 +20,14 @@ exports.learnerPace = function (req, res) {
 	// 			where pacetype IS NOT NULL and load_date BETWEEN '${date.start}' AND '${date.end}'` + filters +
 	// 	` group by 1,2) pace group by 1`;
 
-	query = `SELECT paceType, COUNT(person_id) AS pacetype_count FROM 
+	query = `SELECT pacetype, COUNT(person_id) AS pacetype_count FROM 
 				(SELECT  person_id, person_name AS learnerName, rollno AS serialNumber, 
 				 course_name AS courseName,program_name AS programName, 
 				 courseinstancename AS sectionName, batch_name AS batchName,
 				pacetype AS paceType, performance_type AS performanceType, 
 				MAX(load_date) AS DATE FROM muln_daily_learner_track_details 
-				WHERE load_date BETWEEN '${date.start}' AND '${date.end}'` + filters + 
-				`GROUP BY person_id, person_name, rollno,course_name, program_name, 
+				WHERE load_date BETWEEN '${date.start}' AND '${date.end}' ` + filters + 
+				` GROUP BY person_id, person_name, rollno,course_name, program_name, 
 				batch_name, courseinstancename) pace GROUP BY 1`;
 
 	models[tenant].query(query, { type: models[tenant].QueryTypes.SELECT }).then(function (data) {

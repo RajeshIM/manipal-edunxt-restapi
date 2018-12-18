@@ -30,22 +30,34 @@ exports.learnerPaceAndPerformance = function (req, res) {
 	// 							where pacetype IS NOT NULL  and load_date BETWEEN '${date.start}' AND '${date.end}'`+ filters +
 	// 						 ` group by 1,2) pace group by 1`;
 
-	learnerPaceQuery = `SELECT paceType, COUNT(person_id) AS pacetype_count FROM 
-							 (SELECT  person_id, person_name AS learnerName, rollno AS serialNumber, 
-							  course_name AS courseName,program_name AS programName, 
-							  courseinstancename AS sectionName, batch_name AS batchName,
-							 pacetype AS paceType, performance_type AS performanceType, 
-							 MAX(load_date) AS DATE FROM muln_daily_learner_track_details 
-							 WHERE load_date BETWEEN '${date.start}' AND '${date.end}'` + filters + 
-							 `GROUP BY person_id, person_name, rollno,course_name, program_name, 
-							 batch_name, courseinstancename) pace GROUP BY 1`;
+	learnerPaceQuery = `SELECT pacetype, COUNT(person_id) AS pacetype_count FROM 
+						(SELECT  person_id, person_name AS learnerName, rollno AS serialNumber, 
+								 course_name AS courseName,program_name AS programName, 
+				 				courseinstancename AS sectionName, batch_name AS batchName,
+								pacetype AS paceType, performance_type AS performanceType, 
+								MAX(load_date) AS DATE FROM muln_daily_learner_track_details 
+						WHERE load_date BETWEEN '${date.start}' AND '${date.end}' ` + filters + 
+						` GROUP BY person_id, person_name, rollno,course_name, program_name, 
+						batch_name, courseinstancename) pace GROUP BY 1`;
 
-	learnerPerformanceQuery = `select performance_type, AVG(performance_type_count) AS performance_type_count
-								from (SELECT performance_type,load_date, COUNT(distinct person_id) as performance_type_count 
-										FROM muln_daily_learner_track_details 
-								where performance_type IS NOT NULL and load_date BETWEEN '${date.start}' AND '${date.end}'`+ filters +
-								   ` group by 1,2) pace group by 1`;
+	// learnerPerformanceQuery = `select performance_type, AVG(performance_type_count) AS performance_type_count
+	// 							from (SELECT performance_type,load_date, COUNT(distinct person_id) as performance_type_count 
+	// 									FROM muln_daily_learner_track_details 
+	// 							where performance_type IS NOT NULL and load_date BETWEEN '${date.start}' AND '${date.end}'`+ filters +
+	// 							   ` group by 1,2) pace group by 1`;
 	
+	learnerPerformanceQuery = ` SELECT performanceType,COUNT(*) as performance_type_count 
+								FROM ( SELECT person_name AS learnerName, course_name AS courseName,
+									  program_name AS programName, courseinstancename AS sectionName, 
+									  batch_name AS batchName, pacetype AS paceType, performance_type AS performanceType, 
+									  MAX(load_date) AS DATE FROM muln_daily_learner_track_details df 
+									  LEFT JOIN ( SELECT section_id, person_id 
+									  FROM muln_scoredistribution_personexams_count 
+									  WHERE load_date BETWEEN '2018-11-18' AND '2018-12-18' 
+									  GROUP BY 1,2) led
+								ON df.courseinstance_id=led.section_id AND df.person_id=led.person_id 
+								WHERE df.load_date BETWEEN '2018-11-18' AND '2018-12-18' 
+								GROUP BY person_name, rollno, course_name, program_name, batch_name, courseinstancename )abc GROUP BY 1;`;
 			
 	async.parallel({
 		paceData: function(next){
@@ -86,10 +98,10 @@ exports.learnerPaceAndPerformance = function (req, res) {
 			}else{
 				paceData = {};
 			}
-			if (performanceInfo.length > 0 && performanceInfo[0].performance_type) {
+			if (performanceInfo.length > 0 && performanceInfo[0].performanceType) {
 				performanceInfo.forEach(function(obj){
-					if(obj.performance_type){
-						switch(obj.performance_type.toUpperCase()){
+					if(obj.performanceType){
+						switch(obj.performanceType.toUpperCase()){
 							case 'EXCELLING': performanceData.excelling = Math.round(obj.performance_type_count || 0);
 												  break;
 							case 'PASSING': performanceData.passing = Math.round(obj.performance_type_count || 0);
